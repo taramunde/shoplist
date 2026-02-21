@@ -15,12 +15,12 @@ function getDefaultData() {
 }
 
 function saveData() {
-    if (currentId) localStorage.setItem(shoplist_${currentId}, JSON.stringify(data));
+    if (currentId) localStorage.setItem(`shoplist_${currentId}`, JSON.stringify(data));
 }
 
 function loadData(id) {
     currentId = id;
-    const saved = localStorage.getItem(shoplist_${id});
+    const saved = localStorage.getItem(`shoplist_${id}`);
     data = saved ? JSON.parse(saved) : getDefaultData();
     saveData();
 }
@@ -29,7 +29,7 @@ function renderCategories() {
     const container = document.getElementById("categories-list");
     container.innerHTML = "";
     data.categories.forEach((cat, catIdx) => {
-        let html = 
+        let html = `
             <div class="category-header">
                 <div class="flex items-center justify-between bg-zinc-900 px-1 py-3">
                     <div class="flex items-center gap-x-3">
@@ -40,26 +40,26 @@ function renderCategories() {
                 </div>
             </div>
             <div class="space-y-px">
-        ;
+        `;
         if (cat.items.length === 0) {
-            html += <div class="text-zinc-500 text-sm py-8 text-center italic">no items yet</div>;
+            html += `<div class="text-zinc-500 text-sm py-8 text-center italic">no items yet</div>`;
         } else {
             cat.items.forEach((item, itemIdx) => {
                 const subtotal = (item.price * item.qty).toFixed(2);
-                html += 
+                html += `
                     <div class="item-row flex items-center gap-x-4 bg-zinc-900 px-5 py-4 rounded-3xl group">
-                        <input type="checkbox" \( {item.checked ? 'checked' : ''} onchange="toggleCheck( \){catIdx},${itemIdx}, this.checked)" class="w-6 h-6 accent-emerald-500">
+                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCheck(${catIdx}, ${itemIdx}, this.checked)" class="w-6 h-6 accent-emerald-500">
                         <div class="flex-1 min-w-0">
-                            <div class="font-medium leading-tight \( {item.checked ? 'line-through text-zinc-500' : ''}"> \){item.name}</div>
-                            <div class="text-xs text-zinc-400">${item.qty} × \[ {parseFloat(item.price).toFixed(2)}</div>
+                            <div class="font-medium leading-tight ${item.checked ? 'line-through text-zinc-500' : ''}">${item.name}</div>
+                            <div class="text-xs text-zinc-400">${item.qty} × $${parseFloat(item.price).toFixed(2)}</div>
                         </div>
-                        <div class="text-right font-mono text-lg font-medium tabular-nums"> \]{subtotal}</div>
-                        <button onclick="deleteItem(\( {catIdx}, \){itemIdx});event.stopImmediatePropagation()" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 w-8 h-8 flex items-center justify-center text-xl">×</button>
+                        <div class="text-right font-mono text-lg font-medium tabular-nums">$${subtotal}</div>
+                        <button onclick="deleteItem(${catIdx}, ${itemIdx}); event.stopImmediatePropagation()" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 w-8 h-8 flex items-center justify-center text-xl">×</button>
                     </div>
-                ;
+                `;
             });
         }
-        html += </div>;
+        html += `</div>`;
         container.innerHTML += html;
     });
     updateGrandTotal();
@@ -88,7 +88,7 @@ function deleteItem(catIdx, itemIdx) {
 function openAddModal(catIdx = 0) {
     document.getElementById("item-modal").classList.remove("hidden");
     document.getElementById("modal-title").textContent = "New item";
-  document.getElementById("modal-item-index").value = -1;
+    document.getElementById("modal-item-index").value = -1;
     const select = document.getElementById("modal-category");
     select.innerHTML = "";
     data.categories.forEach((cat, i) => {
@@ -203,6 +203,7 @@ function connectList() {
     loadData(id);
     showMainScreen();
 }
+
 function showMainScreen() {
     document.getElementById("login-screen").classList.add("hidden");
     document.getElementById("main-app").classList.remove("hidden");
