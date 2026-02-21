@@ -25,6 +25,21 @@ function loadData(id) {
     saveData();
 }
 
+// ── Codificación segura con UTF-8 (soporta tildes, ñ, emojis…) ──────────────
+function encodeData(obj) {
+    return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+}
+
+function decodeData(str) {
+    return JSON.parse(decodeURIComponent(escape(atob(str))));
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+function getShareUrl() {
+    const base = window.location.origin + window.location.pathname;
+    return base + "?lista=" + encodeData(data);
+}
+
 function renderCategories() {
     const container = document.getElementById("categories-list");
     container.innerHTML = "";
@@ -67,7 +82,9 @@ function renderCategories() {
 
 function updateGrandTotal() {
     let total = 0;
-    data.categories.forEach(cat => cat.items.forEach(item => { if (!item.checked) total += item.price * item.qty; }));
+    data.categories.forEach(cat => cat.items.forEach(item => {
+        if (!item.checked) total += item.price * item.qty;
+    }));
     document.getElementById("grand-total").textContent = "$" + total.toFixed(2);
 }
 
@@ -129,12 +146,10 @@ function addCategory() {
 function showShare() {
     document.getElementById("share-modal").classList.remove("hidden");
     document.getElementById("share-code").textContent = currentId;
-    
-    // Generar URL con datos
-    const encoded = btoa(JSON.stringify(data));
-    const shareUrl = window.location.origin + window.location.pathname + "#data=" + encoded;
-    
-    // Generar el QR
+
+    const shareUrl = getShareUrl();
+
+    // QR apuntando a la URL completa con los datos
     const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(shareUrl);
     document.getElementById("qr-code-img").src = qrUrl;
 }
@@ -144,23 +159,33 @@ function hideShareModal() {
 }
 
 function copyShareableLink() {
-    const encoded = btoa(JSON.stringify(data));
-    const shareUrl = window.location.origin + window.location.pathname + "#data=" + encoded;
-    navigator.clipboard.writeText(shareUrl).then(() => alert("✅ ¡Enlace copiado! Pégalo en WhatsApp."));
+    const shareUrl = getShareUrl();
+    navigator.clipboard.writeText(shareUrl)
+        .then(() => alert("✅ ¡Enlace copiado! Pégalo en WhatsApp."))
+        .catch(() => {
+            // Fallback por si el clipboard no está disponible
+            prompt("Copia este enlace:", shareUrl);
+        });
 }
 
-function loadFromHash() {
-    const hash = window.location.hash;
-    if (hash.startsWith("#data=")) {
+function loadFromQueryParam() {
+    const params = new URLSearchParams(window.location.search);
+    const lista = params.get("lista");
+    if (lista) {
         try {
-            const json = atob(hash.slice(6));
-            data = JSON.parse(json);
+            data = decodeData(lista);
             currentId = generateId();
             saveData();
-            showMainScreen();
+            // Limpiamos la URL sin recargar para que quede limpia
             history.replaceState(null, null, window.location.pathname);
-        } catch(e) { console.error("Error cargando datos", e); }
+            showMainScreen();
+            return true;
+        } catch (e) {
+            console.error("Error al cargar la lista compartida:", e);
+            alert("El enlace no es válido o está dañado.");
+        }
     }
+    return false;
 }
 
 function createNewList() {
@@ -189,6 +214,8 @@ function logout() {
     }
 }
 
-window.onload = function() {
-    loadFromHash();
+window.onload = function () {
+    // Intentar cargar desde enlace compartido; si no, mostrar pantalla de inicio
+    loadFromQueryParam();
 };
+    
