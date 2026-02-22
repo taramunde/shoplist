@@ -1,31 +1,21 @@
-let currentId = null;
+let currentId = "mi_lista"; // Ya no necesitamos un ID aleatorio visible
 let data = { categories: [] };
 
 const defaultCats = ["Lácteos", "Panadería", "Bebidas", "Fruta y Verdura", "Carne y Pescado", "Snacks", "Despensa", "Otros"];
-
-function generateId() {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let id = "";
-    for (let i = 0; i < 5; i++) id += chars[Math.floor(Math.random() * chars.length)];
-    return id;
-}
 
 function getDefaultData() {
     return { categories: defaultCats.map(name => ({ name, items: [] })) };
 }
 
 function saveData() {
-    if (currentId) localStorage.setItem(`shoplist_${currentId}`, JSON.stringify(data));
+    localStorage.setItem('shoplist_data', JSON.stringify(data));
 }
 
-function loadData(id) {
-    currentId = id;
-    const saved = localStorage.getItem(`shoplist_${id}`);
+function loadLocalData() {
+    const saved = localStorage.getItem('shoplist_data');
     data = saved ? JSON.parse(saved) : getDefaultData();
-    saveData();
 }
 
-// ── Codificación segura con UTF-8 (soporta tildes, ñ, emojis…) ──────────────
 function encodeData(obj) {
     return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
 }
@@ -33,11 +23,11 @@ function encodeData(obj) {
 function decodeData(str) {
     return JSON.parse(decodeURIComponent(escape(atob(str))));
 }
-// ─────────────────────────────────────────────────────────────────────────────
 
 function getShareUrl() {
     const base = window.location.origin + window.location.pathname;
-    return base + "?lista=" + encodeData(data);
+    // CRÍTICO: encodeURIComponent previene que el símbolo '+' se transforme en espacios
+    return base + "?lista=" + encodeURIComponent(encodeData(data));
 }
 
 function renderCategories() {
@@ -145,11 +135,7 @@ function addCategory() {
 
 function showShare() {
     document.getElementById("share-modal").classList.remove("hidden");
-    document.getElementById("share-code").textContent = currentId;
-
     const shareUrl = getShareUrl();
-
-    // QR apuntando a la URL completa con los datos
     const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(shareUrl);
     document.getElementById("qr-code-img").src = qrUrl;
 }
@@ -160,12 +146,14 @@ function hideShareModal() {
 
 function copyShareableLink() {
     const shareUrl = getShareUrl();
-    navigator.clipboard.writeText(shareUrl)
-        .then(() => alert("✅ ¡Enlace copiado! Pégalo en WhatsApp."))
-        .catch(() => {
-            // Fallback por si el clipboard no está disponible
-            prompt("Copia este enlace:", shareUrl);
-        });
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(shareUrl)
+            .then(() => alert("✅ ¡Enlace copiado! Pégalo en WhatsApp."))
+            .catch(() => prompt("Copia este enlace manualmente:", shareUrl));
+    } else {
+        // Fallback para navegadores antiguos o sin https
+        prompt("Tu navegador requiere que copies este enlace manualmente:", shareUrl);
+    }
 }
 
 function loadFromQueryParam() {
@@ -174,7 +162,6 @@ function loadFromQueryParam() {
     if (lista) {
         try {
             data = decodeData(lista);
-            currentId = generateId();
             saveData();
             // Limpiamos la URL sin recargar para que quede limpia
             history.replaceState(null, null, window.location.pathname);
@@ -182,40 +169,36 @@ function loadFromQueryParam() {
             return true;
         } catch (e) {
             console.error("Error al cargar la lista compartida:", e);
-            alert("El enlace no es válido o está dañado.");
+            alert("El enlace escaneado no es válido o está incompleto.");
         }
     }
     return false;
 }
 
 function createNewList() {
-    currentId = generateId();
-    loadData(currentId);
-    showMainScreen();
-}
-
-function connectList() {
-    let id = document.getElementById("connect-id").value.trim().toUpperCase();
-    if (!id) return alert("Pon un código");
-    loadData(id);
+    loadLocalData();
     showMainScreen();
 }
 
 function showMainScreen() {
     document.getElementById("login-screen").classList.add("hidden");
     document.getElementById("main-app").classList.remove("hidden");
-    document.getElementById("current-id").textContent = currentId;
     renderCategories();
 }
 
 function logout() {
-    if (confirm("¿Salir de esta lista?")) {
-        location.reload();
+    if (confirm("¿Limpiar tu pantalla y volver al inicio? (Tus datos seguirán guardados)")) {
+        document.getElementById("main-app").classList.add("hidden");
+        document.getElementById("login-screen").classList.remove("hidden");
     }
 }
 
 window.onload = function () {
-    // Intentar cargar desde enlace compartido; si no, mostrar pantalla de inicio
-    loadFromQueryParam();
+    // Si viene de un escaneo de QR/Link, lo carga. Si no, espera en la pantalla de inicio.
+    if(!loadFromQueryParam()){
+        // Opcional: Si ya hay datos previos, podemos saltar directo a la app
+        if(localStorage.getItem('shoplist_data')) {
+            createNewList();
+        }
+    }
 };
-    
