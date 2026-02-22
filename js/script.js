@@ -1,19 +1,30 @@
-let currentId = "mi_lista"; // Ya no necesitamos un ID aleatorio visible
+let currentId = null;
 let data = { categories: [] };
 
 const defaultCats = ["Lácteos", "Panadería", "Bebidas", "Fruta y Verdura", "Carne y Pescado", "Snacks", "Despensa", "Otros"];
 
+function generateId() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let id = "";
+    for (let i = 0; i < 5; i++) id += chars[Math.floor(Math.random() * chars.length)];
+    return id;
+}
+
 function getDefaultData() {
-    return { categories: defaultCats.map(name => ({ name, items: [] })) };
+    return { categories: defaultCats.map(function(name) { return { name: name, items: [] }; }) };
 }
 
 function saveData() {
-    localStorage.setItem('shoplist_data', JSON.stringify(data));
+    if (currentId) {
+        localStorage.setItem("shoplist_" + currentId, JSON.stringify(data));
+    }
 }
 
-function loadLocalData() {
-    const saved = localStorage.getItem('shoplist_data');
+function loadData(id) {
+    currentId = id;
+    const saved = localStorage.getItem("shoplist_" + id);
     data = saved ? JSON.parse(saved) : getDefaultData();
+    saveData();
 }
 
 function encodeData(obj) {
@@ -24,47 +35,43 @@ function decodeData(str) {
     return JSON.parse(decodeURIComponent(escape(atob(str))));
 }
 
-function getShareUrl() {
-    const base = window.location.origin + window.location.pathname;
-    // CRÍTICO: encodeURIComponent previene que el símbolo '+' se transforme en espacios
-    return base + "?lista=" + encodeURIComponent(encodeData(data));
-}
-
 function renderCategories() {
     const container = document.getElementById("categories-list");
     container.innerHTML = "";
-    data.categories.forEach((cat, catIdx) => {
-        let html = `
-            <div class="category-header">
-                <div class="flex items-center justify-between bg-zinc-950 py-3">
-                    <div class="flex items-center gap-x-3">
-                        <span class="text-2xl">📦</span>
-                        <h3 class="text-xl font-semibold">${cat.name}</h3>
-                    </div>
-                    <button onclick="openAddModal(${catIdx})" class="px-4 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-sm font-medium rounded-2xl">+ item</button>
-                </div>
-            </div>
-            <div class="space-y-px">
-        `;
+    
+    data.categories.forEach(function(cat, catIdx) {
+        let html = "";
+        html += '<div class="category-header">';
+        html += '  <div class="flex items-center justify-between bg-zinc-950 py-3">';
+        html += '    <div class="flex items-center gap-x-3">';
+        html += '      <span class="text-2xl">📦</span>';
+        html += '      <h3 class="text-xl font-semibold">' + cat.name + '</h3>';
+        html += '    </div>';
+        html += '    <button onclick="openAddModal(' + catIdx + ')" class="px-4 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-sm font-medium rounded-2xl">+ item</button>';
+        html += '  </div>';
+        html += '</div>';
+        html += '<div class="space-y-px">';
+        
         if (cat.items.length === 0) {
-            html += `<div class="text-zinc-600 text-sm py-4 text-center italic">vacío</div>`;
+            html += '<div class="text-zinc-600 text-sm py-4 text-center italic">vacío</div>';
         } else {
-            cat.items.forEach((item, itemIdx) => {
+            cat.items.forEach(function(item, itemIdx) {
                 const subtotal = (item.price * item.qty).toFixed(2);
-                html += `
-                    <div class="item-row flex items-center gap-x-4 bg-zinc-900 px-5 py-4 rounded-3xl group mb-2">
-                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCheck(${catIdx}, ${itemIdx}, this.checked)" class="w-6 h-6 accent-emerald-500">
-                        <div class="flex-1 min-w-0">
-                            <div class="font-medium leading-tight ${item.checked ? 'line-through text-zinc-500' : ''}">${item.name}</div>
-                            <div class="text-xs text-zinc-400">${item.qty} × $${parseFloat(item.price).toFixed(2)}</div>
-                        </div>
-                        <div class="text-right font-mono text-lg font-medium tabular-nums">$${subtotal}</div>
-                        <button onclick="deleteItem(${catIdx}, ${itemIdx})" class="text-red-400 w-8 h-8 flex items-center justify-center text-2xl ml-2">×</button>
-                    </div>
-                `;
+                const isChecked = item.checked ? "checked" : "";
+                const textClass = item.checked ? "line-through text-zinc-500" : "";
+                
+                html += '<div class="item-row flex items-center gap-x-4 bg-zinc-900 px-5 py-4 rounded-3xl group mb-2">';
+                html += '  <input type="checkbox" ' + isChecked + ' onchange="toggleCheck(' + catIdx + ', ' + itemIdx + ', this.checked)" class="w-6 h-6 accent-emerald-500">';
+                html += '  <div class="flex-1 min-w-0">';
+                html += '    <div class="font-medium leading-tight ' + textClass + '">' + item.name + '</div>';
+                html += '    <div class="text-xs text-zinc-400">' + item.qty + ' × $' + parseFloat(item.price).toFixed(2) + '</div>';
+                html += '  </div>';
+                html += '  <div class="text-right font-mono text-lg font-medium tabular-nums">$' + subtotal + '</div>';
+                html += '  <button onclick="deleteItem(' + catIdx + ', ' + itemIdx + ')" class="text-red-400 w-8 h-8 flex items-center justify-center text-2xl ml-2">×</button>';
+                html += '</div>';
             });
         }
-        html += `</div>`;
+        html += '</div>';
         container.innerHTML += html;
     });
     updateGrandTotal();
@@ -72,9 +79,11 @@ function renderCategories() {
 
 function updateGrandTotal() {
     let total = 0;
-    data.categories.forEach(cat => cat.items.forEach(item => {
-        if (!item.checked) total += item.price * item.qty;
-    }));
+    data.categories.forEach(function(cat) {
+        cat.items.forEach(function(item) {
+            if (!item.checked) total += item.price * item.qty;
+        });
+    });
     document.getElementById("grand-total").textContent = "$" + total.toFixed(2);
 }
 
@@ -90,11 +99,12 @@ function deleteItem(catIdx, itemIdx) {
     renderCategories();
 }
 
-function openAddModal(catIdx = 0) {
+function openAddModal(catIdx) {
+    if (catIdx === undefined) catIdx = 0;
     document.getElementById("item-modal").classList.remove("hidden");
     const select = document.getElementById("modal-category");
     select.innerHTML = "";
-    data.categories.forEach((cat, i) => {
+    data.categories.forEach(function(cat, i) {
         const opt = document.createElement("option");
         opt.value = i;
         opt.textContent = cat.name;
@@ -116,7 +126,7 @@ function saveModalItem() {
     const price = parseFloat(document.getElementById("modal-price").value) || 0;
     const qty = parseInt(document.getElementById("modal-qty").value) || 1;
     if (!name) return alert("Ponle un nombre");
-    data.categories[catIdx].items.push({ name, price, qty, checked: false });
+    data.categories[catIdx].items.push({ name: name, price: price, qty: qty, checked: false });
     saveData();
     hideItemModal();
     renderCategories();
@@ -126,7 +136,7 @@ function addItemGlobal() { openAddModal(0); }
 
 function addCategory() {
     const name = prompt("Nombre de la nueva categoría:");
-    if (name) {
+    if (name && name.trim() !== "") {
         data.categories.push({ name: name.trim(), items: [] });
         saveData();
         renderCategories();
@@ -135,7 +145,10 @@ function addCategory() {
 
 function showShare() {
     document.getElementById("share-modal").classList.remove("hidden");
-    const shareUrl = getShareUrl();
+    const shareCodeEl = document.getElementById("share-code");
+    if(shareCodeEl) shareCodeEl.textContent = currentId;
+    
+    const shareUrl = window.location.origin + window.location.pathname + "?lista=" + encodeData(data);
     const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(shareUrl);
     document.getElementById("qr-code-img").src = qrUrl;
 }
@@ -145,14 +158,13 @@ function hideShareModal() {
 }
 
 function copyShareableLink() {
-    const shareUrl = getShareUrl();
+    const shareUrl = window.location.origin + window.location.pathname + "?lista=" + encodeData(data);
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(shareUrl)
-            .then(() => alert("✅ ¡Enlace copiado! Pégalo en WhatsApp."))
-            .catch(() => prompt("Copia este enlace manualmente:", shareUrl));
+            .then(function() { alert("✅ ¡Enlace copiado! Pégalo en WhatsApp."); })
+            .catch(function() { prompt("Copia este enlace:", shareUrl); });
     } else {
-        // Fallback para navegadores antiguos o sin https
-        prompt("Tu navegador requiere que copies este enlace manualmente:", shareUrl);
+        prompt("Copia este enlace:", shareUrl);
     }
 }
 
@@ -162,43 +174,48 @@ function loadFromQueryParam() {
     if (lista) {
         try {
             data = decodeData(lista);
+            currentId = generateId();
             saveData();
-            // Limpiamos la URL sin recargar para que quede limpia
             history.replaceState(null, null, window.location.pathname);
             showMainScreen();
             return true;
         } catch (e) {
-            console.error("Error al cargar la lista compartida:", e);
-            alert("El enlace escaneado no es válido o está incompleto.");
+            alert("El enlace no es válido o está dañado.");
         }
     }
     return false;
 }
 
 function createNewList() {
-    loadLocalData();
+    currentId = generateId();
+    loadData(currentId);
+    showMainScreen();
+}
+
+function connectList() {
+    const inputEl = document.getElementById("connect-id");
+    if(!inputEl) return createNewList(); 
+    
+    let id = inputEl.value.trim().toUpperCase();
+    if (!id) return alert("Pon un código");
+    loadData(id);
     showMainScreen();
 }
 
 function showMainScreen() {
     document.getElementById("login-screen").classList.add("hidden");
     document.getElementById("main-app").classList.remove("hidden");
+    const idEl = document.getElementById("current-id");
+    if(idEl) idEl.textContent = currentId;
     renderCategories();
 }
 
 function logout() {
-    if (confirm("¿Limpiar tu pantalla y volver al inicio? (Tus datos seguirán guardados)")) {
-        document.getElementById("main-app").classList.add("hidden");
-        document.getElementById("login-screen").classList.remove("hidden");
+    if (confirm("¿Salir de esta lista?")) {
+        location.reload();
     }
 }
 
 window.onload = function () {
-    // Si viene de un escaneo de QR/Link, lo carga. Si no, espera en la pantalla de inicio.
-    if(!loadFromQueryParam()){
-        // Opcional: Si ya hay datos previos, podemos saltar directo a la app
-        if(localStorage.getItem('shoplist_data')) {
-            createNewList();
-        }
-    }
+    loadFromQueryParam();
 };
