@@ -9,41 +9,29 @@
 </head>
 <body class="bg-zinc-950 text-zinc-200 min-h-screen pb-20">
     <div class="tail-container px-4 pt-8">
+        
         <div id="login-screen" class="min-h-screen flex items-center justify-center">
             <div class="w-full max-w-md">
                 <div class="flex justify-center mb-8">
                     <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-4xl shadow-xl">🛍️</div>
                 </div>
                 <h1 class="text-5xl font-semibold text-center tracking-tighter mb-2">shoplist</h1>
-                <p class="text-zinc-400 text-center mb-10">listas compartidas.<br>fácil y rápido.</p>
+                <p class="text-zinc-400 text-center mb-10">Tus listas, sin complicaciones.</p>
                 
-                <div class="bg-zinc-900 rounded-3xl p-8 shadow-2xl">
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-xs uppercase tracking-widest text-zinc-500 mb-2">Código de Lista</label>
-                            <input type="text" id="connect-id" placeholder="EJ: AX42Z" class="w-full bg-zinc-800 border-none rounded-2xl py-4 px-6 text-xl font-mono uppercase tracking-widest focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
-                        </div>
-                        <button onclick="connectList()" class="w-full py-5 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-2xl font-bold text-lg shadow-lg shadow-emerald-500/20 transition-all">Conectar</button>
-                        <div class="relative py-2">
-                            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-zinc-800"></div></div>
-                            <div class="relative flex justify-center text-xs uppercase"><span class="bg-zinc-900 px-4 text-zinc-500 tracking-widest">o</span></div>
-                        </div>
-                        <button onclick="createNewList()" class="w-full py-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl font-semibold transition-all">Crear Nueva Lista</button>
-                    </div>
+                <div class="bg-zinc-900 rounded-3xl p-8 shadow-2xl text-center">
+                    <button onclick="createNewList()" class="w-full py-5 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-2xl font-bold text-xl shadow-lg shadow-emerald-500/20 transition-all">Crear Nueva Lista</button>
+                    <p class="text-zinc-500 text-xs mt-6">Crea tu lista y usa el botón Compartir para enviarla por QR o WhatsApp.</p>
                 </div>
             </div>
         </div>
 
         <div id="main-app" class="hidden">
-            <div class="flex items-center justify-between mb-10">
+            <div class="flex items-center justify-between mb-10 mt-6">
                 <div>
-                    <h2 class="text-sm font-medium text-zinc-500 uppercase tracking-widest mb-1">Lista Actual</h2>
-                    <div class="flex items-center gap-x-2">
-                        <span id="current-id" class="text-2xl font-mono font-bold text-emerald-400">----</span>
-                    </div>
+                    <h2 class="text-3xl font-bold tracking-tighter">Mi Lista</h2>
                 </div>
                 <div class="flex items-center gap-x-2">
-                    <button onclick="showShare()" class="bg-emerald-500 hover:bg-emerald-600 text-zinc-950 px-5 py-2 rounded-2xl text-sm font-semibold transition-all">Compartir</button>
+                    <button onclick="showShare()" class="bg-emerald-500 hover:bg-emerald-600 text-zinc-950 px-5 py-2 rounded-2xl text-sm font-semibold transition-all shadow-lg shadow-emerald-500/20">Compartir</button>
                     <button onclick="logout()" class="text-zinc-400 hover:text-white text-2xl font-medium px-2">×</button>
                 </div>
             </div>
@@ -90,8 +78,8 @@
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-4 mt-8">
-                <button onclick="hideItemModal()" class="py-4 bg-zinc-800 hover:bg-zinc-700 rounded-2xl font-medium">Cancelar</button>
-                <button onclick="saveModalItem()" class="py-4 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-2xl font-semibold">Guardar</button>
+                <button onclick="hideItemModal()" class="py-4 bg-zinc-800 hover:bg-zinc-700 rounded-2xl font-medium transition-all">Cancelar</button>
+                <button onclick="saveModalItem()" class="py-4 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-2xl font-semibold shadow-lg transition-all">Guardar</button>
             </div>
         </div>
     </div>
@@ -101,13 +89,10 @@
             <div class="mx-auto w-16 h-16 bg-emerald-900/30 rounded-2xl flex items-center justify-center text-4xl mb-4">📱</div>
             <h2 class="text-3xl font-semibold mb-2">Compartir Lista</h2>
             
-            <p class="text-zinc-400 text-sm mt-6 mb-2">1. Escanea para abrir en otro móvil</p>
-            <div class="flex justify-center mb-6 bg-white p-4 rounded-2xl w-fit mx-auto">
+            <p class="text-zinc-400 text-sm mt-6 mb-2">Escanea este código con otro móvil</p>
+            <div class="flex justify-center mb-10 bg-white p-4 rounded-2xl w-fit mx-auto">
                 <img id="qr-code-img" src="" alt="QR Code" class="w-48 h-48">
             </div>
-
-            <p class="text-zinc-400 text-sm mb-2">2. O usa la contraseña</p>
-            <div id="share-code" class="font-mono text-3xl tracking-[6px] bg-zinc-800 py-4 rounded-2xl mb-8 select-all"></div>
             
             <div class="flex gap-3">
                 <button onclick="copyShareableLink()" class="flex-1 py-4 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-2xl font-semibold">Copiar Enlace</button>
