@@ -4,104 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>shoplist • minimalist</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-zinc-950 text-zinc-200 min-h-screen pb-20">
-    <div class="tail-container px-4 pt-8">
-        
-        <div id="login-screen" class="min-h-screen flex items-center justify-center">
-            <div class="w-full max-w-md">
-                <div class="flex justify-center mb-8">
-                    <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-4xl shadow-xl">🛍️</div>
-                </div>
-                <h1 class="text-5xl font-semibold text-center tracking-tighter mb-2">shoplist</h1>
-                <p class="text-zinc-400 text-center mb-10">Tus listas, sin complicaciones.</p>
-                
-                <div class="bg-zinc-900 rounded-3xl p-8 shadow-2xl text-center">
-                    <button onclick="createNewList()" class="w-full py-5 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-2xl font-bold text-xl shadow-lg shadow-emerald-500/20 transition-all">Crear Nueva Lista</button>
-                    <p class="text-zinc-500 text-xs mt-6">Crea tu lista y usa el botón Compartir para enviarla por QR o WhatsApp.</p>
-                </div>
-            </div>
-        </div>
+<body>
+<div class="container">
 
-        <div id="main-app" class="hidden">
-            <div class="flex items-center justify-between mb-10 mt-6">
-                <div>
-                    <h2 class="text-3xl font-bold tracking-tighter">Mi Lista</h2>
-                </div>
-                <div class="flex items-center gap-x-2">
-                    <button onclick="showShare()" class="bg-emerald-500 hover:bg-emerald-600 text-zinc-950 px-5 py-2 rounded-2xl text-sm font-semibold transition-all shadow-lg shadow-emerald-500/20">Compartir</button>
-                    <button onclick="logout()" class="text-zinc-400 hover:text-white text-2xl font-medium px-2">×</button>
-                </div>
-            </div>
-
-            <div id="categories-list" class="space-y-10">
-                </div>
-
-            <div class="fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-md px-4 flex gap-x-3">
-                <button onclick="addCategory()" class="flex-1 py-4 bg-zinc-900 border border-zinc-800 text-white rounded-2xl font-semibold shadow-2xl">+ Categoría</button>
-                <button onclick="addItemGlobal()" class="flex-[2] py-4 bg-emerald-500 text-zinc-950 rounded-2xl font-bold shadow-2xl shadow-emerald-500/20 text-lg">+ Añadir Producto</button>
-            </div>
-
-            <div class="fixed top-0 left-0 right-0 bg-zinc-950/80 backdrop-blur-md z-40 border-b border-zinc-900">
-                <div class="tail-container px-4 py-3 flex justify-between items-center">
-                    <span class="text-zinc-500 font-medium">Total pendiente:</span>
-                    <span id="grand-total" class="text-2xl font-mono font-bold text-emerald-400">$0.00</span>
-                </div>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-inner">
+            <div class="app-icon">🛍️</div>
+            <h1 class="app-title">shoplist</h1>
+            <p class="app-subtitle">Tus listas, sin complicaciones.</p>
+            <div class="login-card">
+                <button onclick="createNewList()" class="btn-primary btn-xl">Crear Nueva Lista</button>
+                <p class="hint">Crea tu lista y usa Compartir para enviarla por QR o enlace.</p>
             </div>
         </div>
     </div>
 
-    <div id="item-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-        <div class="modal bg-zinc-900 max-w-md w-full mx-4 rounded-3xl p-8">
-            <h2 id="modal-title" class="text-2xl font-bold mb-6">Nuevo Producto</h2>
-            <input type="hidden" id="modal-item-index">
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs text-zinc-500 uppercase mb-2">Categoría</label>
-                    <select id="modal-category" class="w-full bg-zinc-800 border-none rounded-xl py-3 px-4 outline-none"></select>
-                </div>
-                <div>
-                    <label class="block text-xs text-zinc-500 uppercase mb-2">Nombre</label>
-                    <input type="text" id="modal-name" class="w-full bg-zinc-800 border-none rounded-xl py-3 px-4 outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs text-zinc-500 uppercase mb-2">Precio ($)</label>
-                        <input type="number" id="modal-price" step="0.01" class="w-full bg-zinc-800 border-none rounded-xl py-3 px-4 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-zinc-500 uppercase mb-2">Cantidad</label>
-                        <input type="number" id="modal-qty" value="1" class="w-full bg-zinc-800 border-none rounded-xl py-3 px-4 outline-none">
-                    </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 mt-8">
-                <button onclick="hideItemModal()" class="py-4 bg-zinc-800 hover:bg-zinc-700 rounded-2xl font-medium transition-all">Cancelar</button>
-                <button onclick="saveModalItem()" class="py-4 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-2xl font-semibold shadow-lg transition-all">Guardar</button>
+    <!-- MAIN APP -->
+    <div id="main-app" class="hidden">
+
+        <div class="topbar">
+            <span class="topbar-label">Total pendiente:</span>
+            <span id="grand-total" class="topbar-total">$0.00</span>
+        </div>
+
+        <div class="header">
+            <h2 class="list-title">Mi Lista</h2>
+            <div class="header-actions">
+                <button onclick="showShare()" class="btn-primary btn-sm">Compartir</button>
+                <button onclick="logout()" class="btn-close">×</button>
             </div>
         </div>
-    </div>
 
-    <div id="share-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 overflow-y-auto py-8">
-        <div class="modal bg-zinc-900 max-w-md w-full mx-4 rounded-3xl p-8 text-center my-auto">
-            <div class="mx-auto w-16 h-16 bg-emerald-900/30 rounded-2xl flex items-center justify-center text-4xl mb-4">📱</div>
-            <h2 class="text-3xl font-semibold mb-2">Compartir Lista</h2>
-            
-            <p class="text-zinc-400 text-sm mt-6 mb-2">Escanea este código con otro móvil</p>
-            <div class="flex justify-center mb-10 bg-white p-4 rounded-2xl w-fit mx-auto">
-                <img id="qr-code-img" src="" alt="QR Code" class="w-48 h-48">
-            </div>
-            
-            <div class="flex gap-3">
-                <button onclick="copyShareableLink()" class="flex-1 py-4 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-2xl font-semibold">Copiar Enlace</button>
-                <button onclick="hideShareModal()" class="flex-1 py-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl font-medium">Cerrar</button>
-            </div>
+        <div id="categories-list"></div>
+
+        <div class="bottom-bar">
+            <button onclick="addCategory()" class="btn-secondary">+ Categoría</button>
+            <button onclick="addItemGlobal()" class="btn-primary btn-lg">+ Añadir Producto</button>
         </div>
     </div>
+</div>
 
-    <script src="script.js"></script>
+<!-- ITEM MODAL -->
+<div id="item-modal" class="modal-backdrop hidden" onclick="backdropClose(event,'item-modal')">
+    <div class="modal">
+        <h2 class="modal-title">Nuevo Producto</h2>
+        <div class="form-group">
+            <label>Categoría</label>
+            <select id="modal-category"></select>
+        </div>
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="modal-name" placeholder="ej. Leche entera">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Precio ($)</label>
+                <input type="number" id="modal-price" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label>Cantidad</label>
+                <input type="number" id="modal-qty" value="1" min="1">
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button onclick="hideItemModal()" class="btn-secondary">Cancelar</button>
+            <button onclick="saveModalItem()" class="btn-primary">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div id="share-modal" class="modal-backdrop hidden" onclick="backdropClose(event,'share-modal')">
+    <div class="modal modal-center">
+        <div class="share-icon">📱</div>
+        <h2 class="modal-title">Compartir Lista</h2>
+        <p class="share-hint">Escanea este código con otro móvil</p>
+        <div class="qr-wrapper">
+            <img id="qr-code-img" src="" alt="QR Code">
+        </div>
+        <div class="modal-actions">
+            <button onclick="copyShareableLink()" class="btn-primary">Copiar Enlace</button>
+            <button onclick="hideShareModal()" class="btn-secondary">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
 
