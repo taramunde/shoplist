@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javi Martínez | CD Villaferreira</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/ficha-jugador-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-content">
+                <div class="top-links">
+                    <a href="#">Tienda Online</a>
+                    <a href="#">Abónate</a>
+                    <a href="#">Zona Socios</a>
+                </div>
+                <div class="top-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Principal -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-shield">
+                        <span class="logo-text">CDV</span>
+                    </div>
+                    <div class="logo-name">
+                        <span class="club-name">Club Deportivo</span>
+                        <span class="team-name">Villaferreira</span>
+                    </div>
+                </a>
+
+                <nav class="main-nav" id="mainNav">
+                    <div class="mobile-nav-header">
+                        <span class="mobile-nav-title">Menú</span>
+                        <button class="close-mobile-nav" id="closeMobileNav">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="#">Club <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="#">Historia</a></li>
+                                <li><a href="#">Palmarés</a></li>
+                                <li><a href="#">Estadio Municipal</a></li>
+                                <li><a href="#">Directiva</a></li>
+                                <li><a href="#">Fundación</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu active">
+                            <a href="#">Equipo <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="primer-equipo.html" class="current">Primer Equipo</a></li>
+                                <li><a href="#">Cuerpo Técnico</a></li>
+                                <li><a href="#">Cantera</a></li>
+                                <li><a href="#">Fútbol Femenino</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="#">Competiciones <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="#">Primera RFEF</a></li>
+                                <li><a href="#">Calendario</a></li>
+                                <li><a href="#">Clasificación</a></li>
+                                <li><a href="#">Estadísticas</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#">Noticias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#">Multimedia</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#">Tienda</a>
+                        </li>
+                    </ul>
+                    <div class="mobile-nav-footer">
+                        <a href="#" class="btn-primary mobile-cta">
+                            <i class="fas fa-ticket-alt"></i> Comprar Entradas
+                        </a>
+                    </div>
+                </nav>
+
+                <div class="header-actions">
+                    <button class="search-btn" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="#" class="btn-tickets">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Entradas</span>
+                    </a>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <form class="search-form">
+                <input type="text" placeholder="Buscar en la web...">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            <button class="close-search" id="closeSearch"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <!-- Player Hero -->
+    <section class="player-hero">
+        <div class="player-hero-bg">
+            <div class="bg-pattern"></div>
+        </div>
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Inicio</a>
+                <span>/</span>
+                <a href="#">Equipo</a>
+                <span>/</span>
+                <a href="primer-equipo.html">Primer Equipo</a>
+                <span>/</span>
+                <span class="current">Javi Martínez</span>
+            </div>
+            
+            <div class="player-hero-content">
+                <div class="player-photo-container">
+                    <div class="player-photo-wrapper">
+                        <img src="https://picsum.photos/seed/javi-main/500/700" alt="Javi Martínez" class="player-main-photo">
+                        <div class="player-number-large">9</div>
+                        <div class="player-role-badge">
+                            <span>Delantero Centro</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="player-info-container">
+                    <div class="player-name-section">
+                        <span class="player-position-label">Delantero Centro</span>
+                        <h1 class="player-full-name">Javi Martínez</h1>
+                        <div class="player-social-links">
+                            <a href="#" class="player-social"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="player-social"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="player-quick-stats">
+                        <div class="quick-stat">
+                            <span class="quick-stat-value">27</span>
+                            <span class="quick-stat-label">Edad</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-value">1.82m</span>
+                            <span class="quick-stat-label">Altura</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-value">75kg</span>
+                            <span class="quick-stat-label">Peso</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-value">D</span>
+                            <span class="quick-stat-label">Pie</span>
+                        </div>
+                    </div>
+
+                    <div class="player-season-stats">
+                        <h3 class="stats-title">Temporada 2024/25</h3>
+                        <div class="season-stats-grid">
+                            <div class="season-stat">
+                                <div class="season-stat-icon"><i class="fas fa-futbol"></i></div>
+                                <div class="season-stat-content">
+                                    <span class="season-stat-value">14</span>
+                                    <span class="season-stat-label">Goles</span>
+                                </div>
+                            </div>
+                            <div class="season-stat">
+                                <div class="season-stat-icon"><i class="fas fa-hands-helping"></i></div>
+                                <div class="season-stat-content">
+                                    <span class="season-stat-value">4</span>
+                                    <span class="season-stat-label">Asistencias</span>
+                                </div>
+                            </div>
+                            <div class="season-stat">
+                                <div class="season-stat-icon"><i class="fas fa-running"></i></div>
+                                <div class="season-stat-content">
+                                    <span class="season-stat-value">23</span>
+                                    <span class="season-stat-label">Partidos</span>
+                                </div>
+                            </div>
+                            <div class="season-stat">
+                                <div class="season-stat-icon"><i class="fas fa-clock"></i></div>
+                                <div class="season-stat-content">
+                                    <span class="season-stat-value">1,892</span>
+                                    <span class="season-stat-label">Minutos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Player Stats Tabs -->
+    <section class="player-stats-section">
+        <div class="container">
+            <div class="stats-tabs">
+                <button class="stats-tab active" data-tab="overview">Resumen</button>
+                <button class="stats-tab" data-tab="matches">Partidos</button>
+                <button class="stats-tab" data-tab="career">Trayectoria</button>
+                <button class="stats-tab" data-tab="gallery">Galería</button>
+                <button class="stats-tab" data-tab="news">Noticias</button>
+            </div>
+
+            <!-- Tab Content: Overview -->
+            <div class="tab-content active" id="overview">
+                <div class="overview-grid">
+                    <!-- Performance Chart -->
+                    <div class="performance-card">
+                        <h3 class="card-title">Rendimiento por Partido</h3>
+                        <div class="performance-stats">
+                            <div class="performance-item">
+                                <div class="performance-header">
+                                    <span>Goles por partido</span>
+                                    <span class="performance-value">0.61</span>
+                                </div>
+                                <div class="performance-bar">
+                                    <div class="performance-fill" style="width: 61%"></div>
+                                </div>
+                            </div>
+                            <div class="performance-item">
+                                <div class="performance-header">
+                                    <span>Disparos por partido</span>
+                                    <span class="performance-value">3.2</span>
+                                </div>
+                                <div class="performance-bar">
+                                    <div class="performance-fill" style="width: 72%"></div>
+                                </div>
+                            </div>
+                            <div class="performance-item">
+                                <div class="performance-header">
+                                    <span>Pases clave</span>
+                                    <span class="performance-value">1.8</span>
+                                </div>
+                                <div class="performance-bar">
+                                    <div class="performance-fill" style="width: 58%"></div>
+                                </div>
+                            </div>
+                            <div class="performance-item">
+                                <div class="performance-header">
+                                    <span>Regates exitosos</span>
+                                    <span class="performance-value">2.1</span>
+                                </div>
+                                <div class="performance-bar">
+                                    <div class="performance-fill" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div class="performance-item">
+                                <div class="performance-header">
+                                    <span>Duelos ganados</span>
+                                    <span class="performance-value">48%</span>
+                                </div>
+                                <div class="performance-bar">
+                                    <div class="performance-fill" style="width: 48%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="personal-info-card">
+                        <h3 class="card-title">Información Personal</h3>
+                        <div class="personal-info-list">
+                            <div class="info-row">
+                                <span class="info-label"><i class="far fa-calendar"></i> Fecha de nacimiento</span>
+                                <span class="info-value">15 de Marzo de 1997</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-map-marker-alt"></i> Lugar de nacimiento</span>
+                                <span class="info-value">Gijón, Asturias</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-flag"></i> Nacionalidad</span>
+                                <span class="info-value">Española</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="far fa-calendar-check"></i> En el club desde</span>
+                                <span class="info-value">Julio 2022</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="far fa-file-contract"></i> Contrato hasta</span>
+                                <span class="info-value">30 Junio 2026</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-ruler-vertical"></i> Altura</span>
+                                <span class="info-value">1.82 m</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-weight"></i> Peso</span>
+                                <span class="info-value">75 kg</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fas fa-shoe-prints"></i> Pie preferido</span>
+                                <span class="info-value">Derecho</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Goals Distribution -->
+                    <div class="goals-distribution-card">
+                        <h3 class="card-title">Distribución de Goles</h3>
+                        <div class="goals-grid">
+                            <div class="goal-type">
+                                <div class="goal-icon right-foot">
+                                    <i class="fas fa-shoe-prints"></i>
+                                </div>
+                                <div class="goal-info">
+                                    <span class="goal-count">9</span>
+                                    <span class="goal-label">Pie derecho</span>
+                                </div>
+                            </div>
+                            <div class="goal-type">
+                                <div class="goal-icon left-foot">
+                                    <i class="fas fa-shoe-prints fa-flip-horizontal"></i>
+                                </div>
+                                <div class="goal-info">
+                                    <span class="goal-count">3</span>
+                                    <span class="goal-label">Pie izquierdo</span>
+                                </div>
+                            </div>
+                            <div class="goal-type">
+                                <div class="goal-icon header">
+                                    <i class="fas fa-volleyball-ball"></i>
+                                </div>
+                                <div class="goal-info">
+                                    <span class="goal-count">2</span>
+                                    <span class="goal-label">Cabeza</span>
+                                </div>
+                            </div>
+                            <div class="goal-type">
+                                <div class="goal-icon penalty">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                                <div class="goal-info">
+                                    <span class="goal-count">4/4</span>
+                                    <span class="goal-label">Penaltis</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="goals-minute-distribution">
+                            <h4>Por minutos</h4>
+                            <div class="minute-bars">
+                                <div class="minute-bar">
+                                    <span class="minute-label">0-15</span>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" style="width: 15%"></div>
+                                    </div>
+                                    <span class="minute-value">2</span>
+                                </div>
+                                <div class="minute-bar">
+                                    <span class="minute-label">16-45</span>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" style="width: 35%"></div>
+                                    </div>
+                                    <span class="minute-value">5</span>
+                                </div>
+                                <div class="minute-bar">
+                                    <span class="minute-label">46-75</span>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" style="width: 28%"></div>
+                                    </div>
+                                    <span class="minute-value">4</span>
+                                </div>
+                                <div class="minute-bar">
+                                    <span class="minute-label">76-90+</span>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" style="width: 21%"></div>
+                                    </div>
+                                    <span class="minute-value">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cards & Disciplinary -->
+                    <div class="disciplinary-card">
+                        <h3 class="card-title">Disciplina</h3>
+                        <div class="cards-display">
+                            <div class="card-item yellow">
+                                <div class="card-icon">
+                                    <i class="fas fa-square"></i>
+                                </div>
+                                <div class="card-info">
+                                    <span class="card-count">4</span>
+                                    <span class="card-label">Tarjetas amarillas</span>
+                                </div>
+                            </div>
+                            <div class="card-item red">
+                                <div class="card-icon">
+                                    <i class="fas fa-square"></i>
+                                </div>
+                                <div class="card-info">
+                                    <span class="card-count">0</span>
+                                    <span class="card-label">Tarjetas rojas</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="suspensions">
+                            <span class="suspension-badge"><i class="fas fa-check-circle"></i> Sin sanciones activas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Matches -->
+            <div class="tab-content" id="matches">
+                <div class="matches-header">
+                    <h3 class="card-title">Últimos Partidos</h3>
+                    <div class="season-filter">
+                        <select id="seasonSelect">
+                            <option value="2024-25" selected>Temporada 2024/25</option>
+                            <option value="2023-24">Temporada 2023/24</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="matches-list">
+                    <article class="match-detail-card">
+                        <div class="match-detail-header">
+                            <div class="match-date-badge win">
+                                <span class="match-day">19</span>
+                                <span class="match-month">ENE</span>
+                            </div>
+                            <div class="match-competition-info">
+                                <span class="competition-name">Primera RFEF - Jornada 23</span>
+                                <div class="match-teams-result">
+                                    <span class="team-home">Villaferreira</span>
+                                    <span class="match-score">2 - 1</span>
+                                    <span class="team-away">Atlético Vergara</span>
+                                </div>
+                            </div>
+                            <div class="match-player-performance">
+                                <span class="performance-badge goal"><i class="fas fa-futbol"></i> 1 Gol</span>
+                                <span class="performance-badge assist"><i class="fas fa-hands-helping"></i> 1 Asistencia</span>
+                            </div>
+                        </div>
+                        <div class="match-detail-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Minutos</span>
+                                <span class="stat-value">90'</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Disparos</span>
+                                <span class="stat-value">4</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">A puerta</span>
+                                <span class="stat-value">3</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Pases</span>
+                                <span class="stat-value">28/32 (88%)</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="match-detail-card">
+                        <div class="match-detail-header">
+                            <div class="match-date-badge win">
+                                <span class="match-day">12</span>
+                                <span class="match-month">ENE</span>
+                            </div>
+                            <div class="match-competition-info">
+                                <span class="competition-name">Primera RFEF - Jornada 22</span>
+                                <div class="match-teams-result">
+                                    <span class="team-home">Cultural Soria</span>
+                                    <span class="match-score">0 - 3</span>
+                                    <span class="team-away">Villaferreira</span>
+                                </div>
+                            </div>
+                            <div class="match-player-performance">
+                                <span class="performance-badge goal"><i class="fas fa-futbol"></i> 2 Goles</span>
+                            </div>
+                        </div>
+                        <div class="match-detail-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Minutos</span>
+                                <span class="stat-value">90'</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Disparos</span>
+                                <span class="stat-value">5</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">A puerta</span>
+                                <span class="stat-value">4</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Pases</span>
+                                <span class="stat-value">22/26 (85%)</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="match-detail-card">
+                        <div class="match-detail-header">
+                            <div class="match-date-badge draw">
+                                <span class="match-day">05</span>
+                                <span class="match-month">ENE</span>
+                            </div>
+                            <div class="match-competition-info">
+                                <span class="competition-name">Primera RFEF - Jornada 21</span>
+                                <div class="match-teams-result">
+                                    <span class="team-home">Villaferreira</span>
+                                    <span class="match-score">1 - 1</span>
+                                    <span class="team-away">Racing Ferrol</span>
+                                </div>
+                            </div>
+                            <div class="match-player-performance">
+                                <span class="performance-badge goal"><i class="fas fa-futbol"></i> 1 Gol</span>
+                            </div>
+                        </div>
+                        <div class="match-detail-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Minutos</span>
+                                <span class="stat-value">90'</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Disparos</span>
+                                <span class="stat-value">3</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">A puerta</span>
+                                <span class="stat-value">2</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Pases</span>
+                                <span class="stat-value">31/35 (89%)</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="match-detail-card">
+                        <div class="match-detail-header">
+                            <div class="match-date-badge win">
+                                <span class="match-day">22</span>
+                                <span class="match-month">DIC</span>
+                            </div>
+                            <div class="match-competition-info">
+                                <span class="competition-name">Primera RFEF - Jornada 20</span>
+                                <div class="match-teams-result">
+                                    <span class="team-home">Sporting Esteño</span>
+                                    <span class="match-score">2 - 4</span>
+                                    <span class="team-away">Villaferreira</span>
+                                </div>
+                            </div>
+                            <div class="match-player-performance">
+                                <span class="performance-badge goal"><i class="fas fa-futbol"></i> 1 Gol</span>
+                                <span class="performance-badge assist"><i class="fas fa-hands-helping"></i> 1 Asistencia</span>
+                            </div>
+                        </div>
+                        <div class="match-detail-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Minutos</span>
+                                <span class="stat-value">85'</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Disparos</span>
+                                <span class="stat-value">2</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">A puerta</span>
+                                <span class="stat-value">1</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Pases</span>
+                                <span class="stat-value">25/28 (89%)</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="match-detail-card">
+                        <div class="match-detail-header">
+                            <div class="match-date-badge win">
+                                <span class="match-day">15</span>
+                                <span class="match-month">DIC</span>
+                            </div>
+                            <div class="match-competition-info">
+                                <span class="competition-name">Primera RFEF - Jornada 19</span>
+                                <div class="match-teams-result">
+                                    <span class="team-home">Villaferreira</span>
+                                    <span class="match-score">2 - 0</span>
+                                    <span class="team-away">UD Rosaleda</span>
+                                </div>
+                            </div>
+                            <div class="match-player-performance">
+                                <span class="performance-badge goal"><i class="fas fa-futbol"></i> 1 Gol</span>
+                            </div>
+                        </div>
+                        <div class="match-detail-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Minutos</span>
+                                <span class="stat-value">78'</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Disparos</span>
+                                <span class="stat-value">3</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">A puerta</span>
+                                <span class="stat-value">2</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Pases</span>
+                                <span class="stat-value">19/22 (86%)</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="load-more-container">
+                    <button class="btn-load-more">
+                        <span>Cargar más partidos</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content: Career -->
+            <div class="tab-content" id="career">
+                <div class="career-grid">
+                    <!-- Career Timeline -->
+                    <div class="career-timeline-card">
+                        <h3 class="card-title">Trayectoria Profesional</h3>
+                        <div class="timeline">
+                            <div class="timeline-item current">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <span class="timeline-club">
+                                            <span class="club-badge-small">CDV</span>
+                                            CD Villaferreira
+                                        </span>
+                                        <span class="timeline-years">2022 - Actualidad</span>
+                                    </div>
+                                    <div class="timeline-stats">
+                                        <span><strong>89</strong> Partidos</span>
+                                        <span><strong>47</strong> Goles</span>
+                                        <span><strong>18</strong> Asistencias</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <span class="timeline-club">
+                                            <span class="club-badge-small">RGO</span>
+                                            Racing Gondón
+                                        </span>
+                                        <span class="timeline-years">2020 - 2022</span>
+                                    </div>
+                                    <div class="timeline-stats">
+                                        <span><strong>54</strong> Partidos</span>
+                                        <span><strong>21</strong> Goles</span>
+                                        <span><strong>9</strong> Asistencias</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <span class="timeline-club">
+                                            <span class="club-badge-small">SPO</span>
+                                            Sporting Gijón B
+                                        </span>
+                                        <span class="timeline-years">2017 - 2020</span>
+                                    </div>
+                                    <div class="timeline-stats">
+                                        <span><strong>68</strong> Partidos</span>
+                                        <span><strong>24</strong> Goles</span>
+                                        <span><strong>11</strong> Asistencias</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <span class="timeline-club">
+                                            <span class="club-badge-small">ESO</span>
+                                            Escuela Mareo
+                                        </span>
+                                        <span class="timeline-years">2015 - 2017</span>
+                                    </div>
+                                    <div class="timeline-stats">
+                                        <span><strong>42</strong> Partidos</span>
+                                        <span><strong>18</strong> Goles</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Career Totals -->
+                    <div class="career-totals-card">
+                        <h3 class="card-title">Estadísticas Totales</h3>
+                        <div class="totals-grid">
+                            <div class="total-item">
+                                <span class="total-value">253</span>
+                                <span class="total-label">Partidos totales</span>
+                            </div>
+                            <div class="total-item highlight">
+                                <span class="total-value">110</span>
+                                <span class="total-label">Goles totales</span>
+                            </div>
+                            <div class="total-item">
+                                <span class="total-value">38</span>
+                                <span class="total-label">Asistencias totales</span>
+                            </div>
+                            <div class="total-item">
+                                <span class="total-value">0.43</span>
+                                <span class="total-label">Goles/partido</span>
+                            </div>
+                        </div>
+
+                        <div class="career-achievements">
+                            <h4>Logros</h4>
+                            <div class="achievements-list">
+                                <div class="achievement">
+                                    <i class="fas fa-trophy"></i>
+                                    <span>Pichichi Primera RFEF 2023/24 (22 goles)</span>
+                                </div>
+                                <div class="achievement">
+                                    <i class="fas fa-medal"></i>
+                                    <span>Mejor Jugador Temporada 2023/24</span>
+                                </div>
+                                <div class="achievement">
+                                    <i class="fas fa-award"></i>
+                                    <span>Incluido en el XI Ideal 2023/24</span>
+                                </div>
+                                <div class="achievement">
+                                    <i class="fas fa-star"></i>
+                                    <span>Capitán del equipo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Gallery -->
+            <div class="tab-content" id="gallery">
+                <div class="gallery-grid">
+                    <article class="gallery-item large">
+                        <img src="https://picsum.photos/seed/javi-g1/800/600" alt="Javi Martínez en acción">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">Gol ante el Racing Ferrol</span>
+                        </div>
+                    </article>
+                    <article class="gallery-item">
+                        <img src="https://picsum.photos/seed/javi-g2/400/400" alt="Javi Martínez">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">Celebración</span>
+                        </div>
+                    </article>
+                    <article class="gallery-item">
+                        <img src="https://picsum.photos/seed/javi-g3/400/400" alt="Javi Martínez">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">Entrenamiento</span>
+                        </div>
+                    </article>
+                    <article class="gallery-item">
+                        <img src="https://picsum.photos/seed/javi-g4/400/400" alt="Javi Martínez">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">Partido oficial</span>
+                        </div>
+                    </article>
+                    <article class="gallery-item">
+                        <img src="https://picsum.photos/seed/javi-g5/400/400" alt="Javi Martínez">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">Con la afición</span>
+                        </div>
+                    </article>
+                    <article class="gallery-item">
+                        <img src="https://picsum.photos/seed/javi-g6/400/400" alt="Javi Martínez">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">Presentación</span>
+                        </div>
+                    </article>
+                    <article class="gallery-item">
+                        <img src="https://picsum.photos/seed/javi-g7/400/400" alt="Javi Martínez">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">Rueda de prensa</span>
+                        </div>
+                    </article>
+                    <article class="gallery-item">
+                        <img src="https://picsum.photos/seed/javi-g8/400/400" alt="Javi Martínez">
+                        <div class="gallery-overlay">
+                            <span class="gallery-caption">Firma de autógrafos</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Tab Content: News -->
+            <div class="tab-content" id="news">
+                <div class="player-news-grid">
+                    <article class="player-news-card">
+                        <a href="#">
+                            <div class="news-image">
+                                <img src="https://picsum.photos/seed/javi-n1/400/250" alt="Noticia">
+                            </div>
+                            <div class="news-content">
+                                <span class="news-date">24 Enero 2025</span>
+                                <h4>Javi Martínez: "El equipo está en un momento dulce"</h4>
+                                <p>El delantero asturiano analiza el gran momento de forma del equipo tras sumar cinco victorias consecutivas.</p>
+                            </div>
+                        </a>
+                    </article>
+
+                    <article class="player-news-card">
+                        <a href="#">
+                            <div class="news-image">
+                                <img src="https://picsum.photos/seed/javi-n2/400/250" alt="Noticia">
+                            </div>
+                            <div class="news-content">
+                                <span class="news-date">12 Enero 2025</span>
+                                <h4>Doblete de Javi Martínez ante el Cultural Soria</h4>
+                                <p>El ariete asturiano firma su segundo doblete de la temporada y se sitúa como máximo goleador del grupo.</p>
+                            </div>
+                        </a>
+                    </article>
+
+                    <article class="player-news-card">
+                        <a href="#">
+                            <div class="news-image">
+                                <img src="https://picsum.photos/seed/javi-n3/400/250" alt="Noticia">
+                            </div>
+                            <div class="news-content">
+                                <span class="news-date">5 Enero 2025</span>
+                                <h4>Javi Martínez renueva hasta 2026</h4>
+                                <p>El capitán del Villaferreira amplía su contrato por una temporada más con opción a otra adicional.</p>
+                            </div>
+                        </a>
+                    </article>
+
+                    <article class="player-news-card">
+                        <a href="#">
+                            <div class="news-image">
+                                <img src="https://picsum.photos/seed/javi-n4/400/250" alt="Noticia">
+                            </div>
+                            <div class="news-content">
+                                <span class="news-date">15 Diciembre 2024</span>
+                                <h4>El delantero alcanza los 100 goles como profesional</h4>
+                                <p>Javi Martínez alcanza una cifra redonda tras su gol ante la UD Rosaleda en el Municipal.</p>
+                            </div>
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Players -->
+    <section class="related-players-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Compañeros de Posición</h2>
+            </div>
+            <div class="related-players-grid">
+                <article class="related-player-card">
+                    <a href="#">
+                        <div class="related-player-image">
+                            <img src="https://picsum.photos/seed/fw2/300/350" alt="Rubén Cano">
+                            <span class="related-player-number">7</span>
+                        </div>
+                        <div class="related-player-info">
+                            <span class="related-player-position">Extremo Derecho</span>
+                            <h4 class="related-player-name">Rubén Cano</h4>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="related-player-card">
+                    <a href="#">
+                        <div class="related-player-image">
+                            <img src="https://picsum.photos/seed/fw3/300/350" alt="Lucho García">
+                            <span class="related-player-number">11</span>
+                        </div>
+                        <div class="related-player-info">
+                            <span class="related-player-position">Extremo Izquierdo</span>
+                            <h4 class="related-player-name">Lucho García</h4>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="related-player-card">
+                    <a href="#">
+                        <div class="related-player-image">
+                            <img src="https://picsum.photos/seed/fw4/300/350" alt="Diego López">
+                            <span class="related-player-number">17</span>
+                        </div>
+                        <div class="related-player-info">
+                            <span class="related-player-position">Delantero</span>
+                            <h4 class="related-player-name">Diego 'Chicho' López</h4>
+                        </div>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-column">
+                        <h4>El Club</h4>
+                        <ul>
+                            <li><a href="#">Historia</a></li>
+                            <li><a href="#">Palmarés</a></li>
+                            <li><a href="#">Estadio Municipal</a></li>
+                            <li><a href="#">Directiva</a></li>
+                            <li><a href="#">Trabaja con nosotros</a></li>
+                            <li><a href="#">Contacto</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Equipos</h4>
+                        <ul>
+                            <li><a href="primer-equipo.html">Primer Equipo</a></li>
+                            <li><a href="#">Fútbol Femenino</a></li>
+                            <li><a href="#">Juvenil "A"</a></li>
+                            <li><a href="#">Cadete</a></li>
+                            <li><a href="#">Infantil</a></li>
+                            <li><a href="#">Escuela de Fútbol</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Competiciones</h4>
+                        <ul>
+                            <li><a href="#">Primera RFEF</a></li>
+                            <li><a href="#">Calendario</a></li>
+                            <li><a href="#">Clasificación</a></li>
+                            <li><a href="#">Copa del Rey</a></li>
+                            <li><a href="#">Estadísticas</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Socios</h4>
+                        <ul>
+                            <li><a href="#">Hazte socio</a></li>
+                            <li><a href="#">Renovar abono</a></li>
+                            <li><a href="#">Zona de socios</a></li>
+                            <li><a href="#">Ventajas</a></li>
+                            <li><a href="#">Puntos de venta</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column contact">
+                        <h4>Contacto</h4>
+                        <ul class="contact-info">
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Estadio Municipal de Villaferreira<br>Calle del Deporte s/n<br>33009 Villaferreira</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-phone"></i>
+                                <span>985 123 456</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <span>info@cdvillaferreira.com</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-middle">
+            <div class="container">
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitch"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-content">
+                    <div class="copyright">
+                        <p>&copy; 2025 Club Deportivo Villaferreira. Todos los derechos reservados.</p>
+                    </div>
+                    <div class="footer-links">
+                        <a href="#">Política de privacidad</a>
+                        <a href="#">Política de cookies</a>
+                        <a href="#">Aviso legal</a>
+                        <a href="#">Accesibilidad</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/ficha-jugador.js"></script>
+</body>
+</html>
