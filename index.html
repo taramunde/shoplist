@@ -3,265 +3,814 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>shoplist</title>
+    <title>CD Villaferreira | Web Oficial</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --bg: #09090b; --bg-card: #18181b; --bg-input: #27272a; --border: #27272a;
-            --text: #e4e4e7; --text-muted: #71717a; --text-dim: #3f3f46;
-            --accent: #10b981; --accent-hover: #059669; --accent-dim: rgba(16,185,129,0.12);
-            --danger: #f87171;
-            --r-sm: 12px; --r-md: 16px; --r-lg: 24px; --r-xl: 32px;
-        }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 100px; }
-        .hidden { display: none !important; }
-        .wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
-        /* Login */
-        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .login-inner { width: 100%; max-width: 400px; text-align: center; }
-        .app-icon { width: 72px; height: 72px; background: var(--accent); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(16,185,129,0.3); }
-        .app-title { font-size: 48px; font-weight: 700; letter-spacing: -2px; margin-bottom: 8px; }
-        .app-subtitle { color: var(--text-muted); margin-bottom: 40px; }
-        .login-card { background: var(--bg-card); border-radius: var(--r-xl); padding: 32px; }
-        .hint { color: var(--text-dim); font-size: 12px; margin-top: 20px; line-height: 1.6; }
-        /* Topbar */
-        .topbar { position: fixed; top: 0; left: 0; right: 0; background: rgba(9,9,11,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 40; display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; }
-        .topbar-label { color: var(--text-muted); font-size: 14px; font-weight: 500; }
-        .topbar-total { font-size: 22px; font-family: monospace; font-weight: 700; color: var(--accent); }
-        /* Header */
-        .header { display: flex; align-items: center; justify-content: space-between; padding-top: 72px; margin-bottom: 32px; }
-        .list-title { font-size: 28px; font-weight: 700; letter-spacing: -1px; }
-        .header-actions { display: flex; align-items: center; gap: 8px; }
-        /* Buttons */
-        button { cursor: pointer; border: none; font-family: inherit; transition: all 0.15s ease; }
-        .btn-primary { background: var(--accent); color: #000; font-weight: 600; border-radius: var(--r-md); padding: 10px 20px; font-size: 14px; }
-        .btn-primary:hover { background: var(--accent-hover); }
-        .btn-primary.xl { width: 100%; padding: 18px; font-size: 18px; border-radius: var(--r-lg); }
-        .btn-primary.sm { padding: 8px 16px; font-size: 13px; }
-        .btn-secondary { background: var(--bg-card); color: var(--text); font-weight: 500; border-radius: var(--r-md); padding: 10px 20px; font-size: 14px; border: 1px solid var(--border); }
-        .btn-secondary:hover { background: var(--bg-input); }
-        .btn-close { background: transparent; color: var(--text-muted); font-size: 24px; padding: 4px 8px; border-radius: 8px; }
-        .btn-close:hover { color: var(--text); background: var(--bg-card); }
-        /* Bottom bar */
-        .bottom-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 608px; display: flex; gap: 12px; z-index: 30; }
-        .bottom-bar .btn-secondary { flex: 1; padding: 16px; font-size: 15px; }
-        .bottom-bar .btn-primary { flex: 2; padding: 16px; font-size: 16px; }
-        /* Categories */
-        .cat-section { margin-bottom: 32px; }
-        .cat-header { position: sticky; top: 48px; z-index: 10; background: var(--bg); padding: 12px 0; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
-        .cat-title { display: flex; align-items: center; gap: 10px; }
-        .cat-title h3 { font-size: 18px; font-weight: 600; }
-        .cat-count { font-size: 12px; color: var(--text-muted); }
-        .btn-add-item { background: var(--accent-dim); color: var(--accent); border-radius: var(--r-sm); padding: 6px 14px; font-size: 13px; font-weight: 500; }
-        .btn-add-item:hover { background: rgba(16,185,129,0.2); }
-        .empty-cat { color: var(--text-dim); font-size: 13px; text-align: center; padding: 20px 0; font-style: italic; }
-        /* Item row */
-        .item-row { display: flex; align-items: center; gap: 14px; background: var(--bg-card); padding: 14px 16px; border-radius: var(--r-md); margin-bottom: 6px; transition: background 0.15s; }
-        .item-row:hover { background: #1f1f23; }
-        .item-check { width: 22px; height: 22px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
-        .item-info { flex: 1; min-width: 0; }
-        .item-name { font-weight: 500; line-height: 1.3; }
-        .item-name.done { text-decoration: line-through; color: var(--text-muted); }
-        .item-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-        .item-price { font-family: monospace; font-size: 16px; font-weight: 600; white-space: nowrap; }
-        .item-price.done { color: var(--text-dim); }
-        .btn-delete { background: transparent; color: var(--text-dim); font-size: 22px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; flex-shrink: 0; }
-        .btn-delete:hover { color: var(--danger); background: rgba(248,113,113,0.1); }
-        /* Modals */
-        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; overflow-y: auto; }
-        .modal { background: var(--bg-card); width: 100%; max-width: 440px; border-radius: var(--r-xl); padding: 32px; animation: pop 0.28s cubic-bezier(0.34,1.56,0.64,1); }
-        .modal.center { text-align: center; }
-        @keyframes pop { from { opacity:0; transform:scale(0.85); } to { opacity:1; transform:scale(1); } }
-        .modal-title { font-size: 22px; font-weight: 700; margin-bottom: 24px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; }
-        .form-group input, .form-group select { width: 100%; background: var(--bg-input); border: none; border-radius: var(--r-sm); padding: 12px 14px; color: var(--text); font-family: inherit; font-size: 15px; outline: none; transition: box-shadow 0.15s; }
-        .form-group input:focus, .form-group select:focus { box-shadow: 0 0 0 2px var(--accent); }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
-        .modal-actions button { padding: 14px; font-size: 15px; border-radius: var(--r-md); width: 100%; }
-        /* Share */
-        .share-icon { width: 64px; height: 64px; background: rgba(16,185,129,0.15); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px; }
-        .share-hint { color: var(--text-muted); font-size: 14px; margin-bottom: 16px; }
-        .qr-wrap { background: #fff; border-radius: var(--r-md); padding: 16px; width: fit-content; margin: 0 auto 24px; }
-        .qr-wrap img { width: 192px; height: 192px; display: block; }
-    </style>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="wrap">
-    <div id="login-screen" class="login-screen">
-        <div class="login-inner">
-            <div class="app-icon">🛍️</div>
-            <h1 class="app-title">shoplist</h1>
-            <p class="app-subtitle">Tus listas, sin complicaciones.</p>
-            <div class="login-card">
-                <button class="btn-primary xl" onclick="createNewList()">Crear Nueva Lista</button>
-                <p class="hint">Crea tu lista y usa Compartir para enviarla por QR o enlace.<br>Quien reciba el enlace verá tu lista al instante.</p>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-content">
+                <div class="top-links">
+                    <a href="#">Tienda Online</a>
+                    <a href="#">Abónate</a>
+                    <a href="#">Zona Socios</a>
+                </div>
+                <div class="top-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
             </div>
         </div>
     </div>
-    <div id="main-app" class="hidden">
-        <div class="topbar">
-            <span class="topbar-label">Total pendiente:</span>
-            <span id="grand-total" class="topbar-total">$0.00</span>
-        </div>
-        <div class="header">
-            <h2 class="list-title">Mi Lista</h2>
-            <div class="header-actions">
-                <button class="btn-primary sm" onclick="showShare()">Compartir</button>
-                <button class="btn-close" onclick="logout()">×</button>
+
+    <!-- Header Principal -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-shield">
+                        <span class="logo-text">CDV</span>
+                    </div>
+                    <div class="logo-name">
+                        <span class="club-name">Club Deportivo</span>
+                        <span class="team-name">Villaferreira</span>
+                    </div>
+                </a>
+
+                <nav class="main-nav" id="mainNav">
+                    <ul class="nav-list">
+                        <li class="nav-item active">
+                            <a href="#">Inicio</a>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="#">Club <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="#">Historia</a></li>
+                                <li><a href="#">Palmarés</a></li>
+                                <li><a href="#">Estadio Municipal</a></li>
+                                <li><a href="#">Directiva</a></li>
+                                <li><a href="#">Fundación</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="#">Equipo <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="#">Primer Equipo</a></li>
+                                <li><a href="#">Cuerpo Técnico</a></li>
+                                <li><a href="#">Cantera</a></li>
+                                <li><a href="#">Fútbol Femenino</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a href="#">Competiciones <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="#">Primera RFEF</a></li>
+                                <li><a href="#">Calendario</a></li>
+                                <li><a href="#">Clasificación</a></li>
+                                <li><a href="#">Estadísticas</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#">Noticias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#">Multimedia</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#">Tienda</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <button class="search-btn" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="#" class="btn-tickets">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Entradas</span>
+                    </a>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
             </div>
         </div>
-        <div id="categories-list"></div>
-        <div class="bottom-bar">
-            <button class="btn-secondary" onclick="addCategory()">+ Categoría</button>
-            <button class="btn-primary" onclick="addItemGlobal()">+ Añadir Producto</button>
+    </header>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <form class="search-form">
+                <input type="text" placeholder="Buscar en la web...">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            <button class="close-search" id="closeSearch"><i class="fas fa-times"></i></button>
         </div>
     </div>
-</div>
 
-<div id="item-modal" class="modal-backdrop hidden" onclick="if(event.target===this)hideItemModal()">
-    <div class="modal">
-        <h2 class="modal-title">Nuevo Producto</h2>
-        <div class="form-group"><label>Categoría</label><select id="modal-category"></select></div>
-        <div class="form-group"><label>Nombre</label><input type="text" id="modal-name" placeholder="ej. Leche entera"></div>
-        <div class="form-row">
-            <div class="form-group"><label>Precio ($)</label><input type="number" id="modal-price" step="0.01" placeholder="0.00"></div>
-            <div class="form-group"><label>Cantidad</label><input type="number" id="modal-qty" value="1" min="1"></div>
+    <!-- Hero Section - Próximo Partido -->
+    <section class="hero-match">
+        <div class="hero-bg">
+            <div class="stadium-pattern"></div>
         </div>
-        <div class="modal-actions">
-            <button class="btn-secondary" onclick="hideItemModal()">Cancelar</button>
-            <button class="btn-primary" onclick="saveModalItem()">Guardar</button>
+        <div class="container">
+            <div class="match-showcase">
+                <div class="match-competition">
+                    <span class="competition-badge">Primera RFEF - Jornada 24</span>
+                    <span class="match-date">
+                        <i class="far fa-calendar"></i> Domingo 26 Enero 2025
+                        <i class="far fa-clock"></i> 18:00h
+                    </span>
+                </div>
+                
+                <div class="match-teams">
+                    <div class="team home">
+                        <div class="team-logo-large">
+                            <span>CDV</span>
+                        </div>
+                        <span class="team-name-large">Villaferreira</span>
+                    </div>
+                    <div class="match-vs">
+                        <span>VS</span>
+                    </div>
+                    <div class="team away">
+                        <div class="team-logo-large away-logo">
+                            <span>UDR</span>
+                        </div>
+                        <span class="team-name-large">UD Rosaleda</span>
+                    </div>
+                </div>
+
+                <div class="match-info">
+                    <p><i class="fas fa-map-marker-alt"></i> Estadio Municipal de Villaferreira</p>
+                </div>
+
+                <div class="match-actions">
+                    <a href="#" class="btn-primary">
+                        <i class="fas fa-ticket-alt"></i> Comprar Entradas
+                    </a>
+                    <a href="#" class="btn-secondary">
+                        <i class="fas fa-tv"></i> Ver Directo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Noticias Destacadas -->
+    <section class="news-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Últimas Noticias</h2>
+                <a href="#" class="view-all">Ver todas <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="news-grid">
+                <!-- Noticia Principal -->
+                <article class="news-card main-news">
+                    <a href="#" class="news-link">
+                        <div class="news-image">
+                            <img src="https://picsum.photos/seed/football-main/800/500" alt="Noticia principal">
+                            <span class="news-category">Primer Equipo</span>
+                        </div>
+                        <div class="news-content">
+                            <h3>El Villaferreira encadena cinco victorias consecutivas y se mete en puestos de playoff</h3>
+                            <p>El conjunto dirigido por Carlos Mendoza sumó una nueva victoria ante el Atlético Vergara por 2-1, consolidándose en la zona alta de la clasificación.</p>
+                            <span class="news-date">24 Enero 2025</span>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Noticia Secundaria 1 -->
+                <article class="news-card">
+                    <a href="#" class="news-link">
+                        <div class="news-image">
+                            <img src="https://picsum.photos/seed/football-press/400/300" alt="Rueda de prensa">
+                            <span class="news-category">Prensa</span>
+                        </div>
+                        <div class="news-content">
+                            <h3>Carlos Mendoza: "El equipo muestra una madurez táctica importante"</h3>
+                            <span class="news-date">23 Enero 2025</span>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Noticia Secundaria 2 -->
+                <article class="news-card">
+                    <a href="#" class="news-link">
+                        <div class="news-image">
+                            <img src="https://picsum.photos/seed/football-cantera/400/300" alt="Cantera">
+                            <span class="news-category">Cantera</span>
+                        </div>
+                        <div class="news-content">
+                            <h3>El Juvenil A se clasifica para la fase nacional de la Copa de Campeones</h3>
+                            <span class="news-date">22 Enero 2025</span>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Noticia Secundaria 3 -->
+                <article class="news-card">
+                    <a href="#" class="news-link">
+                        <div class="news-image">
+                            <img src="https://picsum.photos/seed/football-femenino/400/300" alt="Fútbol femenino">
+                            <span class="news-category">Femenino</span>
+                        </div>
+                        <div class="news-content">
+                            <h3>El fútbol femenino sigue creciendo: 150 jugadoras en las categorías base</h3>
+                            <span class="news-date">21 Enero 2025</span>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Noticia Secundaria 4 -->
+                <article class="news-card">
+                    <a href="#" class="news-link">
+                        <div class="news-image">
+                            <img src="https://picsum.photos/seed/football-fichaje/400/300" alt="Fichaje">
+                            <span class="news-category">Fichajes</span>
+                        </div>
+                        <div class="news-content">
+                            <h3>Iván Pacheco, nuevo jugador del Villaferreira hasta final de temporada</h3>
+                            <span class="news-date">20 Enero 2025</span>
+                        </div>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clasificación y Próximos Partidos -->
+    <section class="standings-section">
+        <div class="container">
+            <div class="standings-grid">
+                <!-- Clasificación -->
+                <div class="standings-table-wrapper">
+                    <div class="section-header">
+                        <h2 class="section-title">Clasificación</h2>
+                        <span class="group-name">Grupo I - Primera RFEF</span>
+                    </div>
+                    <table class="standings-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Equipo</th>
+                                <th>PT</th>
+                                <th>PJ</th>
+                                <th>GF</th>
+                                <th>GC</th>
+                                <th>DG</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="highlight">
+                                <td>1</td>
+                                <td>
+                                    <span class="team-badge">RAC</span>
+                                    Racing Ferrol
+                                </td>
+                                <td>48</td>
+                                <td>23</td>
+                                <td>42</td>
+                                <td>15</td>
+                                <td>+27</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td>2</td>
+                                <td>
+                                    <span class="team-badge">CDV</span>
+                                    Villaferreira
+                                </td>
+                                <td>45</td>
+                                <td>23</td>
+                                <td>38</td>
+                                <td>18</td>
+                                <td>+20</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td>3</td>
+                                <td>
+                                    <span class="team-badge">UDR</span>
+                                    UD Rosaleda
+                                </td>
+                                <td>42</td>
+                                <td>23</td>
+                                <td>35</td>
+                                <td>20</td>
+                                <td>+15</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>
+                                    <span class="team-badge">ATV</span>
+                                    Atlético Vergara
+                                </td>
+                                <td>39</td>
+                                <td>23</td>
+                                <td>30</td>
+                                <td>22</td>
+                                <td>+8</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>
+                                    <span class="team-badge">CDS</span>
+                                    Cultural Soria
+                                </td>
+                                <td>37</td>
+                                <td>23</td>
+                                <td>28</td>
+                                <td>24</td>
+                                <td>+4</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>
+                                    <span class="team-badge">SPE</span>
+                                    Sporting Esteño
+                                </td>
+                                <td>35</td>
+                                <td>23</td>
+                                <td>32</td>
+                                <td>28</td>
+                                <td>+4</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="#" class="view-all">Clasificación completa <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Próximos Partidos -->
+                <div class="upcoming-matches">
+                    <div class="section-header">
+                        <h2 class="section-title">Calendario</h2>
+                    </div>
+                    
+                    <div class="matches-list">
+                        <div class="match-item next">
+                            <div class="match-date-box">
+                                <span class="day">26</span>
+                                <span class="month">ENE</span>
+                            </div>
+                            <div class="match-detail">
+                                <div class="teams">
+                                    <span class="home-team">Villaferreira</span>
+                                    <span class="vs">-</span>
+                                    <span class="away-team">UD Rosaleda</span>
+                                </div>
+                                <div class="match-meta">
+                                    <span><i class="far fa-clock"></i> 18:00h</span>
+                                    <span><i class="fas fa-map-marker-alt"></i> Municipal</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="match-item">
+                            <div class="match-date-box">
+                                <span class="day">02</span>
+                                <span class="month">FEB</span>
+                            </div>
+                            <div class="match-detail">
+                                <div class="teams">
+                                    <span class="home-team">Racing Ferrol</span>
+                                    <span class="vs">-</span>
+                                    <span class="away-team">Villaferreira</span>
+                                </div>
+                                <div class="match-meta">
+                                    <span><i class="far fa-clock"></i> 16:00h</span>
+                                    <span><i class="fas fa-map-marker-alt"></i> A Fermín</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="match-item">
+                            <div class="match-date-box">
+                                <span class="day">09</span>
+                                <span class="month">FEB</span>
+                            </div>
+                            <div class="match-detail">
+                                <div class="teams">
+                                    <span class="home-team">Villaferreira</span>
+                                    <span class="vs">-</span>
+                                    <span class="away-team">Cultural Soria</span>
+                                </div>
+                                <div class="match-meta">
+                                    <span><i class="far fa-clock"></i> 17:00h</span>
+                                    <span><i class="fas fa-map-marker-alt"></i> Municipal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="view-all">Calendario completo <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plantilla -->
+    <section class="squad-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Plantilla 2024/25</h2>
+                <a href="#" class="view-all">Ver plantilla completa <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="position-tabs">
+                <button class="tab-btn active" data-position="all">Todos</button>
+                <button class="tab-btn" data-position="goalkeeper">Porteros</button>
+                <button class="tab-btn" data-position="defender">Defensas</button>
+                <button class="tab-btn" data-position="midfielder">Centrocampistas</button>
+                <button class="tab-btn" data-position="forward">Delanteros</button>
+            </div>
+
+            <div class="players-grid">
+                <!-- Porteros -->
+                <div class="player-card" data-position="goalkeeper">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player1/300/400" alt="Miguel Ángel Torres">
+                            <span class="player-number">1</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Portero</span>
+                            <h4 class="player-name">Miguel Ángel Torres</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Defensas -->
+                <div class="player-card" data-position="defender">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player2/300/400" alt="Dani Fernández">
+                            <span class="player-number">2</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Lateral Derecho</span>
+                            <h4 class="player-name">Dani Fernández</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="player-card" data-position="defender">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player3/300/400" alt="Adrián Picos">
+                            <span class="player-number">4</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Central</span>
+                            <h4 class="player-name">Adrián Picos</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="player-card" data-position="defender">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player4/300/400" alt="Víctor Márquez">
+                            <span class="player-number">5</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Central</span>
+                            <h4 class="player-name">Víctor Márquez</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Centrocampistas -->
+                <div class="player-card" data-position="midfielder">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player5/300/400" alt="Nacho Ruiz">
+                            <span class="player-number">8</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Centrocampista</span>
+                            <h4 class="player-name">Nacho Ruiz</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="player-card" data-position="midfielder">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player6/300/400" alt="Pedro Leal">
+                            <span class="player-number">10</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Mediapunta</span>
+                            <h4 class="player-name">Pedro Leal</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="player-card" data-position="midfielder">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player7/300/400" alt="Álvaro Santos">
+                            <span class="player-number">6</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Centrocampista</span>
+                            <h4 class="player-name">Álvaro Santos</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Delanteros -->
+                <div class="player-card" data-position="forward">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player8/300/400" alt="Javi Martínez">
+                            <span class="player-number">9</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Delantero Centro</span>
+                            <h4 class="player-name">Javi Martínez</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="player-card" data-position="forward">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player9/300/400" alt="Luis 'Lucho' García">
+                            <span class="player-number">11</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Extremo Izquierdo</span>
+                            <h4 class="player-name">Luis 'Lucho' García</h4>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="player-card" data-position="forward">
+                    <a href="#">
+                        <div class="player-image">
+                            <img src="https://picsum.photos/seed/player10/300/400" alt="Rubén Cano">
+                            <span class="player-number">7</span>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-position">Extremo Derecho</span>
+                            <h4 class="player-name">Rubén Cano</h4>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner Patrocinadores -->
+    <section class="sponsors-section">
+        <div class="container">
+            <div class="section-header centered">
+                <h2 class="section-title">Patrocinadores</h2>
+            </div>
+            <div class="sponsors-grid">
+                <div class="sponsor-item">
+                    <div class="sponsor-logo">
+                        <span>Grupo Norte</span>
+                    </div>
+                </div>
+                <div class="sponsor-item">
+                    <div class="sponsor-logo">
+                        <span>Cervezas del Valle</span>
+                    </div>
+                </div>
+                <div class="sponsor-item">
+                    <div class="sponsor-logo">
+                        <span>AutoEscuela Premium</span>
+                    </div>
+                </div>
+                <div class="sponsor-item">
+                    <div class="sponsor-logo">
+                        <span>Ferrolider</span>
+                    </div>
+                </div>
+                <div class="sponsor-item">
+                    <div class="sponsor-logo">
+                        <span>Clínica Dental Sonrisa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tienda -->
+    <section class="shop-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Tienda Oficial</h2>
+                <a href="#" class="view-all">Ver tienda <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="products-grid">
+                <div class="product-card">
+                    <a href="#">
+                        <div class="product-image">
+                            <img src="https://picsum.photos/seed/jersey-home/400/450" alt="Camiseta Local">
+                            <span class="product-badge">Nuevo</span>
+                        </div>
+                        <div class="product-info">
+                            <h4>Camiseta Local 24/25</h4>
+                            <span class="product-price">75,00 €</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="product-card">
+                    <a href="#">
+                        <div class="product-image">
+                            <img src="https://picsum.photos/seed/jersey-away/400/450" alt="Camiseta Visitante">
+                        </div>
+                        <div class="product-info">
+                            <h4>Camiseta Visitante 24/25</h4>
+                            <span class="product-price">75,00 €</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="product-card">
+                    <a href="#">
+                        <div class="product-image">
+                            <img src="https://picsum.photos/seed/scarf/400/450" alt="Bufanda">
+                        </div>
+                        <div class="product-info">
+                            <h4>Bufanda Oficial</h4>
+                            <span class="product-price">18,00 €</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="product-card">
+                    <a href="#">
+                        <div class="product-image">
+                            <img src="https://picsum.photos/seed/jacket/400/450" alt="Chándal">
+                        </div>
+                        <div class="product-info">
+                            <h4>Chándal Entrenamiento</h4>
+                            <span class="product-price">95,00 €</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Abono -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <div class="cta-text">
+                    <h2>¡Hazte Socio!</h2>
+                    <p>Únete a la gran familia del Villaferreira y disfruta de todos los partidos de la temporada con ventajas exclusivas.</p>
+                    <ul class="cta-benefits">
+                        <li><i class="fas fa-check"></i> Descuentos en entradas</li>
+                        <li><i class="fas fa-check"></i> Acceso prioritario a eventos</li>
+                        <li><i class="fas fa-check"></i> Descuentos en tienda oficial</li>
+                        <li><i class="fas fa-check"></i> Voto en asambleas</li>
+                    </ul>
+                </div>
+                <div class="cta-action">
+                    <span class="cta-price">Desde <strong>120€</strong> / temporada</span>
+                    <a href="#" class="btn-primary large">
+                        <i class="fas fa-id-card"></i> Hazte Socio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <!-- Club -->
+                    <div class="footer-column">
+                        <h4>El Club</h4>
+                        <ul>
+                            <li><a href="#">Historia</a></li>
+                            <li><a href="#">Palmarés</a></li>
+                            <li><a href="#">Estadio Municipal</a></li>
+                            <li><a href="#">Directiva</a></li>
+                            <li><a href="#">Trabaja con nosotros</a></li>
+                            <li><a href="#">Contacto</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Equipos -->
+                    <div class="footer-column">
+                        <h4>Equipos</h4>
+                        <ul>
+                            <li><a href="#">Primer Equipo</a></li>
+                            <li><a href="#">Fútbol Femenino</a></li>
+                            <li><a href="#">Juvenil "A"</a></li>
+                            <li><a href="#">Cadete</a></li>
+                            <li><a href="#">Infantil</a></li>
+                            <li><a href="#">Escuela de Fútbol</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Competiciones -->
+                    <div class="footer-column">
+                        <h4>Competiciones</h4>
+                        <ul>
+                            <li><a href="#">Primera RFEF</a></li>
+                            <li><a href="#">Calendario</a></li>
+                            <li><a href="#">Clasificación</a></li>
+                            <li><a href="#">Copa del Rey</a></li>
+                            <li><a href="#">Estadísticas</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Socios -->
+                    <div class="footer-column">
+                        <h4>Socios</h4>
+                        <ul>
+                            <li><a href="#">Hazte socio</a></li>
+                            <li><a href="#">Renovar abono</a></li>
+                            <li><a href="#">Zona de socios</a></li>
+                            <li><a href="#">Ventajas</a></li>
+                            <li><a href="#">Puntos de venta</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Contacto -->
+                    <div class="footer-column contact">
+                        <h4>Contacto</h4>
+                        <ul class="contact-info">
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Estadio Municipal de Villaferreira<br>Calle del Deporte s/n<br>33009 Villaferreira</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-phone"></i>
+                                <span>985 123 456</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <span>info@cdvillaferreira.com</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-middle">
+            <div class="container">
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitch"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-content">
+                    <div class="copyright">
+                        <p>&copy; 2025 Club Deportivo Villaferreira. Todos los derechos reservados.</p>
+                    </div>
+                    <div class="footer-links">
+                        <a href="#">Política de privacidad</a>
+                        <a href="#">Política de cookies</a>
+                        <a href="#">Aviso legal</a>
+                        <a href="#">Accesibilidad</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p>Utilizamos cookies propias y de terceros para mejorar tu experiencia de navegación. Si continúas navegando, aceptas nuestra <a href="#">Política de Cookies</a>.</p>
+            <div class="cookie-buttons">
+                <button class="btn-cookie reject" id="rejectCookies">Rechazar</button>
+                <button class="btn-cookie accept" id="acceptCookies">Aceptar</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="share-modal" class="modal-backdrop hidden" onclick="if(event.target===this)hideShareModal()">
-    <div class="modal center">
-        <div class="share-icon">📱</div>
-        <h2 class="modal-title">Compartir Lista</h2>
-        <p class="share-hint">Escanea este código con otro móvil</p>
-        <div class="qr-wrap"><img id="qr-img" src="" alt="QR Code"></div>
-        <div class="modal-actions">
-            <button class="btn-primary" onclick="copyLink()">Copiar Enlace</button>
-            <button class="btn-secondary" onclick="hideShareModal()">Cerrar</button>
-        </div>
-    </div>
-</div>
-
-<script>
-const DEFAULT_CATS = ["Lácteos","Panadería","Bebidas","Fruta y Verdura","Carne y Pescado","Snacks","Despensa","Otros"];
-let currentId = null;
-let data = { categories: [] };
-
-function uid() {
-    return Array.from({length:6}, () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random()*36)]).join("");
-}
-function esc(s) {
-    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
-function encode(obj) { return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); }
-function decode(str) { return JSON.parse(decodeURIComponent(escape(atob(str)))); }
-function shareUrl() { return location.origin + location.pathname + "?lista=" + encode(data); }
-
-function save() {
-    try { if (currentId) localStorage.setItem("sl_" + currentId, JSON.stringify(data)); } catch(e) {}
-}
-function load(id) {
-    currentId = id;
-    let raw = null;
-    try { raw = localStorage.getItem("sl_" + id); } catch(e) {}
-    data = raw ? JSON.parse(raw) : { categories: DEFAULT_CATS.map(n => ({ name: n, items: [] })) };
-    save();
-}
-
-function render() {
-    const wrap = document.getElementById("categories-list");
-    wrap.innerHTML = "";
-    data.categories.forEach((cat, ci) => {
-        const pending = cat.items.filter(i => !i.checked).length;
-        const sec = document.createElement("div");
-        sec.className = "cat-section";
-        const hdr = document.createElement("div");
-        hdr.className = "cat-header";
-        hdr.innerHTML = `<div class="cat-title"><span>📦</span><h3>${esc(cat.name)}</h3><span class="cat-count">${pending} pendiente${pending!==1?"s":""}</span></div><button class="btn-add-item" onclick="openModal(${ci})">+ item</button>`;
-        sec.appendChild(hdr);
-        const list = document.createElement("div");
-        if (!cat.items.length) {
-            list.innerHTML = `<div class="empty-cat">vacío — añade un producto</div>`;
-        } else {
-            cat.items.forEach((item, ii) => {
-                const sub = (item.price * item.qty).toFixed(2);
-                const row = document.createElement("div");
-                row.className = "item-row";
-                row.innerHTML = `<input type="checkbox" class="item-check" ${item.checked?"checked":""} onchange="toggle(${ci},${ii},this.checked)"><div class="item-info"><div class="item-name ${item.checked?"done":""}">${esc(item.name)}</div><div class="item-detail">${item.qty} × $${parseFloat(item.price).toFixed(2)}</div></div><div class="item-price ${item.checked?"done":""}">$${sub}</div><button class="btn-delete" onclick="del(${ci},${ii})">×</button>`;
-                list.appendChild(row);
-            });
-        }
-        sec.appendChild(list);
-        wrap.appendChild(sec);
-    });
-    let total = 0;
-    data.categories.forEach(c => c.items.forEach(i => { if (!i.checked) total += i.price * i.qty; }));
-    document.getElementById("grand-total").textContent = "$" + total.toFixed(2);
-}
-
-function toggle(ci, ii, v) { data.categories[ci].items[ii].checked = v; save(); render(); }
-function del(ci, ii) { if (!confirm("¿Eliminar este producto?")) return; data.categories[ci].items.splice(ii,1); save(); render(); }
-function addCategory() { const n=prompt("Nombre de la nueva categoría:"); if(n&&n.trim()){data.categories.push({name:n.trim(),items:[]});save();render();} }
-function addItemGlobal() { openModal(0); }
-
-function openModal(ci) {
-    if (ci===undefined) ci=0;
-    const sel = document.getElementById("modal-category");
-    sel.innerHTML = "";
-    data.categories.forEach((c,i) => { const o=document.createElement("option"); o.value=i; o.textContent=c.name; if(i===ci)o.selected=true; sel.appendChild(o); });
-    document.getElementById("modal-name").value = "";
-    document.getElementById("modal-price").value = "";
-    document.getElementById("modal-qty").value = "1";
-    document.getElementById("item-modal").classList.remove("hidden");
-    setTimeout(() => document.getElementById("modal-name").focus(), 80);
-}
-function hideItemModal() { document.getElementById("item-modal").classList.add("hidden"); }
-function saveModalItem() {
-    const ci=parseInt(document.getElementById("modal-category").value);
-    const name=document.getElementById("modal-name").value.trim();
-    const price=parseFloat(document.getElementById("modal-price").value)||0;
-    const qty=parseInt(document.getElementById("modal-qty").value)||1;
-    if(!name){alert("Ponle un nombre al producto");return;}
-    data.categories[ci].items.push({name,price,qty,checked:false});
-    save(); hideItemModal(); render();
-}
-
-function showShare() {
-    const url=shareUrl();
-    document.getElementById("qr-img").src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data="+encodeURIComponent(url);
-    document.getElementById("share-modal").classList.remove("hidden");
-}
-function hideShareModal() { document.getElementById("share-modal").classList.add("hidden"); }
-function copyLink() {
-    const url=shareUrl();
-    if(navigator.clipboard&&location.protocol==="https:"){
-        navigator.clipboard.writeText(url).then(()=>alert("✅ ¡Enlace copiado!")).catch(()=>prompt("Copia este enlace:",url));
-    } else { prompt("Copia este enlace:",url); }
-}
-
-function createNewList() { currentId=uid(); load(currentId); showApp(); }
-function showApp() { document.getElementById("login-screen").classList.add("hidden"); document.getElementById("main-app").classList.remove("hidden"); render(); }
-function logout() { if(confirm("¿Salir de esta lista?")) location.reload(); }
-
-document.addEventListener("keydown", e => { if(e.key==="Escape"){hideItemModal();hideShareModal();} });
-document.getElementById("modal-name").addEventListener("keydown", e => { if(e.key==="Enter") saveModalItem(); });
-
-window.onload = () => {
-    const lista = new URLSearchParams(location.search).get("lista");
-    if (lista) {
-        try { data=decode(lista); currentId=uid(); save(); history.replaceState(null,null,location.pathname); showApp(); }
-        catch(e) { alert("El enlace no es válido o está dañado."); }
-    }
-};
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
