@@ -1,0 +1,763 @@
+/* ===================================
+   ESTILOS PÁGINA PRIMER EQUIPO
+   =================================== */
+
+/* Page Header */
+.page-header {
+    position: relative;
+    background: var(--primary-dark);
+    padding: 100px 0 60px;
+    overflow: hidden;
+}
+
+.page-header-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.3;
+}
+
+.page-header-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 1;
+}
+
+.breadcrumb a {
+    color: var(--gray-400);
+    transition: var(--transition-fast);
+}
+
+.breadcrumb a:hover {
+    color: var(--secondary-color);
+}
+
+.breadcrumb span {
+    color: var(--gray-500);
+}
+
+.breadcrumb .current {
+    color: var(--white);
+    font-weight: 600;
+}
+
+.page-title {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 10px;
+}
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: var(--gray-300);
+    position: relative;
+    z-index: 1;
+}
+
+/* Team Stats Section */
+.team-stats-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    padding: 50px 0;
+    margin-top: -30px;
+    position: relative;
+    z-index: 10;
+}
+
+.team-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 25px 15px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+}
+
+.stat-number {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--gray-300);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Full Squad Section */
+.full-squad-section {
+    padding: 70px 0;
+    background: var(--gray-50);
+}
+
+.position-group {
+    margin-bottom: 50px;
+}
+
+.position-group:last-child {
+    margin-bottom: 0;
+}
+
+.position-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.position-icon {
+    width: 45px;
+    height: 45px;
+    background: var(--primary-color);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 1.1rem;
+}
+
+.squad-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 25px;
+}
+
+/* Squad Card */
+.squad-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.squad-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.squad-link {
+    display: block;
+}
+
+.squad-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.squad-image img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.squad-card:hover .squad-image img {
+    transform: scale(1.08);
+}
+
+.squad-number {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 50px;
+    height: 50px;
+    background: var(--secondary-color);
+    color: var(--primary-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.squad-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26, 54, 93, 0.9), transparent);
+    opacity: 0;
+    transition: var(--transition);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 30px;
+}
+
+.squad-card:hover .squad-overlay {
+    opacity: 1;
+}
+
+.view-profile {
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.view-profile::after {
+    content: '\f061';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+}
+
+.squad-info {
+    padding: 20px;
+}
+
+.squad-name {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 5px;
+}
+
+.squad-position {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.squad-meta {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.squad-meta span {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.squad-meta i {
+    color: var(--secondary-color);
+}
+
+.squad-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.mini-stat {
+    text-align: center;
+    padding: 10px;
+    background: var(--gray-50);
+    border-radius: 8px;
+}
+
+.mini-stat-value {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.mini-stat-label {
+    font-size: 0.7rem;
+    color: var(--gray-500);
+    text-transform: uppercase;
+}
+
+/* Coaching Staff Section */
+.coaching-staff-section {
+    padding: 70px 0;
+    background: var(--white);
+}
+
+.coaching-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.coach-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.coach-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.coach-card.main-coach {
+    grid-column: span 1;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--white);
+}
+
+.coach-card.main-coach .coach-role {
+    color: var(--secondary-color);
+}
+
+.coach-card.main-coach .coach-name {
+    color: var(--white);
+}
+
+.coach-card.main-coach .coach-bio {
+    color: var(--gray-300);
+}
+
+.coach-card.main-coach .coach-stat-value {
+    color: var(--secondary-color);
+}
+
+.coach-card.main-coach .coach-stat-label {
+    color: var(--gray-300);
+}
+
+.coach-image {
+    overflow: hidden;
+}
+
+.coach-image img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.coach-card:hover .coach-image img {
+    transform: scale(1.05);
+}
+
+.coach-info {
+    padding: 25px;
+}
+
+.coach-role {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    background: rgba(201, 162, 39, 0.1);
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+.coach-card.main-coach .coach-role {
+    background: rgba(201, 162, 39, 0.2);
+}
+
+.coach-name {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 12px;
+}
+
+.coach-bio {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.coach-stats {
+    display: flex;
+    gap: 30px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.coach-stat {
+    text-align: center;
+}
+
+.coach-stat-value {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.coach-stat-label {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    text-transform: uppercase;
+}
+
+/* Team Stats Detail */
+.team-stats-detail {
+    padding: 70px 0;
+    background: var(--gray-50);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-bottom: 50px;
+}
+
+.stat-leader-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.stat-leader-header {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.stat-leader-header i {
+    color: var(--secondary-color);
+}
+
+.stat-leader-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.leader-photo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--secondary-color);
+}
+
+.leader-info h4 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 5px;
+}
+
+.leader-number {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.leader-label {
+    font-size: 0.8rem;
+    color: var(--gray-500);
+    text-transform: uppercase;
+}
+
+/* Team Form */
+.team-form-section {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+}
+
+.subsection-title {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 25px;
+}
+
+.form-bar {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.form-item {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.form-item:hover {
+    transform: scale(1.1);
+}
+
+.form-item.win {
+    background: var(--success);
+    color: var(--white);
+}
+
+.form-item.draw {
+    background: var(--warning);
+    color: var(--white);
+}
+
+.form-item.loss {
+    background: var(--danger);
+    color: var(--white);
+}
+
+.form-legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--gray-600);
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.legend-color.win {
+    background: var(--success);
+}
+
+.legend-color.draw {
+    background: var(--warning);
+}
+
+.legend-color.loss {
+    background: var(--danger);
+}
+
+/* Mobile Nav Header */
+.mobile-nav-header {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.mobile-nav-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--white);
+    text-transform: uppercase;
+}
+
+.close-mobile-nav {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.close-mobile-nav:hover {
+    background: var(--secondary-color);
+    color: var(--primary-dark);
+}
+
+.mobile-nav-footer {
+    display: none;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
+}
+
+.mobile-cta {
+    width: 100%;
+    justify-content: center;
+}
+
+.submenu .current {
+    color: var(--secondary-color) !important;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .squad-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .team-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .mobile-nav-header {
+        display: flex;
+    }
+    
+    .mobile-nav-footer {
+        display: block;
+    }
+    
+    .coaching-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .coach-card.main-coach {
+        grid-column: span 2;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .squad-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .squad-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .coaching-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .coach-card.main-coach {
+        grid-column: span 1;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header {
+        padding: 80px 0 40px;
+    }
+    
+    .breadcrumb {
+        flex-wrap: wrap;
+        font-size: 0.8rem;
+    }
+    
+    .form-bar {
+        flex-wrap: wrap;
+    }
+    
+    .form-legend {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .squad-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .team-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-leader-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .coach-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
