@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const link = item.querySelector('a');
         
         link.addEventListener('click', function(e) {
-            // Solo en móvil
             if (window.innerWidth <= 1024) {
                 e.preventDefault();
                 item.classList.toggle('open');
@@ -52,19 +51,31 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // ===================================
-    // CERRAR MENÚ AL HACER CLIC EN ENLACE
+    // CERRAR MENÚ AL HACER CLIC EN ENLACE SIMPLE
     // ===================================
-    const allNavLinks = document.querySelectorAll('.nav-list a, .quick-links a');
+    const simpleNavLinks = document.querySelectorAll('.nav-item:not(.has-submenu) a');
     
-    allNavLinks.forEach(link => {
+    simpleNavLinks.forEach(link => {
         link.addEventListener('click', function() {
             if (window.innerWidth <= 1024 && mainNav && mobileMenuBtn) {
-                // Solo cerrar si no tiene submenu
-                if (!this.closest('.has-submenu')) {
-                    mainNav.classList.remove('active');
-                    mobileMenuBtn.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
+                mainNav.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    });
+    
+    // ===================================
+    // CERRAR MENÚ AL HACER CLIC EN SUBMENÚ
+    // ===================================
+    const submenuLinks = document.querySelectorAll('.submenu a');
+    
+    submenuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 1024 && mainNav && mobileMenuBtn) {
+                mainNav.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+                document.body.style.overflow = '';
             }
         });
     });
@@ -88,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.overflow = '';
         });
         
-        // Cerrar con Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && searchOverlay.classList.contains('active')) {
                 searchOverlay.classList.remove('active');
@@ -96,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Cerrar al hacer clic fuera
         searchOverlay.addEventListener('click', function(e) {
             if (e.target === searchOverlay) {
                 searchOverlay.classList.remove('active');
@@ -114,10 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (tabBtns.length > 0 && playerCards.length > 0) {
         tabBtns.forEach(btn => {
             btn.addEventListener('click', function() {
-                // Quitar active de todos
                 tabBtns.forEach(b => b.classList.remove('active'));
-                
-                // Añadir active al clicado
                 this.classList.add('active');
                 
                 const position = this.dataset.position;
@@ -142,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const rejectCookies = document.getElementById('rejectCookies');
     
     if (cookieBanner && acceptCookies && rejectCookies) {
-        // Mostrar si no hay elección previa
         if (!localStorage.getItem('cookieChoice')) {
             setTimeout(() => {
                 cookieBanner.classList.add('active');
@@ -199,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
         right: 30px;
         width: 50px;
         height: 50px;
-        background: var(--primary-color, #1a365d);
+        background: #1a365d;
         color: white;
         border: none;
         border-radius: 50%;
