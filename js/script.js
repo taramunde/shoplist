@@ -18,6 +18,35 @@ document.addEventListener('DOMContentLoaded', function() {
             mainNav.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
+       // Toggle Clasificación Completa
+const toggleStandings = document.getElementById('toggleStandings');
+const hiddenRows = document.querySelectorAll('.hidden-row');
+
+if (toggleStandings && hiddenRows.length > 0) {
+    toggleStandings.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const isExpanded = this.classList.contains('expanded');
+        
+        if (isExpanded) {
+            // Contraer
+            hiddenRows.forEach(row => {
+                row.classList.remove('show');
+            });
+            this.classList.remove('expanded');
+            this.innerHTML = 'Ver clasificación completa <i class="fas fa-arrow-down"></i>';
+        } else {
+            // Expandir
+            hiddenRows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.classList.add('show');
+                }, index * 50);
+            });
+            this.classList.add('expanded');
+            this.innerHTML = 'Ver menos <i class="fas fa-arrow-up"></i>';
+        }
+    });
+}
     }
     
     // Menú móvil - Cerrar
