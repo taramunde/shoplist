@@ -1638,3 +1638,220 @@ img {
         transform: rotate(-45deg) translate(6px, -6px);
     }
 }
+
+    /* ===================================
+   NUEVOS ESTILOS HEADER REORGANIZADO
+   =================================== */
+
+/* Quick Links Desktop - Nueva barra superior */
+.quick-links-desktop {
+    display: flex;
+    justify-content: flex-end;
+    gap: 30px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 10px;
+}
+
+.quick-links-desktop a {
+    color: #9ca3af;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.15s ease;
+}
+
+.quick-links-desktop a:hover {
+    color: #c9a227;
+}
+
+/* Mobile Social Links */
+.mobile-social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.mobile-social-links a {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.mobile-social-links a:hover {
+    background: #c9a227;
+    color: #0f2340;
+}
+
+/* Header Actions sin botón de tickets */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Mobile Menu Button - Solo visible en móvil */
+.mobile-menu-btn {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .quick-links-desktop {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    .mobile-menu-btn span {
+        width: 100%;
+        height: 3px;
+        background: #1a365d;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+}
+
+/* Eliminar estilos antiguos del botón de tickets */
+.btn-tickets {
+    display: none;
+}
+
+/* Ajustes para el menú móvil */
+@media (max-width: 1024px) {
+    .main-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #0f2340;
+        z-index: 1500;
+        padding: 20px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+        display: none;
+    }
+    
+    .main-nav.active {
+        display: block;
+        transform: translateX(0);
+    }
+    
+    .mobile-nav-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 20px;
+    }
+    
+    .mobile-nav-title {
+        font-family: 'Oswald', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #ffffff;
+        text-transform: uppercase;
+    }
+    
+    .close-mobile-nav {
+        width: 45px;
+        height: 45px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 50%;
+        color: #ffffff;
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .close-mobile-nav:hover {
+        background: #c9a227;
+        color: #0f2340;
+    }
+    
+    .mobile-nav-footer {
+        display: block;
+        padding: 20px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 20px;
+    }
+    
+    .nav-list {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .nav-item > a {
+        color: #ffffff;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        justify-content: space-between;
+    }
+    
+    .nav-item:hover > a,
+    .nav-item.active > a {
+        background: transparent;
+        color: #c9a227;
+    }
+    
+    .submenu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        background: transparent;
+        box-shadow: none;
+        padding-left: 20px;
+        display: none;
+    }
+    
+    .nav-item.open .submenu {
+        display: block;
+    }
+    
+    .submenu li a {
+        color: #9ca3af;
+        border-bottom: none;
+        padding: 12px 0;
+    }
+    
+    .submenu li a:hover {
+        background: transparent;
+        color: #c9a227;
+        padding-left: 0;
+    }
+}
+
+/* Animación botón hamburguesa activo */
+.mobile-menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
