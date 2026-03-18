@@ -1355,3 +1355,38 @@ img {
     color: var(--secondary-color) !important;
     font-weight: 600;
 }
+
+/* ===================================
+   CLASIFICACIÓN EXPANDIBLE
+   =================================== */
+.hidden-row {
+    display: none;
+}
+
+.hidden-row.show {
+    display: table-row;
+    animation: fadeInRow 0.3s ease;
+}
+
+@keyframes fadeInRow {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.toggle-standings {
+    transition: var(--transition);
+}
+
+.toggle-standings i {
+    transition: transform 0.3s ease;
+}
+
+.toggle-standings.expanded i {
+    transform: rotate(180deg);
+}
