@@ -83,53 +83,6 @@ img {
 }
 
 /* ===================================
-   TOP BAR
-   =================================== */
-.top-bar {
-    background: var(--primary-dark);
-    color: var(--white);
-    font-size: 0.85rem;
-    padding: 8px 0;
-}
-
-.top-bar-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.top-links {
-    display: flex;
-    gap: 25px;
-}
-
-.top-links a {
-    color: var(--gray-300);
-    font-weight: 500;
-    transition: var(--transition-fast);
-}
-
-.top-links a:hover {
-    color: var(--secondary-color);
-}
-
-.top-social {
-    display: flex;
-    gap: 15px;
-}
-
-.top-social a {
-    color: var(--gray-300);
-    font-size: 0.9rem;
-    transition: var(--transition-fast);
-}
-
-.top-social a:hover {
-    color: var(--secondary-color);
-    transform: translateY(-2px);
-}
-
-/* ===================================
    HEADER PRINCIPAL
    =================================== */
 .main-header {
