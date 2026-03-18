@@ -33,92 +33,99 @@
     </div>
 
     <!-- Header Principal -->
-    <header class="main-header">
-        <div class="container">
-            <div class="header-content">
-                <a href="index.html" class="logo">
-                    <div class="logo-shield">
-                        <span class="logo-text">CDV</span>
-                    </div>
-                    <div class="logo-name">
-                        <span class="club-name">Club Deportivo</span>
-                        <span class="team-name">Villaferreira</span>
-                    </div>
-                </a>
+<header class="main-header">
+    <div class="container">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <div class="logo-shield">
+                    <span class="logo-text">CDV</span>
+                </div>
+                <div class="logo-name">
+                    <span class="club-name">Club Deportivo</span>
+                    <span class="team-name">Villaferreira</span>
+                </div>
+            </a>
 
-                <nav class="main-nav" id="mainNav">
-                    <div class="mobile-nav-header">
-                        <span class="mobile-nav-title">Menú</span>
-                        <button class="close-mobile-nav" id="closeMobileNav">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <ul class="nav-list">
-                        <li class="nav-item">
-                            <a href="index.html">Inicio</a>
-                        </li>
-                        <li class="nav-item has-submenu">
-                            <a href="#">Club <i class="fas fa-chevron-down"></i></a>
-                            <ul class="submenu">
-                                <li><a href="#">Historia</a></li>
-                                <li><a href="#">Palmarés</a></li>
-                                <li><a href="#">Estadio Municipal</a></li>
-                                <li><a href="#">Directiva</a></li>
-                                <li><a href="#">Fundación</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item has-submenu active">
-                            <a href="#">Equipo <i class="fas fa-chevron-down"></i></a>
-                            <ul class="submenu">
-                                <li><a href="primer-equipo.html" class="current">Primer Equipo</a></li>
-                                <li><a href="#">Cuerpo Técnico</a></li>
-                                <li><a href="#">Cantera</a></li>
-                                <li><a href="#">Fútbol Femenino</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item has-submenu">
-                            <a href="#">Competiciones <i class="fas fa-chevron-down"></i></a>
-                            <ul class="submenu">
-                                <li><a href="#">Primera RFEF</a></li>
-                                <li><a href="#">Calendario</a></li>
-                                <li><a href="#">Clasificación</a></li>
-                                <li><a href="#">Estadísticas</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#">Noticias</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#">Multimedia</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#">Tienda</a>
-                        </li>
-                    </ul>
-                    <div class="mobile-nav-footer">
-                        <a href="#" class="btn-primary mobile-cta">
-                            <i class="fas fa-ticket-alt"></i> Comprar Entradas
-                        </a>
-                    </div>
-                </nav>
-
-                <div class="header-actions">
-                    <button class="search-btn" id="searchBtn">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <a href="#" class="btn-tickets">
-                        <i class="fas fa-ticket-alt"></i>
-                        <span>Entradas</span>
-                    </a>
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+            <nav class="main-nav" id="mainNav">
+                <div class="mobile-nav-header">
+                    <span class="mobile-nav-title">Menú</span>
+                    <button class="close-mobile-nav" id="closeMobileNav">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
+                
+                <!-- Enlaces rápidos para PC -->
+                <div class="quick-links-desktop">
+                    <a href="#">Tienda Online</a>
+                    <a href="#">Abónate</a>
+                    <a href="#">Zona Socios</a>
+                </div>
+                
+                <ul class="nav-list">
+                    <li class="nav-item active">
+                        <a href="index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="#">Club <i class="fas fa-chevron-down"></i></a>
+                        <ul class="submenu">
+                            <li><a href="#">Historia</a></li>
+                            <li><a href="#">Palmarés</a></li>
+                            <li><a href="#">Estadio Municipal</a></li>
+                            <li><a href="#">Directiva</a></li>
+                            <li><a href="#">Fundación</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="#">Equipo <i class="fas fa-chevron-down"></i></a>
+                        <ul class="submenu">
+                            <li><a href="primer-equipo.html">Primer Equipo</a></li>
+                            <li><a href="#">Cuerpo Técnico</a></li>
+                            <li><a href="#">Cantera</a></li>
+                            <li><a href="#">Fútbol Femenino</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-submenu">
+                        <a href="#">Competiciones <i class="fas fa-chevron-down"></i></a>
+                        <ul class="submenu">
+                            <li><a href="#">Primera RFEF</a></li>
+                            <li><a href="#">Calendario</a></li>
+                            <li><a href="#">Clasificación</a></li>
+                            <li><a href="#">Estadísticas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">Noticias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">Multimedia</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">Tienda</a>
+                    </li>
+                </ul>
+                <div class="mobile-nav-footer">
+                    <div class="mobile-social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="header-actions">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
-    </header>
+    </div>
+</header>
 
     <!-- Search Overlay -->
     <div class="search-overlay" id="searchOverlay">
