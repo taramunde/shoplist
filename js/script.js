@@ -11,45 +11,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchOverlay = document.getElementById('searchOverlay');
     const closeSearch = document.getElementById('closeSearch');
     
-    // Menú móvil - Abrir
+    // ===================================
+    // MENÚ MÓVIL - Abrir
+    // ===================================
     if (mobileMenuBtn && mainNav) {
         mobileMenuBtn.addEventListener('click', function() {
             this.classList.add('active');
             mainNav.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
-       // Toggle Clasificación Completa
-const toggleStandings = document.getElementById('toggleStandings');
-const hiddenRows = document.querySelectorAll('.hidden-row');
-
-if (toggleStandings && hiddenRows.length > 0) {
-    toggleStandings.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const isExpanded = this.classList.contains('expanded');
-        
-        if (isExpanded) {
-            // Contraer
-            hiddenRows.forEach(row => {
-                row.classList.remove('show');
-            });
-            this.classList.remove('expanded');
-            this.innerHTML = 'Ver clasificación completa <i class="fas fa-arrow-down"></i>';
-        } else {
-            // Expandir
-            hiddenRows.forEach((row, index) => {
-                setTimeout(() => {
-                    row.classList.add('show');
-                }, index * 50);
-            });
-            this.classList.add('expanded');
-            this.innerHTML = 'Ver menos <i class="fas fa-arrow-up"></i>';
-        }
-    });
-}
     }
     
-    // Menú móvil - Cerrar
+    // ===================================
+    // MENÚ MÓVIL - Cerrar
+    // ===================================
     if (closeMobileNav && mainNav && mobileMenuBtn) {
         closeMobileNav.addEventListener('click', function() {
             mainNav.classList.remove('active');
@@ -58,7 +33,9 @@ if (toggleStandings && hiddenRows.length > 0) {
         });
     }
     
-    // Submenús en móvil
+    // ===================================
+    // SUBMENÚS EN MÓVIL
+    // ===================================
     const navItemsWithSubmenu = document.querySelectorAll('.nav-item.has-submenu');
     
     navItemsWithSubmenu.forEach(item => {
@@ -97,7 +74,9 @@ if (toggleStandings && hiddenRows.length > 0) {
         });
     });
     
-    // Search Overlay
+    // ===================================
+    // SEARCH OVERLAY
+    // ===================================
     if (searchBtn && searchOverlay && closeSearch) {
         searchBtn.addEventListener('click', function() {
             searchOverlay.classList.add('active');
@@ -128,7 +107,9 @@ if (toggleStandings && hiddenRows.length > 0) {
         });
     }
     
-    // Filtros Plantilla
+    // ===================================
+    // FILTROS PLANTILLA
+    // ===================================
     const tabBtns = document.querySelectorAll('.tab-btn');
     const playerCards = document.querySelectorAll('.player-card');
     
@@ -152,7 +133,65 @@ if (toggleStandings && hiddenRows.length > 0) {
         });
     }
     
-    // Cookie Banner
+    // ===================================
+    // TOGGLE CLASIFICACIÓN COMPLETA
+    // ===================================
+    const toggleStandings = document.getElementById('toggleStandings');
+    const hiddenRows = document.querySelectorAll('.hidden-row');
+    
+    if (toggleStandings && hiddenRows.length > 0) {
+        toggleStandings.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const isExpanded = this.classList.contains('expanded');
+            
+            if (isExpanded) {
+                // Contraer
+                hiddenRows.forEach(row => {
+                    row.classList.remove('show');
+                });
+                this.classList.remove('expanded');
+                this.innerHTML = 'Ver clasificación completa <i class="fas fa-arrow-down"></i>';
+            } else {
+                // Expandir
+                hiddenRows.forEach((row, index) => {
+                    setTimeout(() => {
+                        row.classList.add('show');
+                    }, index * 50);
+                });
+                this.classList.add('expanded');
+                this.innerHTML = 'Ver menos <i class="fas fa-arrow-up"></i>';
+            }
+        });
+    }
+    
+    // ===================================
+    // TABS FICHA JUGADOR
+    // ===================================
+    const statsTabs = document.querySelectorAll('.stats-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    if (statsTabs.length > 0) {
+        statsTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                
+                statsTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                const selectedContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+                if (selectedContent) {
+                    selectedContent.classList.add('active');
+                }
+            });
+        });
+    }
+    
+    // ===================================
+    // COOKIE BANNER
+    // ===================================
     const cookieBanner = document.getElementById('cookieBanner');
     const acceptCookies = document.getElementById('acceptCookies');
     const rejectCookies = document.getElementById('rejectCookies');
@@ -175,8 +214,10 @@ if (toggleStandings && hiddenRows.length > 0) {
         });
     }
     
-    // Animaciones al scroll
-    const animateElements = document.querySelectorAll('.news-card, .player-card, .match-item');
+    // ===================================
+    // ANIMACIONES AL SCROLL
+    // ===================================
+    const animateElements = document.querySelectorAll('.news-card, .player-card, .match-item, .squad-card');
     
     if (animateElements.length > 0) {
         const animateObserver = new IntersectionObserver((entries) => {
@@ -196,7 +237,9 @@ if (toggleStandings && hiddenRows.length > 0) {
         });
     }
     
-    // Botón volver arriba
+    // ===================================
+    // BOTÓN VOLVER ARRIBA
+    // ===================================
     const backToTop = document.createElement('button');
     backToTop.innerHTML = '<i class="fas fa-chevron-up"></i>';
     backToTop.className = 'back-to-top';
@@ -245,3 +288,26 @@ if (toggleStandings && hiddenRows.length > 0) {
         this.style.transform = 'translateY(0)';
     });
 });
+
+// Animaciones CSS
+const style = document.createElement('style');
+style.textContent = `
+    .hidden-row { display: none; }
+    .hidden-row.show { display: table-row; animation: fadeInRow 0.3s ease; }
+    
+    @keyframes fadeInRow {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .submenu .current { color: #c9a227 !important; font-weight: 600; }
+    
+    .toggle-standings i { transition: transform 0.3s ease; }
+    .toggle-standings.expanded i { transform: rotate(180deg); }
+`;
+document.head.appendChild(style);
