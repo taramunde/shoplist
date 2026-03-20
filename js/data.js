@@ -1,20 +1,20 @@
 /* ===================================
-   DATOS DEL CLUB - CD VILLAFERREIRA
+   DATOS DEL CLUB - REAL OVIEDO
    =================================== */
 
 const CLUB_DATA = {
     // Información del club
     club: {
-        nombre: "Club Deportivo Villaferreira",
-        nombreCorto: "Villaferreira",
-        siglas: "CDV",
-        fundacion: 1952,
-        estadio: "Estadio Municipal de Villaferreira",
-        capacidadEstadio: 8500,
-        ciudad: "Villaferreira",
-        direccion: "Calle del Deporte s/n, 33009 Villaferreira",
-        telefono: "985 123 456",
-        email: "info@cdvillaferreira.com"
+        nombre: "Real Oviedo Sangre Carbayona",
+        nombreCorto: "Sangre Carbayona",
+        siglas: "SOC",
+        fundacion: 1926,
+        estadio: "Estadio Carlos Tartiere",
+        capacidadEstadio: 30500,
+        ciudad: "Oviedo",
+        direccion: "Calle Carlos Tartiere s/n, 33013 Oviedo",
+        telefono: "985 111 111",
+        email: "info@sangrecarbayona.com"
     },
 
     // Temporada actual (por defecto)
