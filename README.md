@@ -1,2 +1,2 @@
-# shoplist
-Program to create a shopping list
+# SangreCarbayona2
+2ª Versión de la web Sangre Carbayona, tratando de modernizarse
