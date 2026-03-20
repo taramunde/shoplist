@@ -86,7 +86,6 @@ const App = {
             const highlightClass = equipo.destacado ? 'highlight' : '';
             const hiddenClass = index >= filasVisibles ? 'hidden-row' : '';
             
-            // Renderizar escudo o siglas si no hay imagen
             const badgeHtml = equipo.logo 
                 ? `<img src="${equipo.logo}" alt="${equipo.siglas}" class="team-badge-img">` 
                 : `<span class="team-badge-text">${equipo.siglas}</span>`;
@@ -349,14 +348,13 @@ const App = {
     },
 
     // ===================================
-    // FICHA JUGADOR (HISTORIAL COMPLETO)
+    // FICHA JUGADOR
     // ===================================
     renderFichaJugador: function() {
         const container = document.getElementById('fichaJugadorContent');
         if (!container) return;
 
         const urlParams = new URLSearchParams(window.location.search);
-        // Obtenemos ID y Temporada de la URL
         const jugadorId = urlParams.get('id') || 13;
         const seasonId = urlParams.get('season') || CLUB_DATA.temporadaActual;
         
@@ -400,8 +398,8 @@ const App = {
         `;
 
         this.renderFichaOverview(jugador);
-        // Renderizar historial completo en la pestaña Trayectoria
-        this.renderFichaCareerHistory(jugador); 
+        this.renderFichaMatches(jugador, seasonId); // Pasamos seasonId
+        this.renderFichaCareerHistory(jugador);
     },
 
     renderFichaOverview: function(jugador) {
@@ -445,22 +443,67 @@ const App = {
     },
 
     // ===================================
-    // HISTORIAL COMPLETO (NUEVO)
+    // PARTIDOS (ACTUALIZADO)
+    // ===================================
+    renderFichaMatches: function(jugador, seasonId) {
+        const container = document.getElementById('tabMatches');
+        if (!container) return;
+
+        const temporada = getTemporada(seasonId);
+        
+        // Verificar si hay partidos en la temporada
+        if (!temporada.partidosJugados || temporada.partidosJugados.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#666;">No hay datos de partidos para esta temporada.</p>';
+            return;
+        }
+
+        let html = '<div class="matches-list">';
+
+        temporada.partidosJugados.forEach(partido => {
+            const fecha = formatearFecha(partido.fecha);
+            let resultClass = '';
+            if (partido.resultado === 'V') resultClass = 'win';
+            else if (partido.resultado === 'E') resultClass = 'draw';
+            else resultClass = 'loss';
+
+            html += `
+                <article class="match-detail-card">
+                    <div class="match-detail-header">
+                        <div class="match-date-badge ${resultClass}">
+                            <span class="match-day">${fecha.dia}</span>
+                            <span class="match-month">${fecha.mesCorto}</span>
+                        </div>
+                        <div class="match-competition-info">
+                            <span class="competition-name">${temporada.competicion} - Jornada ${partido.jornada}</span>
+                            <div class="match-teams-result">
+                                <span class="team-home">${partido.local}</span>
+                                <span class="match-score">${partido.golesLocal} - ${partido.golesVisitante}</span>
+                                <span class="team-away">${partido.visitante}</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        });
+
+        html += '</div>';
+        container.innerHTML = html;
+    },
+
+    // ===================================
+    // HISTORIAL CARRERA (ACTUALIZADO CON ESCUDO)
     // ===================================
     renderFichaCareerHistory: function(jugadorActual) {
         const container = document.getElementById('tabCareer');
         if (!container) return;
         
-        // 1. Buscar historial en todas las temporadas usando el CÓDIGO
         const historial = [];
         let totales = { partidos: 0, goles: 0, asistencias: 0, amarillas: 0, rojas: 0, minutos: 0 };
 
-        // Recorremos todas las temporadas disponibles
         CLUB_DATA.temporadasDisponibles.forEach(temp => {
             const datosTemporada = CLUB_DATA.temporadas[temp.id];
             if (!datosTemporada) return;
 
-            // Buscamos al jugador por CÓDIGO en esta temporada
             const jugadorEnTemporada = datosTemporada.jugadores.find(j => j.codigo === jugadorActual.codigo);
             
             if (jugadorEnTemporada) {
@@ -468,11 +511,12 @@ const App = {
                     temporada: temp.nombre,
                     temporadaId: temp.id,
                     equipo: CLUB_DATA.club.nombreCorto,
+                    // Usamos el logo definido en la clasificación de esa temporada (o default)
+                    logo: datosTemporada.clasificacion.find(e => e.siglas === "CDV")?.logo || "https://picsum.photos/seed/villaferreira-logo/60/60",
                     stats: jugadorEnTemporada.stats,
                     actual: temp.id === this.temporadaActiva
                 });
 
-                // Sumar a totales
                 totales.partidos += jugadorEnTemporada.stats.partidos;
                 totales.goles += jugadorEnTemporada.stats.goles;
                 totales.asistencias += jugadorEnTemporada.stats.asistencias;
@@ -482,16 +526,24 @@ const App = {
             }
         });
 
-        // 2. Generar HTML
         let timelineHtml = '';
         historial.forEach(h => {
             const currentClass = h.actual ? 'current' : '';
+            
+            // Escudo con imagen
+            const badgeHtml = h.logo 
+                ? `<img src="${h.logo}" alt="CDV" class="team-badge-img">` 
+                : `<span class="team-badge-text">CDV</span>`;
+
             timelineHtml += `
                 <div class="timeline-item ${currentClass}">
                     <div class="timeline-marker"></div>
                     <div class="timeline-content">
                         <div class="timeline-header">
-                            <span class="timeline-club"><span class="club-badge-small">CDV</span> ${h.equipo}</span>
+                            <span class="timeline-club">
+                                <span class="team-badge">${badgeHtml}</span>
+                                ${h.equipo}
+                            </span>
                             <span class="timeline-years">${h.temporada}</span>
                         </div>
                         <div class="timeline-stats">
