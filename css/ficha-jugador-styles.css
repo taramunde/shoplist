@@ -952,3 +952,31 @@
     color: var(--accent-color) !important;
     display: block;
 }
+
+/* ===================================
+   BOTONES COMPARTIR FICHA
+   =================================== */
+
+.player-social.whatsapp {
+    background-color: #25D366 !important;
+}
+
+.player-social.whatsapp:hover {
+    background-color: #128C7E !important;
+}
+
+.player-social.telegram {
+    background-color: #0088cc !important;
+}
+
+.player-social.telegram:hover {
+    background-color: #005f8f !important;
+}
+
+.player-social.twitter {
+    background-color: #1DA1F2 !important;
+}
+
+.player-social.twitter:hover {
+    background-color: #0d8bd9 !important;
+}
