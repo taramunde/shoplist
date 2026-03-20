@@ -83,14 +83,117 @@ const App = {
         container.innerHTML = html;
     },
 
-    renderPlantillaHome: function() { /* ... Igual que antes ... */ },
-    renderNoticias: function() { /* ... Igual que antes ... */ },
-    renderPatrocinadores: function() { /* ... Igual que antes ... */ },
-    renderProximoPartido: function() { /* ... Igual que antes ... */ },
-    renderEstadisticasEquipo: function() { /* ... Igual que antes ... */ },
-    renderPlantillaCompleta: function() { /* ... Igual que antes ... */ },
-    renderJugadorCard: function(jugador) { return `<article class="squad-card"><a href="ficha-jugador.html?id=${jugador.id}&season=${this.temporadaActiva}" class="squad-link"><div class="squad-image"><img src="${jugador.imagen}" alt="${jugador.nombreCompleto}"><span class="squad-number">${jugador.dorsal}</span></div><div class="squad-info"><h4 class="squad-name">${jugador.nombreCompleto}</h4><span class="squad-position">${jugador.posicion}</span></div></a></article>`; },
-    renderCuerpoTecnico: function() { /* ... Igual que antes ... */ },
+    // ===================================
+    // PLANTILLA HOME
+    // ===================================
+    renderPlantillaHome: function() {
+        const container = document.getElementById('plantillaHomeGrid');
+        if (!container) return;
+        const temporada = getTemporada(CLUB_DATA.temporadaActual);
+        const posicionesMap = {
+            'Portero': 'goalkeeper',
+            'Lateral Derecho': 'defender', 'Lateral Izquierdo': 'defender', 'Central': 'defender',
+            'Mediocentro Defensivo': 'midfielder', 'Centrocampista': 'midfielder', 'Mediocentro': 'midfielder', 'Mediapunta': 'midfielder',
+            'Delantero Centro': 'forward', 'Extremo Derecho': 'forward', 'Extremo Izquierdo': 'forward', 'Delantero': 'forward'
+        };
+        let html = '';
+        temporada.jugadores.slice(0, 8).forEach(jugador => {
+            html += `<div class="player-card" data-position="${posicionesMap[jugador.posicion] || 'all'}"><a href="ficha-jugador.html?id=${jugador.id}&season=${CLUB_DATA.temporadaActual}"><div class="player-image"><img src="${jugador.imagen}" alt="${jugador.nombreCompleto}"><span class="player-number">${jugador.dorsal}</span></div><div class="player-info"><span class="player-position">${jugador.posicion}</span><h4 class="player-name">${jugador.nombreCompleto}</h4></div></a></div>`;
+        });
+        container.innerHTML = html;
+    },
+
+    // ===================================
+    // NOTICIAS, PATROCINADORES, PROXIMO PARTIDO
+    // ===================================
+    renderNoticias: function() {
+        const container = document.getElementById('noticiasGrid');
+        if (!container) return;
+        let html = '';
+        CLUB_DATA.noticias.forEach(noticia => {
+            const mainClass = noticia.esPrincipal ? 'main-news' : '';
+            const fecha = formatearFecha(noticia.fecha);
+            html += `<article class="news-card ${mainClass}"><a href="#" class="news-link"><div class="news-image"><img src="${noticia.imagen}" alt="${noticia.titulo}"><span class="news-category">${noticia.categoria}</span></div><div class="news-content"><h3>${noticia.titulo}</h3>${noticia.esPrincipal ? `<p>${noticia.resumen}</p>` : ''}<span class="news-date">${fecha.dia} ${fecha.mes} ${fecha.año}</span></div></a></article>`;
+        });
+        container.innerHTML = html;
+    },
+    
+    renderPatrocinadores: function() {
+        const container = document.getElementById('patrocinadoresGrid');
+        if (!container) return;
+        let html = '';
+        CLUB_DATA.patrocinadores.forEach(pat => { html += `<div class="sponsor-item"><div class="sponsor-logo"><span>${pat.nombre}</span></div></div>`; });
+        container.innerHTML = html;
+    },
+
+    renderProximoPartido: function() {
+        const container = document.getElementById('heroMatch');
+        if (!container) return;
+        const partido = CLUB_DATA.proximoPartido;
+        const fecha = formatearFecha(partido.fecha);
+        container.innerHTML = `
+            <div class="match-competition">
+                <span class="competition-badge">${partido.competicion} - Jornada ${partido.jornada}</span>
+                <span class="match-date"><i class="far fa-calendar"></i> Domingo ${fecha.dia} ${fecha.mes} ${fecha.año}<i class="far fa-clock"></i> ${partido.hora}h</span>
+            </div>
+            <div class="match-teams">
+                <div class="team home"><div class="team-logo-large"><span>${partido.localSiglas}</span></div><span class="team-name-large">${partido.local}</span></div>
+                <div class="match-vs"><span>VS</span></div>
+                <div class="team away"><div class="team-logo-large away-logo"><span>${partido.visitanteSiglas}</span></div><span class="team-name-large">${partido.visitante}</span></div>
+            </div>
+            <div class="match-info"><p><i class="fas fa-map-marker-alt"></i> ${partido.estadio}</p></div>
+            <div class="match-actions"><a href="#" class="btn-primary"><i class="fas fa-ticket-alt"></i> Comprar Entradas</a><a href="#" class="btn-secondary"><i class="fas fa-tv"></i> Ver Directo</a></div>`;
+    },
+
+    // ===================================
+    // ESTADISTICAS Y PLANTILLA COMPLETA
+    // ===================================
+    renderEstadisticasEquipo: function() {
+        const container = document.getElementById('teamStatsGrid');
+        if (!container) return;
+        const temporada = getTemporada(this.temporadaActiva);
+        const stats = temporada.estadisticasEquipo;
+        container.innerHTML = `
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-trophy"></i></div><div class="stat-number">${stats.posicion}º</div><div class="stat-label">Posición</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-futbol"></i></div><div class="stat-number">${stats.golesFavor}</div><div class="stat-label">Goles Favor</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-shield-alt"></i></div><div class="stat-number">${stats.golesContra}</div><div class="stat-label">Goles Contra</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-number">${stats.victorias}</div><div class="stat-label">Victorias</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-handshake"></i></div><div class="stat-number">${stats.empates}</div><div class="stat-label">Empates</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-times-circle"></i></div><div class="stat-number">${stats.derrotas}</div><div class="stat-label">Derrotas</div></div>`;
+    },
+
+    renderPlantillaCompleta: function() {
+        const container = document.getElementById('plantillaCompleta');
+        if (!container) return;
+        const temporada = getTemporada(this.temporadaActiva);
+        const posiciones = {'Porteros': ['Portero'], 'Defensas': ['Lateral Derecho', 'Lateral Izquierdo', 'Central'], 'Centrocampistas': ['Mediocentro Defensivo', 'Centrocampista', 'Mediocentro', 'Mediapunta'], 'Delanteros': ['Delantero Centro', 'Extremo Derecho', 'Extremo Izquierdo', 'Delantero']};
+        const iconos = {'Porteros': 'fa-hand-paper', 'Defensas': 'fa-shield-alt', 'Centrocampistas': 'fa-sync-alt', 'Delanteros': 'fa-bullseye'};
+        let html = '';
+        for (const [nombrePosicion, posicionesLista] of Object.entries(posiciones)) {
+            const jugadoresPosicion = temporada.jugadores.filter(j => posicionesLista.includes(j.posicion));
+            if (jugadoresPosicion.length === 0) continue;
+            html += `<div class="position-group"><h3 class="position-title"><span class="position-icon"><i class="fas ${iconos[nombrePosicion]}"></i></span>${nombrePosicion}</h3><div class="squad-grid">`;
+            jugadoresPosicion.forEach(jugador => { html += this.renderJugadorCard(jugador); });
+            html += `</div></div>`;
+        }
+        container.innerHTML = html;
+    },
+
+    renderJugadorCard: function(jugador) {
+        return `<article class="squad-card"><a href="ficha-jugador.html?id=${jugador.id}&season=${this.temporadaActiva}" class="squad-link"><div class="squad-image"><img src="${jugador.imagen}" alt="${jugador.nombreCompleto}"><span class="squad-number">${jugador.dorsal}</span><div class="squad-overlay"><span class="view-profile">Ver ficha</span></div></div><div class="squad-info"><h4 class="squad-name">${jugador.nombreCompleto}</h4><span class="squad-position">${jugador.posicion}</span><div class="squad-meta"><span><i class="far fa-calendar"></i> ${jugador.edad} años</span><span><i class="fas fa-ruler-vertical"></i> ${jugador.altura}m</span></div><div class="squad-stats"><div class="mini-stat"><span class="mini-stat-value">${jugador.stats.partidos}</span><span class="mini-stat-label">Partidos</span></div><div class="mini-stat"><span class="mini-stat-value">${jugador.stats.goles}</span><span class="mini-stat-label">Goles</span></div></div></div></a></article>`;
+    },
+
+    renderCuerpoTecnico: function() {
+        const container = document.getElementById('cuerpoTecnicoGrid');
+        if (!container) return;
+        const temporada = getTemporada(this.temporadaActiva);
+        let html = '';
+        temporada.cuerpoTecnico.forEach(miembro => {
+            const mainClass = miembro.esPrincipal ? 'main-coach' : '';
+            html += `<article class="coach-card ${mainClass}"><div class="coach-image"><img src="${miembro.imagen}" alt="${miembro.nombre}"></div><div class="coach-info"><span class="coach-role">${miembro.cargo}</span><h3 class="coach-name">${miembro.nombre}</h3><p class="coach-bio">${miembro.descripcion}</p>${miembro.estadisticas ? `<div class="coach-stats"><div class="coach-stat"><span class="coach-stat-value">${miembro.estadisticas.partidos}</span><span class="coach-stat-label">Partidos</span></div><div class="coach-stat"><span class="coach-stat-value">${Math.round(miembro.estadisticas.victorias / miembro.estadisticas.partidos * 100)}%</span><span class="coach-stat-label">Victorias</span></div></div>` : ''}</div></article>`;
+        });
+        container.innerHTML = html;
+    },
 
     // ===================================
     // FICHA JUGADOR (CON LÓGICA FALLECIDO/ALTURA)
@@ -110,12 +213,10 @@ const App = {
         const breadcrumb = document.querySelector('.breadcrumb .current');
         if (breadcrumb) breadcrumb.textContent = jugador.nombreCompleto;
 
-        // Lógica
         const esTemporadaActual = seasonId === CLUB_DATA.temporadaActual;
         const haFallecido = jugador.fallecido === true;
         const fechaFallecimiento = jugador.fechaFallecimiento || null;
 
-        // Edad
         let edadMostrar = jugador.edad;
         if (haFallecido && fechaFallecimiento && jugador.fechaNacimiento) {
             const nacimiento = new Date(jugador.fechaNacimiento);
@@ -150,7 +251,7 @@ const App = {
                         <div class="season-stat"><div class="season-stat-icon"><i class="fas fa-futbol"></i></div><div class="season-stat-content"><span class="season-stat-value">${jugador.stats.goles}</span><span class="season-stat-label">Goles</span></div></div>
                         <div class="season-stat"><div class="season-stat-icon"><i class="fas fa-hands-helping"></i></div><div class="season-stat-content"><span class="season-stat-value">${jugador.stats.asistencias}</span><span class="season-stat-label">Asistencias</span></div></div>
                         <div class="season-stat"><div class="season-stat-icon"><i class="fas fa-running"></i></div><div class="season-stat-content"><span class="season-stat-value">${jugador.stats.partidos}</span><span class="season-stat-label">Partidos</span></div></div>
-                        <div class="season-stat"><div class class="season-stat-icon"><i class="fas fa-clock"></i></div><div class="season-stat-content"><span class="season-stat-value">${jugador.stats.minutos.toLocaleString()}</span><span class="season-stat-label">Minutos</span></div></div>
+                        <div class="season-stat"><div class="season-stat-icon"><i class="fas fa-clock"></i></div><div class="season-stat-content"><span class="season-stat-value">${jugador.stats.minutos.toLocaleString()}</span><span class="season-stat-label">Minutos</span></div></div>
                     </div>
                 </div>
             </div>
@@ -176,7 +277,37 @@ const App = {
         return html;
     },
 
-    renderFichaOverview: function(jugador) { /* ... Igual que antes ... */ },
+    renderFichaOverview: function(jugador) {
+        const container = document.getElementById('tabOverview');
+        if (!container) return;
+        const fechaNac = formatearFecha(jugador.fechaNacimiento);
+        container.innerHTML = `
+            <div class="overview-grid">
+                <div class="performance-card">
+                    <h3 class="card-title">Rendimiento Temporada</h3>
+                    <div class="performance-stats">
+                        <div class="performance-item"><div class="performance-header"><span>Goles por partido</span><span class="performance-value">${(jugador.stats.goles / jugador.stats.partidos).toFixed(2)}</span></div><div class="performance-bar"><div class="performance-fill" style="width: ${(jugador.stats.goles / jugador.stats.partidos) * 100}%"></div></div></div>
+                        <div class="performance-item"><div class="performance-header"><span>Minutos por partido</span><span class="performance-value">${Math.round(jugador.stats.minutos / jugador.stats.partidos)}'</span></div><div class="performance-bar"><div class="performance-fill" style="width: ${(jugador.stats.minutos / jugador.stats.partidos / 90) * 100}%"></div></div></div>
+                    </div>
+                </div>
+                <div class="personal-info-card">
+                    <h3 class="card-title">Información Personal</h3>
+                    <div class="personal-info-list">
+                        <div class="info-row"><span class="info-label"><i class="far fa-calendar"></i> Nacimiento</span><span class="info-value">${fechaNac.completa}</span></div>
+                        <div class="info-row"><span class="info-label"><i class="fas fa-map-marker-alt"></i> Lugar</span><span class="info-value">${jugador.lugarNacimiento}</span></div>
+                        <div class="info-row"><span class="info-label"><i class="fas fa-flag"></i> Nacionalidad</span><span class="info-value">${jugador.nacionalidad}</span></div>
+                        <div class="info-row"><span class="info-label"><i class="far fa-calendar-check"></i> En el club desde</span><span class="info-value">${jugador.enClubDesde}</span></div>
+                    </div>
+                </div>
+                <div class="disciplinary-card">
+                    <h3 class="card-title">Disciplina Temporada</h3>
+                    <div class="cards-display">
+                        <div class="card-item yellow"><div class="card-icon"><i class="fas fa-square"></i></div><div class="card-info"><span class="card-count">${jugador.stats.amarillas}</span><span class="card-label">Amarillas</span></div></div>
+                        <div class="card-item red"><div class="card-icon"><i class="fas fa-square"></i></div><div class="card-info"><span class="card-count">${jugador.stats.rojas}</span><span class="card-label">Rojas</span></div></div>
+                    </div>
+                </div>
+            </div>`;
+    },
 
     renderFichaMatches: function(jugador, seasonId) {
         const container = document.getElementById('tabMatches');
