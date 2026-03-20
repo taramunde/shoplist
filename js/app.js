@@ -348,7 +348,7 @@ const App = {
     },
 
     // ===================================
-    // FICHA JUGADOR
+    // FICHA JUGADOR (ACTUALIZADO)
     // ===================================
     renderFichaJugador: function() {
         const container = document.getElementById('fichaJugadorContent');
@@ -356,8 +356,10 @@ const App = {
 
         const urlParams = new URLSearchParams(window.location.search);
         const jugadorId = urlParams.get('id') || 13;
+        // Leemos la temporada de la URL para saber qué datos mostrar
         const seasonId = urlParams.get('season') || CLUB_DATA.temporadaActual;
         
+        // Buscamos al jugador EN ESA TEMPORADA específica
         const jugador = getJugadorById(jugadorId, seasonId);
         if (!jugador) { container.innerHTML = '<p>Jugador no encontrado</p>'; return; }
 
@@ -365,6 +367,7 @@ const App = {
         const breadcrumb = document.querySelector('.breadcrumb .current');
         if (breadcrumb) breadcrumb.textContent = jugador.nombreCompleto;
 
+        // Renderizamos el Hero con los datos de esa temporada (Dorsal y Posición específicos)
         container.innerHTML = `
             <div class="player-photo-container">
                 <div class="player-photo-wrapper">
@@ -398,8 +401,10 @@ const App = {
         `;
 
         this.renderFichaOverview(jugador);
-        this.renderFichaMatches(jugador, seasonId); // Pasamos seasonId
-        this.renderFichaCareerHistory(jugador);
+        this.renderFichaMatches(jugador, seasonId);
+        
+        // Pasamos el jugador actual (que tiene el código) y el ID de la temporada para contexto
+        this.renderFichaCareerHistory(jugador, seasonId);
     },
 
     renderFichaOverview: function(jugador) {
@@ -442,23 +447,17 @@ const App = {
         `;
     },
 
-    // ===================================
-    // PARTIDOS (ACTUALIZADO)
-    // ===================================
     renderFichaMatches: function(jugador, seasonId) {
         const container = document.getElementById('tabMatches');
         if (!container) return;
-
         const temporada = getTemporada(seasonId);
         
-        // Verificar si hay partidos en la temporada
         if (!temporada.partidosJugados || temporada.partidosJugados.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#666;">No hay datos de partidos para esta temporada.</p>';
+            container.innerHTML = '<p style="text-align:center; color:#666; padding: 20px;">No hay datos de partidos para esta temporada.</p>';
             return;
         }
 
         let html = '<div class="matches-list">';
-
         temporada.partidosJugados.forEach(partido => {
             const fecha = formatearFecha(partido.fecha);
             let resultClass = '';
@@ -485,15 +484,14 @@ const App = {
                 </article>
             `;
         });
-
         html += '</div>';
         container.innerHTML = html;
     },
 
     // ===================================
-    // HISTORIAL CARRERA (ACTUALIZADO CON ESCUDO)
+    // HISTORIAL CARRERA (ACTUALIZADO)
     // ===================================
-    renderFichaCareerHistory: function(jugadorActual) {
+    renderFichaCareerHistory: function(jugadorActual, currentSeasonId) {
         const container = document.getElementById('tabCareer');
         if (!container) return;
         
@@ -504,6 +502,7 @@ const App = {
             const datosTemporada = CLUB_DATA.temporadas[temp.id];
             if (!datosTemporada) return;
 
+            // Buscamos por CÓDIGO único
             const jugadorEnTemporada = datosTemporada.jugadores.find(j => j.codigo === jugadorActual.codigo);
             
             if (jugadorEnTemporada) {
@@ -511,10 +510,12 @@ const App = {
                     temporada: temp.nombre,
                     temporadaId: temp.id,
                     equipo: CLUB_DATA.club.nombreCorto,
-                    // Usamos el logo definido en la clasificación de esa temporada (o default)
                     logo: datosTemporada.clasificacion.find(e => e.siglas === "CDV")?.logo || "https://picsum.photos/seed/villaferreira-logo/60/60",
                     stats: jugadorEnTemporada.stats,
-                    actual: temp.id === this.temporadaActiva
+                    // AÑADIMOS DORSAL Y POSICIÓN ESPECÍFICA DE ESA TEMPORADA
+                    dorsal: jugadorEnTemporada.dorsal,
+                    posicion: jugadorEnTemporada.posicion,
+                    actual: temp.id === currentSeasonId
                 });
 
                 totales.partidos += jugadorEnTemporada.stats.partidos;
@@ -530,7 +531,6 @@ const App = {
         historial.forEach(h => {
             const currentClass = h.actual ? 'current' : '';
             
-            // Escudo con imagen
             const badgeHtml = h.logo 
                 ? `<img src="${h.logo}" alt="CDV" class="team-badge-img">` 
                 : `<span class="team-badge-text">CDV</span>`;
@@ -545,6 +545,10 @@ const App = {
                                 ${h.equipo}
                             </span>
                             <span class="timeline-years">${h.temporada}</span>
+                        </div>
+                        <div class="timeline-position">
+                            <span class="pos-label"><i class="fas fa-tshirt"></i> #${h.dorsal}</span>
+                            <span class="pos-name">${h.posicion}</span>
                         </div>
                         <div class="timeline-stats">
                             <span><strong>${h.stats.partidos}</strong> Partidos</span>
