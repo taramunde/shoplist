@@ -195,8 +195,8 @@ const App = {
         container.innerHTML = html;
     },
 
-    // ===================================
-    // FICHA JUGADOR (CON LÓGICA FALLECIDO/ALTURA)
+        // ===================================
+    // FICHA JUGADOR (ACTUALIZADO)
     // ===================================
     renderFichaJugador: function() {
         const container = document.getElementById('fichaJugadorContent');
@@ -210,6 +210,10 @@ const App = {
         if (!jugador) { container.innerHTML = '<p>Jugador no encontrado</p>'; return; }
 
         document.title = `${jugador.nombreCompleto} | ${CLUB_DATA.club.nombreCorto}`;
+        
+        // Actualizar Meta Tags para compartición (Open Graph)
+        this.updateMetaTags(jugador);
+
         const breadcrumb = document.querySelector('.breadcrumb .current');
         if (breadcrumb) breadcrumb.textContent = jugador.nombreCompleto;
 
@@ -227,6 +231,16 @@ const App = {
             edadMostrar = edadMuerte;
         }
 
+        // Generar enlaces de compartir
+        const pageUrl = window.location.href;
+        const shareText = `Ficha de ${jugador.nombreCompleto} - ${CLUB_DATA.club.nombreCorto}`;
+        
+        const shareLinks = `
+            <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + pageUrl)}" target="_blank" class="player-social whatsapp" title="Compartir en WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}" target="_blank" class="player-social telegram" title="Compartir en Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}" target="_blank" class="player-social twitter" title="Compartir en Twitter"><i class="fab fa-twitter"></i></a>
+        `;
+
         container.innerHTML = `
             <div class="player-photo-container">
                 <div class="player-photo-wrapper">
@@ -240,7 +254,9 @@ const App = {
                 <div class="player-name-section">
                     <span class="player-position-label">${jugador.posicion}</span>
                     <h1 class="player-full-name">${jugador.nombreCompleto}</h1>
-                    ${jugador.redes && !haFallecido ? `<div class="player-social-links">${jugador.redes.instagram ? `<a href="${jugador.redes.instagram}" class="player-social" target="_blank"><i class="fab fa-instagram"></i></a>` : ''}${jugador.redes.twitter ? `<a href="${jugador.redes.twitter}" class="player-social" target="_blank"><i class="fab fa-twitter"></i></a>` : ''}</div>` : ''}
+                    <div class="player-social-links">
+                        ${shareLinks}
+                    </div>
                 </div>
                 <div class="player-quick-stats">
                     ${this.renderQuickStats(jugador, haFallecido, fechaFallecimiento, edadMostrar, esTemporadaActual)}
@@ -256,12 +272,53 @@ const App = {
                 </div>
             </div>
         `;
+
         this.renderFichaOverview(jugador);
         this.renderFichaMatches(jugador, seasonId);
         this.renderFichaCareerHistory(jugador, seasonId);
     },
 
+    // Nueva función para actualizar Meta Tags
+    updateMetaTags: function(jugador) {
+        // Título
+        let metaTitle = document.querySelector('meta[property="og:title"]');
+        if (!metaTitle) {
+            metaTitle = document.createElement('meta');
+            metaTitle.setAttribute('property', 'og:title');
+            document.head.appendChild(metaTitle);
+        }
+        metaTitle.setAttribute('content', `${jugador.nombreCompleto} - ${CLUB_DATA.club.nombreCorto}`);
+
+        // Descripción
+        let metaDesc = document.querySelector('meta[property="og:description"]');
+        if (!metaDesc) {
+            metaDesc = document.createElement('meta');
+            metaDesc.setAttribute('property', 'og:description');
+            document.head.appendChild(metaDesc);
+        }
+        metaDesc.setAttribute('content', `Ficha del jugador ${jugador.nombreCompleto}, ${jugador.posicion}. Temporada actual y estadísticas.`);
+
+        // Imagen (La importante para ver la foto al compartir)
+        let metaImage = document.querySelector('meta[property="og:image"]');
+        if (!metaImage) {
+            metaImage = document.createElement('meta');
+            metaImage.setAttribute('property', 'og:image');
+            document.head.appendChild(metaImage);
+        }
+        metaImage.setAttribute('content', jugador.imagen);
+
+        // URL
+        let metaUrl = document.querySelector('meta[property="og:url"]');
+        if (!metaUrl) {
+            metaUrl = document.createElement('meta');
+            metaUrl.setAttribute('property', 'og:url');
+            document.head.appendChild(metaUrl);
+        }
+        metaUrl.setAttribute('content', window.location.href);
+    },
+
     renderQuickStats: function(jugador, haFallecido, fechaFallecimiento, edadMostrar, esTemporadaActual) {
+        // ... (Mantener el código igual que en la respuesta anterior) ...
         const altura = jugador.altura ? `${jugador.altura}m` : 'Desconocida';
         let html = '';
         if (esTemporadaActual) {
