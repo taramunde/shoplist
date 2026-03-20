@@ -515,3 +515,60 @@
         gap: 15px;
     }
 }
+
+/* ===================================
+   SELECTOR DE TEMPORADAS
+   =================================== */
+.season-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.season-tab {
+    padding: 12px 30px;
+    background: var(--white);
+    border: 2px solid var(--gray-200);
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.season-tab:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.season-tab.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--white);
+}
+
+.current-badge {
+    background: var(--secondary-color);
+    color: var(--primary-dark);
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .season-tabs {
+        gap: 8px;
+    }
+    
+    .season-tab {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+}
