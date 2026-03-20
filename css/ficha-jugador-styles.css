@@ -871,3 +871,34 @@
 .timeline-position .pos-label i {
     font-size: 0.8rem;
 }
+
+/* ===================================
+   BREADCRUMB EN HERO OSCURO
+   =================================== */
+
+/* Contenedor del breadcrumb */
+.player-hero .breadcrumb {
+    color: rgba(255, 255, 255, 0.6); /* Color para el separador "/" */
+}
+
+/* Enlaces del breadcrumb */
+.player-hero .breadcrumb a {
+    color: rgba(255, 255, 255, 0.8); /* Blanco semi-transparente */
+    transition: color 0.3s ease;
+}
+
+/* Enlace al pasar el ratón */
+.player-hero .breadcrumb a:hover {
+    color: var(--secondary-color); /* Dorado */
+}
+
+/* Texto actual (ej: "Miguel Ángel Torres") */
+.player-hero .breadcrumb .current {
+    color: var(--white); /* Blanco puro */
+    font-weight: 600;
+}
+
+/* Separadores */
+.player-hero .breadcrumb span {
+    color: rgba(255, 255, 255, 0.4);
+}
