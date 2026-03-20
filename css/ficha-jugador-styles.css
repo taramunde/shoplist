@@ -836,3 +836,38 @@
     .cards-display { grid-template-columns: 1fr; }
     .totals-grid { grid-template-columns: 1fr; }
 }
+
+/* ===================================
+   ESTILOS HISTORIAL (Timeline Mejorado)
+   =================================== */
+.timeline-position {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.timeline-position .pos-label {
+    background: rgba(201, 162, 39, 0.2);
+    color: var(--secondary-color);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.timeline-position .pos-name {
+    font-weight: 600;
+    color: var(--gray-300);
+    font-size: 0.9rem;
+}
+
+/* Icono camiseta pequeño */
+.timeline-position .pos-label i {
+    font-size: 0.8rem;
+}
