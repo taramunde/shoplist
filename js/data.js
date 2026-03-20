@@ -89,6 +89,14 @@ const CLUB_DATA = {
                 { id: 2, nombre: "Roberto Vázquez", cargo: "Segundo Entrenador", imagen: "https://picsum.photos/seed/coach2/400/450", descripcion: "Especialista en análisis táctico.", esPrincipal: false },
                 { id: 3, nombre: "Miguel Serrano", cargo: "Preparador Físico", imagen: "https://picsum.photos/seed/coach3/400/450", descripcion: "Especialista en rendimiento deportivo.", esPrincipal: false },
                 { id: 4, nombre: "Antonio Cruz", cargo: "Entrenador de Porteros", imagen: "https://picsum.photos/seed/coach4/400/450", descripcion: "Ex-portero profesional.", esPrincipal: false }
+            ],
+
+            partidosJugados: [
+                { id: 1, jornada: 23, fecha: "2025-01-19", local: "Villaferreira", visitante: "Atlético Vergara", golesLocal: 2, golesVisitante: 1, resultado: "V" },
+                { id: 2, jornada: 22, fecha: "2025-01-12", local: "Cultural Soria", visitante: "Villaferreira", golesLocal: 0, golesVisitante: 3, resultado: "V" },
+                { id: 3, jornada: 21, fecha: "2025-01-05", local: "Villaferreira", visitante: "Racing Ferrol", golesLocal: 1, golesVisitante: 1, resultado: "E" },
+                { id: 4, jornada: 20, fecha: "2024-12-22", local: "Sporting Esteño", visitante: "Villaferreira", golesLocal: 2, golesVisitante: 4, resultado: "V" },
+                { id: 5, jornada: 19, fecha: "2024-12-15", local: "Villaferreira", visitante: "UD Rosaleda", golesLocal: 2, golesVisitante: 0, resultado: "V" }
             ]
         },
         
@@ -141,6 +149,14 @@ const CLUB_DATA = {
                 { id: 1, nombre: "Carlos Mendoza", cargo: "Entrenador Principal", imagen: "https://picsum.photos/seed/coach1-23/400/450", descripcion: "Temporada de consolidación en el banquillo.", esPrincipal: true, estadisticas: { partidos: 38, victorias: 18, empates: 10, derrotas: 10 } },
                 { id: 2, nombre: "Roberto Vázquez", cargo: "Segundo Entrenador", imagen: "https://picsum.photos/seed/coach2-23/400/450", descripcion: "Especialista en análisis táctico.", esPrincipal: false },
                 { id: 3, nombre: "Miguel Serrano", cargo: "Preparador Físico", imagen: "https://picsum.photos/seed/coach3-23/400/450", descripcion: "Especialista en rendimiento.", esPrincipal: false }
+            ],
+
+            partidosJugados: [
+                { id: 101, jornada: 38, fecha: "2024-05-19", local: "Villaferreira", visitante: "Cultural Soria", golesLocal: 3, golesVisitante: 1, resultado: "V" },
+                { id: 102, jornada: 37, fecha: "2024-05-12", local: "Racing Ferrol", visitante: "Villaferreira", golesLocal: 2, golesVisitante: 2, resultado: "E" },
+                { id: 103, jornada: 36, fecha: "2024-05-05", local: "Villaferreira", visitante: "Atlético Vergara", golesLocal: 1, golesVisitante: 0, resultado: "V" },
+                { id: 104, jornada: 35, fecha: "2024-04-28", local: "Sporting Esteño", visitante: "Villaferreira", golesLocal: 3, golesVisitante: 1, resultado: "D" },
+                { id: 105, jornada: 34, fecha: "2024-04-21", local: "Villaferreira", visitante: "UD Rosaleda", golesLocal: 2, golesVisitante: 1, resultado: "V" }
             ]
         },
         
@@ -187,8 +203,16 @@ const CLUB_DATA = {
             ],
             
             cuerpoTecnico: [
-                { id: 1, nombre: "Carlos Mendoza", cargo: "Entrenador Principal", imagen: "https://picsum.photos/seed/coach1-22/400/450", descripcion: "Primera temporada al frente del equipo.", esPrincipal: true, estadisticas: { partidos: 34, victorias: 22, empates: 6, derrotas: 6 } },
+                { id: 1, nombre: "Carlos Mendoza", cargo: "Entrenador Principal", imagen: "https://picsum.photos/seed/coach1-22/400/450", descripcion: "Primera temporada al frente del equipo. Ascenso logrado.", esPrincipal: true, estadisticas: { partidos: 34, victorias: 22, empates: 6, derrotas: 6 } },
                 { id: 2, nombre: "Roberto Vázquez", cargo: "Segundo Entrenador", imagen: "https://picsum.photos/seed/coach2-22/400/450", descripcion: "Especialista táctico.", esPrincipal: false }
+            ],
+
+            partidosJugados: [
+                { id: 201, jornada: 34, fecha: "2023-05-14", local: "Villaferreira", visitante: "Atlético Vergara", golesLocal: 3, golesVisitante: 0, resultado: "V" },
+                { id: 202, jornada: 33, fecha: "2023-05-07", local: "Cultural Soria", visitante: "Villaferreira", golesLocal: 1, golesVisitante: 1, resultado: "E" },
+                { id: 203, jornada: 32, fecha: "2023-04-30", local: "Villaferreira", visitante: "Zamora CF", golesLocal: 4, golesVisitante: 0, resultado: "V" },
+                { id: 204, jornada: 31, fecha: "2023-04-23", local: "Unión Sur", visitante: "Villaferreira", golesLocal: 1, golesVisitante: 2, resultado: "V" },
+                { id: 205, jornada: 30, fecha: "2023-04-16", local: "Villaferreira", visitante: "Deportivo Norte", golesLocal: 2, golesVisitante: 1, resultado: "V" }
             ]
         }
     },
