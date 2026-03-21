@@ -1,52 +1,59 @@
 /* ===================================
-   ESTILOS PÁGINA PRIMER EQUIPO
+   ESTILOS PÁGINA EQUIPO
    =================================== */
 
 /* Page Header */
 .page-header {
     position: relative;
-    background: var(--primary-dark);
-    padding: 100px 0 60px;
+    height: 320px;
+    display: flex;
+    align-items: flex-end;
+    background-color: var(--primary-dark);
     overflow: hidden;
 }
 
 .page-header-bg {
     position: absolute;
     inset: 0;
-    opacity: 0.3;
+    z-index: 1;
 }
 
 .page-header-bg img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 0.3;
+}
+
+.page-header .container {
+    position: relative;
+    z-index: 2;
+    padding-bottom: 40px;
 }
 
 .breadcrumb {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 0.9rem;
-    position: relative;
-    z-index: 1;
 }
 
 .breadcrumb a {
-    color: var(--gray-400);
+    color: rgba(255, 255, 255, 0.8);
     transition: var(--transition-fast);
 }
 
 .breadcrumb a:hover {
-    color: var(--secondary-color);
+    color: var(--white);
 }
 
 .breadcrumb span {
-    color: var(--gray-500);
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .breadcrumb .current {
-    color: var(--white);
+    color: var(--secondary-color);
     font-weight: 600;
 }
 
@@ -56,57 +63,54 @@
     font-weight: 700;
     color: var(--white);
     text-transform: uppercase;
-    position: relative;
-    z-index: 1;
+    line-height: 1.1;
     margin-bottom: 10px;
 }
 
 .page-subtitle {
     font-size: 1.1rem;
-    color: var(--gray-300);
-    position: relative;
-    z-index: 1;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 /* Team Stats Section */
 .team-stats-section {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     padding: 50px 0;
-    margin-top: -30px;
     position: relative;
     z-index: 10;
+    border-radius: 30px 30px 0 0;
 }
 
 .team-stats-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 20px;
+    gap: 15px;
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 25px 15px;
     text-align: center;
+    padding: 20px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: var(--transition);
-}
-
-.stat-card:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-5px);
 }
 
 .stat-icon {
-    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 15px;
+    background: rgba(201, 162, 39, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
     color: var(--secondary-color);
-    margin-bottom: 15px;
 }
 
 .stat-number {
     font-family: var(--font-heading);
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: var(--white);
     line-height: 1;
@@ -115,410 +119,12 @@
 
 .stat-label {
     font-size: 0.85rem;
-    color: var(--gray-300);
+    color: var(--gray-400);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-/* Full Squad Section */
-.full-squad-section {
-    padding: 70px 0;
-    background: var(--gray-50);
-}
-
-.position-group {
-    margin-bottom: 50px;
-}
-
-.position-group:last-child {
-    margin-bottom: 0;
-}
-
-.position-title {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-family: var(--font-heading);
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--primary-dark);
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--gray-200);
-}
-
-.position-icon {
-    width: 45px;
-    height: 45px;
-    background: var(--primary-color);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-size: 1.1rem;
-}
-
-.squad-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 25px;
-}
-
-/* Squad Card */
-.squad-card {
-    background: var(--white);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-}
-
-.squad-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-xl);
-}
-
-.squad-link {
-    display: block;
-}
-
-.squad-image {
-    position: relative;
-    overflow: hidden;
-}
-
-.squad-image img {
-    width: 100%;
-    height: 260px;
-    object-fit: cover;
-    transition: var(--transition);
-}
-
-.squad-card:hover .squad-image img {
-    transform: scale(1.08);
-}
-
-.squad-number {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    width: 50px;
-    height: 50px;
-    background: var(--secondary-color);
-    color: var(--primary-dark);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    font-weight: 700;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    z-index: 2;
-}
-
-.squad-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(26, 54, 93, 0.9), transparent);
-    opacity: 0;
-    transition: var(--transition);
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 30px;
-}
-
-.squad-card:hover .squad-overlay {
-    opacity: 1;
-}
-
-.view-profile {
-    color: var(--white);
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.squad-info {
-    padding: 20px;
-}
-
-.squad-name {
-    font-family: var(--font-heading);
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--gray-800);
-    margin-bottom: 5px;
-}
-
-.squad-position {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--primary-color);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
-}
-
-.squad-meta {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--gray-200);
-}
-
-.squad-meta span {
-    font-size: 0.85rem;
-    color: var(--gray-500);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.squad-meta i {
-    color: var(--secondary-color);
-}
-
-.squad-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-.mini-stat {
-    text-align: center;
-    padding: 10px;
-    background: var(--gray-50);
-    border-radius: 8px;
-}
-
-.mini-stat-value {
-    display: block;
-    font-family: var(--font-heading);
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.mini-stat-label {
-    font-size: 0.7rem;
-    color: var(--gray-500);
-    text-transform: uppercase;
-}
-
-/* Coaching Staff Section */
-.coaching-staff-section {
-    padding: 70px 0;
-    background: var(--white);
-}
-
-.coaching-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-}
-
-.coach-card {
-    background: var(--white);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-}
-
-.coach-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-xl);
-}
-
-.coach-card.main-coach {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: var(--white);
-}
-
-.coach-card.main-coach .coach-role {
-    color: var(--secondary-color);
-}
-
-.coach-card.main-coach .coach-name {
-    color: var(--white);
-}
-
-.coach-card.main-coach .coach-bio {
-    color: var(--gray-300);
-}
-
-.coach-card.main-coach .coach-stat-value {
-    color: var(--secondary-color);
-}
-
-.coach-card.main-coach .coach-stat-label {
-    color: var(--gray-300);
-}
-
-.coach-image {
-    overflow: hidden;
-}
-
-.coach-image img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    transition: var(--transition);
-}
-
-.coach-card:hover .coach-image img {
-    transform: scale(1.05);
-}
-
-.coach-info {
-    padding: 25px;
-}
-
-.coach-role {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--secondary-color);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    background: rgba(201, 162, 39, 0.1);
-    padding: 5px 12px;
-    border-radius: 20px;
-}
-
-.coach-card.main-coach .coach-role {
-    background: rgba(201, 162, 39, 0.2);
-}
-
-.coach-name {
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--gray-800);
-    margin-bottom: 12px;
-}
-
-.coach-bio {
-    font-size: 0.9rem;
-    color: var(--gray-500);
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-.coach-stats {
-    display: flex;
-    gap: 30px;
-    padding-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.coach-stat {
-    text-align: center;
-}
-
-.coach-stat-value {
-    display: block;
-    font-family: var(--font-heading);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.coach-stat-label {
-    font-size: 0.75rem;
-    color: var(--gray-500);
-    text-transform: uppercase;
-}
-
-/* Current Submenu */
-.submenu .current {
-    color: var(--secondary-color) !important;
-    font-weight: 600;
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
-    .squad-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .team-stats-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 1024px) {
-    .coaching-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .coach-card.main-coach {
-        grid-column: span 2;
-    }
-}
-
-@media (max-width: 900px) {
-    .squad-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .page-title {
-        font-size: 2.5rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .team-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .squad-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .coaching-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .coach-card.main-coach {
-        grid-column: span 1;
-    }
-    
-    .page-header {
-        padding: 80px 0 40px;
-    }
-    
-    .breadcrumb {
-        flex-wrap: wrap;
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .squad-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .team-stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .coach-stats {
-        flex-direction: column;
-        gap: 15px;
-    }
-}
-
-/* ===================================
-   SELECTOR DE TEMPORADAS
-   =================================== */
+/* Season Selector */
 .season-tabs {
     display: flex;
     gap: 10px;
@@ -562,22 +168,315 @@
     font-weight: 700;
 }
 
-@media (max-width: 768px) {
-    .season-tabs {
-        gap: 8px;
-    }
-    
-    .season-tab {
-        padding: 10px 20px;
-        font-size: 0.85rem;
-    }
+/* Full Squad Section */
+.full-squad-section {
+    padding: 60px 0;
+    background: var(--gray-50);
+}
+
+.position-group {
+    margin-bottom: 50px;
+}
+
+.position-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.position-icon {
+    width: 45px;
+    height: 45px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 1.1rem;
+}
+
+.position-title h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    text-transform: uppercase;
+}
+
+/* Squad Grid */
+.squad-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+/* Squad Card */
+.squad-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.squad-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.squad-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.squad-image {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+}
+
+.squad-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.squad-card:hover .squad-image img {
+    transform: scale(1.05);
+}
+
+.squad-number {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 50px;
+    height: 50px;
+    background: var(--secondary-color);
+    color: var(--primary-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.squad-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 54, 93, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.squad-card:hover .squad-overlay {
+    opacity: 1;
+}
+
+.view-profile {
+    background: var(--secondary-color);
+    color: var(--primary-dark);
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    transform: translateY(20px);
+    transition: var(--transition);
+}
+
+.squad-card:hover .view-profile {
+    transform: translateY(0);
+}
+
+.squad-info {
+    padding: 20px;
+}
+
+.squad-name {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.squad-position {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.squad-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.squad-meta i {
+    margin-right: 5px;
+    color: var(--gray-400);
+}
+
+.squad-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.mini-stat {
+    text-align: center;
+}
+
+.mini-stat-value {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gray-800);
+}
+
+.mini-stat-label {
+    font-size: 0.7rem;
+    color: var(--gray-400);
+    text-transform: uppercase;
+}
+
+/* Coaching Staff */
+.coaching-staff-section {
+    padding: 60px 0;
+    background: var(--white);
+}
+
+.coaching-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.coach-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-100);
+}
+
+.coach-image {
+    height: 250px;
+    overflow: hidden;
+}
+
+.coach-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+    transition: var(--transition);
+}
+
+.coach-card:hover .coach-image img {
+    filter: grayscale(0%);
+}
+
+.coach-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.coach-role {
+    display: inline-block;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.coach-name {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.coach-bio {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.coach-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--gray-100);
+}
+
+.coach-stat {
+    text-align: center;
+}
+
+.coach-stat-value {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.coach-stat-label {
+    font-size: 0.7rem;
+    color: var(--gray-400);
+    text-transform: uppercase;
+}
+
+/* Main Coach */
+.main-coach {
+    grid-column: span 2;
+}
+
+.main-coach .coach-image {
+    height: 350px;
+}
+
+.main-coach .coach-info {
+    padding: 25px;
 }
 
 /* ===================================
-   LAZO NEGRO EN PLANTILLA (TARJETAS)
+   LAZO NEGRO EN TARJETAS DE PLANTILLA
+   (AÑADIDO AL FINAL)
    =================================== */
 
-/* Importante: El contenedor de la imagen debe ser relativo */
+/* Asegurar que el contenedor de la imagen tenga posición relativa */
 .squad-image {
     position: relative;
     overflow: hidden;
@@ -605,7 +504,7 @@
 }
 
 .deceased-ribbon::before {
-    border-width: 40px; /* Mitad del ancho/alto */
+    border-width: 40px;
     border-right-color: #000;
     border-top-color: #000;
 }
@@ -620,35 +519,40 @@
 }
 
 /* ===================================
-   LAZO NEGRO (IMAGEN) EN PLANTILLA - CORREGIDO
+   RESPONSIVE
    =================================== */
-
-/* 1. Asegurar posición relativa en la tarjeta */
-.squad-image {
-    position: relative;
-    overflow: hidden;
+@media (max-width: 1200px) {
+    .team-stats-grid { grid-template-columns: repeat(3, 1fr); }
+    .squad-grid { grid-template-columns: repeat(3, 1fr); }
+    .coaching-grid { grid-template-columns: repeat(2, 1fr); }
+    .main-coach { grid-column: span 2; }
 }
 
-/* 2. Estilos del contenedor del lazo */
-.deceased-ribbon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 80px;   /* Ajusta aquí el tamaño de tu imagen */
-    height: 80px;  /* Ajusta aquí el tamaño de tu imagen */
-    z-index: 5;
-    pointer-events: none;
+@media (max-width: 768px) {
+    .page-header { height: 240px; }
+    .page-title { font-size: 2.5rem; }
     
-    /* TU IMAGEN AQUÍ: */
-    background-image: url('../img/lazo-negro.png'); /* Cambia esta ruta */
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: top right;
+    .team-stats-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 10px;
+    }
+    
+    .stat-number { font-size: 1.8rem; }
+    
+    .squad-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    
+    .squad-image { height: 220px; }
+    
+    .coaching-grid { grid-template-columns: 1fr; }
+    .main-coach { grid-column: span 1; }
+    
+    .main-coach .coach-image { height: 250px; }
 }
 
-/* 3. IMPORTANTE: Esto anula el código viejo del triángulo */
-.deceased-ribbon::before,
-.deceased-ribbon::after {
-    content: none !important; /* Elimina el triángulo negro que se veía detrás */
-    display: none !important;
+@media (max-width: 480px) {
+    .squad-grid { grid-template-columns: 1fr; }
+    .squad-image { height: 300px; }
+    
+    .stat-card { padding: 15px 10px; }
+    .stat-icon { width: 40px; height: 40px; }
 }
