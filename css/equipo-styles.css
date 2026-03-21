@@ -572,3 +572,49 @@
         font-size: 0.85rem;
     }
 }
+
+/* ===================================
+   LAZO NEGRO EN PLANTILLA (TARJETAS)
+   =================================== */
+
+/* Importante: El contenedor de la imagen debe ser relativo */
+.squad-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.deceased-ribbon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;  /* Tamaño ajustado para tarjetas pequeñas */
+    height: 80px;
+    overflow: hidden;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.deceased-ribbon::before,
+.deceased-ribbon::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+
+.deceased-ribbon::before {
+    border-width: 40px; /* Mitad del ancho/alto */
+    border-right-color: #000;
+    border-top-color: #000;
+}
+
+.deceased-ribbon::after {
+    border-width: 36px;
+    border-right-color: transparent; 
+    border-top-color: transparent;
+    border-left-color: rgba(0,0,0,0.1);
+    border-bottom-color: rgba(0,0,0,0.1);
+    z-index: -1;
+}
