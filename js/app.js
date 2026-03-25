@@ -1,321 +1,161 @@
-/**
- * Shopping List Application
- * =========================
- * A simple shopping list with QR code and link sharing.
- * Data is encoded in URL for sharing across devices.
- * 
- * Files:
- * - index.html    : Main HTML structure
- * - css/style.css : All styles
- * - js/app.js     : This file - all functionality
- */
-
-// ========================================
-// Global Variables
-// ========================================
-
-let shoppingList = [];
-
-// ========================================
-// Initialization
-// ========================================
-
-/**
- * Initialize the application
- * Checks for shared data in URL or loads from localStorage
- */
-function init() {
-    // Check if there's shared data in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const sharedData = urlParams.get('list');
-    
-    if (sharedData) {
-        try {
-            // Decode the shared list from URL
-            const decoded = atob(sharedData);
-            shoppingList = JSON.parse(decoded);
-            document.getElementById('sharedBadge').style.display = 'inline-flex';
-        } catch (e) {
-            console.error('Failed to parse shared list:', e);
-            shoppingList = loadFromStorage();
-        }
-    } else {
-        // Load from localStorage if no shared data
-        shoppingList = loadFromStorage();
-    }
-
-    renderList();
-}
-
-// ========================================
-// Storage Functions
-// ========================================
-
-/**
- * Save the shopping list to localStorage
- */
-function saveToStorage() {
-    localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
-}
-
-/**
- * Load the shopping list from localStorage
- * @returns {Array} The saved shopping list or empty array
- */
-function loadFromStorage() {
-    const saved = localStorage.getItem('shoppingList');
-    return saved ? JSON.parse(saved) : [];
-}
-
-// ========================================
-// Item Management Functions
-// ========================================
-
-/**
- * Add a new item to the shopping list
- */
-function addItem() {
-    const input = document.getElementById('itemInput');
-    const text = input.value.trim();
-    
-    if (text) {
-        shoppingList.push({
-            id: Date.now(),
-            text: text,
-            completed: false
-        });
-        input.value = '';
-        saveToStorage();
-        renderList();
-    }
-    
-    input.focus();
-}
-
-/**
- * Handle Enter key press in the input field
- * @param {KeyboardEvent} event - The keyboard event
- */
-function handleKeyPress(event) {
-    if (event.key === 'Enter') {
-        addItem();
-    }
-}
-
-/**
- * Toggle the completed status of an item
- * @param {number} id - The ID of the item to toggle
- */
-function toggleItem(id) {
-    const item = shoppingList.find(item => item.id === id);
-    if (item) {
-        item.completed = !item.completed;
-        saveToStorage();
-        renderList();
-    }
-}
-
-/**
- * Delete an item from the shopping list
- * @param {number} id - The ID of the item to delete
- */
-function deleteItem(id) {
-    shoppingList = shoppingList.filter(item => item.id !== id);
-    saveToStorage();
-    renderList();
-}
-
-/**
- * Clear all completed items from the list
- */
-function clearCompleted() {
-    shoppingList = shoppingList.filter(item => !item.completed);
-    saveToStorage();
-    renderList();
-}
-
-// ========================================
-// Rendering Functions
-// ========================================
-
-/**
- * Render the shopping list to the DOM
- */
-function renderList() {
-    const container = document.getElementById('listContainer');
-    const totalCount = document.getElementById('totalCount');
-    const completedCount = document.getElementById('completedCount');
+document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const itemInput = document.getElementById('itemInput');
+    const addBtn = document.getElementById('addBtn');
+    const shoppingList = document.getElementById('shoppingList');
+    const emptyMsg = document.getElementById('emptyMsg');
     const shareBtn = document.getElementById('shareBtn');
-    
-    // Update stats
-    const total = shoppingList.length;
-    const completed = shoppingList.filter(item => item.completed).length;
-    totalCount.textContent = `📝 ${total} item${total !== 1 ? 's' : ''}`;
-    completedCount.textContent = `✅ ${completed} done`;
-    
-    // Show/hide share button
-    shareBtn.style.display = total > 0 ? 'flex' : 'none';
-    
-    // Show empty state if no items
-    if (total === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="icon">🛍️</div>
-                <p>Your shopping list is empty.<br>Add some items to get started!</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // Render items
-    container.innerHTML = shoppingList.map(item => `
-        <div class="list-item ${item.completed ? 'completed' : ''}">
-            <div class="checkbox ${item.completed ? 'checked' : ''}" onclick="toggleItem(${item.id})"></div>
-            <span class="item-text">${escapeHtml(item.text)}</span>
-            <button class="delete-btn" onclick="deleteItem(${item.id})" title="Delete">✕</button>
-        </div>
-    `).join('');
-}
+    const clearBtn = document.getElementById('clearBtn');
+    const modal = document.getElementById('shareModal');
+    const closeBtn = document.querySelector('.close-btn');
+    const qrcodeContainer = document.getElementById('qrcodeContainer');
+    const shareLinkInput = document.getElementById('shareLink');
+    const copyBtn = document.getElementById('copyBtn');
 
-/**
- * Escape HTML special characters to prevent XSS
- * @param {string} text - The text to escape
- * @returns {string} The escaped text
- */
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+    // State
+    let items = [];
 
-// ========================================
-// Sharing Functions
-// ========================================
+    // --- Core Functions ---
 
-/**
- * Generate a shareable URL with the shopping list encoded
- * @returns {string} The shareable URL
- */
-function generateShareLink() {
-    const baseUrl = window.location.origin + window.location.pathname;
-    const encodedData = btoa(JSON.stringify(shoppingList));
-    return `${baseUrl}?list=${encodeURIComponent(encodedData)}`;
-}
-
-/**
- * Open the share modal with QR code and link
- */
-function openShareModal() {
-    if (shoppingList.length === 0) {
-        showToast('Add some items first!');
-        return;
-    }
-    
-    const shareLink = generateShareLink();
-    document.getElementById('shareLink').textContent = shareLink;
-    
-    // Generate QR code
-    const canvas = document.getElementById('qrCanvas');
-    QRCode.toCanvas(canvas, shareLink, {
-        width: 200,
-        margin: 2,
-        color: {
-            dark: '#333333',
-            light: '#ffffff'
+    // 1. Initialize: Check if URL contains data
+    function init() {
+        const params = new URLSearchParams(window.location.search);
+        const data = params.get('data');
+        
+        if (data) {
+            try {
+                // Decode Base64 string back to JSON
+                const decoded = atob(decodeURIComponent(data));
+                items = JSON.parse(decoded);
+            } catch (e) {
+                console.error("Could not load list from URL", e);
+                items = [];
+            }
         }
-    }, function(error) {
-        if (error) {
-            console.error('QR Code error:', error);
+        renderList();
+    }
+
+    // 2. Update URL without reloading page
+    function updateUrl() {
+        if (items.length === 0) {
+            // Clean URL if list is empty
+            window.history.replaceState({}, '', window.location.pathname);
+            return;
+        }
+
+        // Convert items to JSON -> Base64
+        const jsonString = JSON.stringify(items);
+        const encodedData = btoa(unescape(encodeURIComponent(jsonString)));
+        const newUrl = `${window.location.origin}${window.location.pathname}?data=${encodeURIComponent(encodedData)}`;
+        
+        window.history.replaceState({}, '', newUrl);
+    }
+
+    // 3. Render List to DOM
+    function renderList() {
+        shoppingList.innerHTML = '';
+        
+        if (items.length === 0) {
+            emptyMsg.style.display = 'block';
+        } else {
+            emptyMsg.style.display = 'none';
+            items.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = `list-item ${item.checked ? 'checked' : ''}`;
+                li.innerHTML = `
+                    <span onclick="toggleItem(${index})" style="cursor:pointer; flex:1;">${item.text}</span>
+                    <button class="delete-btn" onclick="deleteItem(${index})">X</button>
+                `;
+                shoppingList.appendChild(li);
+            });
+        }
+        updateUrl();
+    }
+
+    // 4. Add Item
+    function addItem() {
+        const text = itemInput.value.trim();
+        if (text) {
+            items.push({ text: text, checked: false });
+            itemInput.value = '';
+            renderList();
+        }
+    }
+
+    // Make functions global for inline onclick handlers
+    window.toggleItem = (index) => {
+        items[index].checked = !items[index].checked;
+        renderList();
+    };
+
+    window.deleteItem = (index) => {
+        items.splice(index, 1);
+        renderList();
+    };
+
+    // --- Event Listeners ---
+
+    addBtn.addEventListener('click', addItem);
+    itemInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addItem();
+    });
+
+    clearBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear the list?')) {
+            items = [];
+            renderList();
         }
     });
-    
-    document.getElementById('shareModal').classList.add('active');
-}
 
-/**
- * Close the share modal
- */
-function closeShareModal() {
-    document.getElementById('shareModal').classList.remove('active');
-}
+    // --- Sharing Logic ---
 
-/**
- * Copy the share link to clipboard
- */
-function copyLink() {
-    const shareLink = generateShareLink();
-    
-    // Try modern clipboard API first
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(shareLink).then(() => {
-            showToast('Link copied to clipboard!');
-        }).catch(() => {
-            fallbackCopy(shareLink);
+    shareBtn.addEventListener('click', () => {
+        if (items.length === 0) {
+            alert("Add items to the list before sharing!");
+            return;
+        }
+
+        // Ensure URL is up to date
+        updateUrl();
+        const currentUrl = window.location.href;
+        shareLinkInput.value = currentUrl;
+
+        // Clear previous QR code
+        qrcodeContainer.innerHTML = '';
+
+        // Generate new QR code
+        new QRCode(qrcodeContainer, {
+            text: currentUrl,
+            width: 200,
+            height: 200,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
         });
-    } else {
-        fallbackCopy(shareLink);
-    }
-}
 
-/**
- * Fallback method to copy text to clipboard
- * @param {string} text - The text to copy
- */
-function fallbackCopy(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-    
-    try {
-        document.execCommand('copy');
-        showToast('Link copied to clipboard!');
-    } catch (e) {
-        showToast('Failed to copy. Please copy manually.');
-    }
-    
-    document.body.removeChild(textarea);
-}
+        modal.style.display = 'block';
+    });
 
-// ========================================
-// UI Helper Functions
-// ========================================
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
 
-/**
- * Show a toast notification
- * @param {string} message - The message to display
- */
-function showToast(message) {
-    // Remove existing toast if any
-    const existing = document.querySelector('.toast');
-    if (existing) {
-        existing.remove();
-    }
-    
-    // Create and show new toast
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
-}
+    window.addEventListener('click', (e) => {
+        if (e.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
 
-// ========================================
-// Event Listeners
-// ========================================
+    copyBtn.addEventListener('click', () => {
+        shareLinkInput.select();
+        navigator.clipboard.writeText(shareLinkInput.value)
+            .then(() => {
+                copyBtn.textContent = "Copied!";
+                setTimeout(() => copyBtn.textContent = "Copy", 2000);
+            })
+            .catch(err => console.error('Failed to copy', err));
+    });
 
-// Close modal when clicking outside
-document.getElementById('shareModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeShareModal();
-    }
+    // Initialize App
+    init();
 });
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', init);
