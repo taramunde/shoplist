@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Shopping List</title>
-    <link rel="stylesheet" href="css/style.css?nocache=20251231v2">
+    <title>Smart Shopping List Pro</title>
+    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
@@ -12,37 +12,56 @@
 
     <div class="container">
         <header>
-            <h1>Shopping List</h1>
-            <p class="subtitle">Create, Share, and Shop.</p>
+            <h1 id="displayStoreName">Mi Lista de Compra</h1>
+            <p class="subtitle">Organizada por departamentos</p>
         </header>
 
-        <div class="input-group">
-            <input type="text" id="itemInput" placeholder="Add an item (e.g., Milk)" autocomplete="off">
-            <button id="addBtn">Add</button>
+        <div class="store-config">
+            <input type="text" id="storeInput" placeholder="Nombre de la tienda (ej: Mercadona)">
+        </div>
+
+        <div class="input-section">
+            <div class="input-row">
+                <input type="text" id="itemInput" placeholder="Producto..." autocomplete="off">
+                <input type="number" id="priceInput" placeholder="€" step="0.01">
+            </div>
+            <div class="input-row">
+                <select id="categoryInput">
+                    <option value="General">General</option>
+                    <option value="Fruta y Verdura">Fruta y Verdura</option>
+                    <option value="Carnicería/Pescadería">Carnicería/Pescadería</option>
+                    <option value="Lácteos">Lácteos</option>
+                    <option value="Congelados">Congelados</option>
+                    <option value="Limpieza">Limpieza</option>
+                    <option value="Bebidas">Bebidas</option>
+                </select>
+                <button id="addBtn">Añadir</button>
+            </div>
         </div>
 
         <div class="list-container">
-            <ul id="shoppingList"></ul>
-            <p id="emptyMsg">Your list is empty. Add items above.</p>
+            <div id="shoppingList"></div>
+            <p id="emptyMsg">La lista está vacía.</p>
+        </div>
+
+        <div class="total-section">
+            <strong>Total estimado: <span id="totalPrice">0.00</span>€</strong>
         </div>
 
         <div class="actions">
-            <button id="scanBtn" class="btn-secondary">Scan QR</button>
-            <button id="shareBtn" class="btn-primary">Share List</button>
-            <button id="clearBtn" class="btn-danger">Clear List</button>
+            <button id="scanBtn" class="btn-secondary">Escanear</button>
+            <button id="shareBtn" class="btn-primary">Compartir</button>
+            <button id="clearBtn" class="btn-danger">Borrar</button>
         </div>
 
         <div id="shareModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn">&times;</span>
-                <h2>Share Your List</h2>
-                <p>Scan the QR code or copy the link:</p>
-                
+                <h2>Compartir Lista</h2>
                 <div id="qrcodeContainer"></div>
-                
                 <div class="link-group">
                     <input type="text" id="shareLink" readonly>
-                    <button id="copyBtn">Copy</button>
+                    <button id="copyBtn">Copiar</button>
                 </div>
             </div>
         </div>
@@ -50,13 +69,12 @@
         <div id="scanModal" class="modal">
             <div class="modal-content">
                 <span class="close-scan-btn close-btn">&times;</span>
-                <h2>Scan a List</h2>
-                <p>Point your camera at the QR code.</p>
-                <div id="reader" style="width: 100%; margin-top: 15px;"></div>
+                <h2>Escanear Lista</h2>
+                <div id="reader"></div>
             </div>
         </div>
     </div>
 
-    <script src="js/app.js?nocache=20251231v2"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
