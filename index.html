@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Shopping List</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Library for QR Code Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
 
@@ -16,25 +16,22 @@
             <p class="subtitle">Create, Share, and Shop.</p>
         </header>
 
-        <!-- Input Section -->
         <div class="input-group">
             <input type="text" id="itemInput" placeholder="Add an item (e.g., Milk)" autocomplete="off">
             <button id="addBtn">Add</button>
         </div>
 
-        <!-- List Display Section -->
         <div class="list-container">
             <ul id="shoppingList"></ul>
             <p id="emptyMsg">Your list is empty. Add items above.</p>
         </div>
 
-        <!-- Action Buttons -->
         <div class="actions">
+            <button id="scanBtn" class="btn-secondary">Scan QR</button>
             <button id="shareBtn" class="btn-primary">Share List</button>
             <button id="clearBtn" class="btn-danger">Clear List</button>
         </div>
 
-        <!-- Share Modal -->
         <div id="shareModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn">&times;</span>
@@ -47,6 +44,15 @@
                     <input type="text" id="shareLink" readonly>
                     <button id="copyBtn">Copy</button>
                 </div>
+            </div>
+        </div>
+
+        <div id="scanModal" class="modal">
+            <div class="modal-content">
+                <span class="close-scan-btn close-btn">&times;</span>
+                <h2>Scan a List</h2>
+                <p>Point your camera at the QR code.</p>
+                <div id="reader" style="width: 100%; margin-top: 15px;"></div>
             </div>
         </div>
     </div>
