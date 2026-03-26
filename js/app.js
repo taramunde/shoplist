@@ -1,210 +1,158 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements - Base & Share
+    // Elementos del DOM
     const itemInput = document.getElementById('itemInput');
+    const priceInput = document.getElementById('priceInput');
+    const categoryInput = document.getElementById('categoryInput');
+    const storeInput = document.getElementById('storeInput');
+    const displayStoreName = document.getElementById('displayStoreName');
     const addBtn = document.getElementById('addBtn');
     const shoppingList = document.getElementById('shoppingList');
+    const totalPriceEl = document.getElementById('totalPrice');
     const emptyMsg = document.getElementById('emptyMsg');
-    const shareBtn = document.getElementById('shareBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const modal = document.getElementById('shareModal');
-    const closeBtn = document.querySelector('.close-btn');
-    const qrcodeContainer = document.getElementById('qrcodeContainer');
-    const shareLinkInput = document.getElementById('shareLink');
-    const copyBtn = document.getElementById('copyBtn');
 
-    // DOM Elements - Scan
-    const scanBtn = document.getElementById('scanBtn');
-    const scanModal = document.getElementById('scanModal');
-    const closeScanBtn = document.querySelector('.close-scan-btn');
+    let state = {
+        storeName: "Mi Lista",
+        items: []
+    };
 
-    // State
-    let items = [];
-    let html5QrcodeScanner = null; // Guardará la instancia de la cámara
+    let html5QrcodeScanner = null;
 
-    // --- Core Functions ---
-
-    // 1. Initialize: Check if URL contains data
+    // 1. Inicializar
     function init() {
         const params = new URLSearchParams(window.location.search);
         const data = params.get('data');
         
         if (data) {
             try {
-                // Decode Base64 string back to JSON
                 const decoded = atob(decodeURIComponent(data));
-                items = JSON.parse(decoded);
+                state = JSON.parse(decoded);
+                storeInput.value = state.storeName;
             } catch (e) {
-                console.error("Could not load list from URL", e);
-                items = [];
+                console.error("Error cargando datos", e);
             }
         }
-        renderList();
+        render();
     }
 
-    // 2. Update URL without reloading page
+    // 2. Guardar y Actualizar URL
     function updateUrl() {
-        if (items.length === 0) {
+        state.storeName = storeInput.value || "Mi Lista";
+        displayStoreName.textContent = state.storeName;
+
+        if (state.items.length === 0 && state.storeName === "Mi Lista") {
             window.history.replaceState({}, '', window.location.pathname);
             return;
         }
 
-        // Convert items to JSON -> Base64
-        const jsonString = JSON.stringify(items);
+        const jsonString = JSON.stringify(state);
         const encodedData = btoa(unescape(encodeURIComponent(jsonString)));
         const newUrl = `${window.location.origin}${window.location.pathname}?data=${encodeURIComponent(encodedData)}`;
-        
         window.history.replaceState({}, '', newUrl);
     }
 
-    // 3. Render List to DOM
-    function renderList() {
+    // 3. Renderizado Agrupado por Categoría
+    function render() {
         shoppingList.innerHTML = '';
-        
-        if (items.length === 0) {
+        let total = 0;
+
+        if (state.items.length === 0) {
             emptyMsg.style.display = 'block';
+            totalPriceEl.textContent = "0.00";
         } else {
             emptyMsg.style.display = 'none';
-            items.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.className = `list-item ${item.checked ? 'checked' : ''}`;
-                li.innerHTML = `
-                    <span onclick="toggleItem(${index})" style="cursor:pointer; flex:1;">${item.text}</span>
-                    <button class="delete-btn" onclick="deleteItem(${index})">X</button>
-                `;
-                shoppingList.appendChild(li);
-            });
+            
+            // Agrupar items por categoría
+            const groups = state.items.reduce((acc, item) => {
+                if (!acc[item.category]) acc[item.category] = [];
+                acc[item.category].push(item);
+                return acc;
+            }, {});
+
+            for (const category in groups) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'category-group';
+                groupDiv.innerHTML = `<div class="category-title">${category}</div>`;
+
+                groups[category].forEach((item) => {
+                    const idx = state.items.indexOf(item);
+                    const itemPrice = parseFloat(item.price) || 0;
+                    total += item.checked ? 0 : itemPrice;
+
+                    const li = document.createElement('div');
+                    li.className = `list-item ${item.checked ? 'checked' : ''}`;
+                    li.innerHTML = `
+                        <div onclick="toggleItem(${idx})" style="flex:1; cursor:pointer">
+                            <span>${item.text}</span>
+                            <small style="display:block; color:#888">${itemPrice > 0 ? itemPrice.toFixed(2) + '€' : ''}</small>
+                        </div>
+                        <button onclick="deleteItem(${idx})" style="color:red; background:none; border:none; font-weight:bold; padding:10px">X</button>
+                    `;
+                    groupDiv.appendChild(li);
+                });
+                shoppingList.appendChild(groupDiv);
+            }
+            totalPriceEl.textContent = total.toFixed(2);
         }
         updateUrl();
     }
 
-    // 4. Add Item
+    // 4. Acciones
     function addItem() {
         const text = itemInput.value.trim();
+        const price = priceInput.value || 0;
+        const category = categoryInput.value;
+
         if (text) {
-            items.push({ text: text, checked: false });
+            state.items.push({ text, price, category, checked: false });
             itemInput.value = '';
-            renderList();
+            priceInput.value = '';
+            render();
         }
     }
 
-    // Make functions global for inline onclick handlers
     window.toggleItem = (index) => {
-        items[index].checked = !items[index].checked;
-        renderList();
+        state.items[index].checked = !state.items[index].checked;
+        render();
     };
 
     window.deleteItem = (index) => {
-        items.splice(index, 1);
-        renderList();
+        state.items.splice(index, 1);
+        render();
     };
 
-    // --- Basic Event Listeners ---
-
+    // Eventos
     addBtn.addEventListener('click', addItem);
-    itemInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addItem();
+    storeInput.addEventListener('input', updateUrl);
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        if(confirm("¿Borrar todo?")) { state.items = []; render(); }
     });
 
-    clearBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to clear the list?')) {
-            items = [];
-            renderList();
-        }
-    });
-
-    // --- Scanning Logic ---
-
-    scanBtn.addEventListener('click', () => {
-        scanModal.style.display = 'block';
-        
-        // Inicializar el escáner cuando se abre el modal
-        html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader",
-            { fps: 10, qrbox: {width: 250, height: 250} },
-            false
-        );
-        
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-    });
-
-    function onScanSuccess(decodedText, decodedResult) {
-        // Detener la cámara y cerrar el modal
-        html5QrcodeScanner.clear();
-        scanModal.style.display = 'none';
-        
-        // Comprobar si es un enlace de nuestra app
-        if (decodedText.includes('?data=')) {
-            window.location.href = decodedText;
-        } else {
-            alert("This QR code doesn't seem to be a valid shopping list.");
-        }
-    }
-
-    function onScanFailure(error) {
-        // Normalmente se ignora porque la cámara lee constantemente buscando el código
-    }
-
-    closeScanBtn.addEventListener('click', () => {
-        scanModal.style.display = 'none';
-        if (html5QrcodeScanner) {
-            html5QrcodeScanner.clear(); // Apagar cámara
-        }
-    });
-
-    // --- Sharing Logic ---
-
-    shareBtn.addEventListener('click', () => {
-        if (items.length === 0) {
-            alert("Add items to the list before sharing!");
-            return;
-        }
-
+    // --- Lógica Compartir/Escanear ---
+    document.getElementById('shareBtn').addEventListener('click', () => {
         updateUrl();
-        const currentUrl = window.location.href;
-        shareLinkInput.value = currentUrl;
+        const url = window.location.href;
+        document.getElementById('shareLink').value = url;
+        document.getElementById('qrcodeContainer').innerHTML = '';
+        new QRCode(document.getElementById('qrcodeContainer'), { text: url, width: 200, height: 200 });
+        document.getElementById('shareModal').style.display = 'block';
+    });
 
-        qrcodeContainer.innerHTML = '';
-
-        new QRCode(qrcodeContainer, {
-            text: currentUrl,
-            width: 200,
-            height: 200,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
+    document.getElementById('scanBtn').addEventListener('click', () => {
+        document.getElementById('scanModal').style.display = 'block';
+        html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render((text) => {
+            html5QrcodeScanner.clear();
+            window.location.href = text;
         });
-
-        modal.style.display = 'block';
     });
 
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
+    // Cerrar Modales
+    document.querySelectorAll('.close-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+            if(html5QrcodeScanner) html5QrcodeScanner.clear();
+        };
     });
 
-    copyBtn.addEventListener('click', () => {
-        shareLinkInput.select();
-        navigator.clipboard.writeText(shareLinkInput.value)
-            .then(() => {
-                copyBtn.textContent = "Copied!";
-                setTimeout(() => copyBtn.textContent = "Copy", 2000);
-            })
-            .catch(err => console.error('Failed to copy', err));
-    });
-
-    // --- Global Window Clicks ---
-    
-    window.addEventListener('click', (e) => {
-        if (e.target == modal) {
-            modal.style.display = 'none';
-        }
-        if (e.target == scanModal) {
-            scanModal.style.display = 'none';
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.clear(); // Apagar cámara si cierras haciendo clic fuera
-            }
-        }
-    });
-
-    // Initialize App
     init();
 });
