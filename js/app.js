@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
+    // DOM Elements - Base & Share
     const itemInput = document.getElementById('itemInput');
     const addBtn = document.getElementById('addBtn');
     const shoppingList = document.getElementById('shoppingList');
@@ -12,8 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const shareLinkInput = document.getElementById('shareLink');
     const copyBtn = document.getElementById('copyBtn');
 
+    // DOM Elements - Scan
+    const scanBtn = document.getElementById('scanBtn');
+    const scanModal = document.getElementById('scanModal');
+    const closeScanBtn = document.querySelector('.close-scan-btn');
+
     // State
     let items = [];
+    let html5QrcodeScanner = null; // Guardará la instancia de la cámara
 
     // --- Core Functions ---
 
@@ -38,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Update URL without reloading page
     function updateUrl() {
         if (items.length === 0) {
-            // Clean URL if list is empty
             window.history.replaceState({}, '', window.location.pathname);
             return;
         }
@@ -93,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderList();
     };
 
-    // --- Event Listeners ---
+    // --- Basic Event Listeners ---
 
     addBtn.addEventListener('click', addItem);
     itemInput.addEventListener('keypress', (e) => {
@@ -107,6 +112,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Scanning Logic ---
+
+    scanBtn.addEventListener('click', () => {
+        scanModal.style.display = 'block';
+        
+        // Inicializar el escáner cuando se abre el modal
+        html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader",
+            { fps: 10, qrbox: {width: 250, height: 250} },
+            false
+        );
+        
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    });
+
+    function onScanSuccess(decodedText, decodedResult) {
+        // Detener la cámara y cerrar el modal
+        html5QrcodeScanner.clear();
+        scanModal.style.display = 'none';
+        
+        // Comprobar si es un enlace de nuestra app
+        if (decodedText.includes('?data=')) {
+            window.location.href = decodedText;
+        } else {
+            alert("This QR code doesn't seem to be a valid shopping list.");
+        }
+    }
+
+    function onScanFailure(error) {
+        // Normalmente se ignora porque la cámara lee constantemente buscando el código
+    }
+
+    closeScanBtn.addEventListener('click', () => {
+        scanModal.style.display = 'none';
+        if (html5QrcodeScanner) {
+            html5QrcodeScanner.clear(); // Apagar cámara
+        }
+    });
+
     // --- Sharing Logic ---
 
     shareBtn.addEventListener('click', () => {
@@ -115,15 +159,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Ensure URL is up to date
         updateUrl();
         const currentUrl = window.location.href;
         shareLinkInput.value = currentUrl;
 
-        // Clear previous QR code
         qrcodeContainer.innerHTML = '';
 
-        // Generate new QR code
         new QRCode(qrcodeContainer, {
             text: currentUrl,
             width: 200,
@@ -140,12 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = 'none';
     });
 
-    window.addEventListener('click', (e) => {
-        if (e.target == modal) {
-            modal.style.display = 'none';
-        }
-    });
-
     copyBtn.addEventListener('click', () => {
         shareLinkInput.select();
         navigator.clipboard.writeText(shareLinkInput.value)
@@ -154,6 +189,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => copyBtn.textContent = "Copy", 2000);
             })
             .catch(err => console.error('Failed to copy', err));
+    });
+
+    // --- Global Window Clicks ---
+    
+    window.addEventListener('click', (e) => {
+        if (e.target == modal) {
+            modal.style.display = 'none';
+        }
+        if (e.target == scanModal) {
+            scanModal.style.display = 'none';
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear(); // Apagar cámara si cierras haciendo clic fuera
+            }
+        }
     });
 
     // Initialize App
