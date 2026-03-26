@@ -136,6 +136,11 @@ button:active {
     color: white;
 }
 
+.btn-secondary {
+    background-color: #f39c12;
+    color: white;
+}
+
 .btn-danger {
     background-color: var(--danger-color);
     color: white;
@@ -196,7 +201,7 @@ button:active {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 12px; /* Smaller font to fit long URLs */
+    font-size: 12px; 
 }
 
 #copyBtn {
@@ -204,6 +209,14 @@ button:active {
     color: white;
     padding: 8px 15px;
     font-size: 12px;
+}
+
+/* Estilos de la cámara */
+#reader {
+    border: none !important;
+}
+#reader video {
+    border-radius: 8px;
 }
 
 @keyframes fadeIn {
