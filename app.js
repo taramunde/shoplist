@@ -1,17 +1,45 @@
-const defaultCats = ["Frutas y Verduras","Panadería","Lácteos","Carnicería","Pescadería","Despensa","Bebidas","Limpieza","Hogar","Otros"];
+const productosPorDefecto = {
+  "Frutas y Verduras": ["Plátanos", "Manzanas", "Tomates", "Lechuga", "Cebollas", "Patatas", "Pimientos"],
+  "Panadería": ["Barra de pan", "Pan integral", "Pan de molde", "Croissants", "Bollería"],
+  "Lácteos": ["Leche", "Yogur natural", "Queso curado", "Mantequilla", "Huevos", "Nata"],
+  "Carnicería": ["Pechuga de pollo", "Carne picada", "Jamón york", "Pavo", "Salchichas"],
+  "Pescadería": ["Merluza", "Salmón", "Gambas", "Atún en lata", "Sardinas"],
+  "Despensa": ["Arroz", "Pasta", "Aceite de oliva", "Sal", "Azúcar", "Lentejas", "Garbanzos", "Tomate frito"],
+  "Bebidas": ["Agua 6x1.5L", "Coca-Cola", "Cerveza", "Zumo de naranja", "Vino tinto"],
+  "Limpieza": ["Detergente ropa", "Lavavajillas", "Lejía", "Papel higiénico", "Limpiacristales"],
+  "Hogar": ["Bolsas basura", "Papel cocina", "Aluminio", "Film transparente", "Pilas AA"],
+  "Otros": []
+};
+
+function crearProducto(nombre){
+  return { id: Date.now() + Math.random(), nombre, cantidad: 1, precio: '', comprado: false };
+}
+
 let data = {
-  establecimiento:"",
-  categorias: defaultCats.map(n=>({nombre:n, productos:[], abierta:true})),
-  anotaciones:"",
-  ubicacion:{lat:null, lon:null, direccion:""},
-  fotoParking:null,
-  version:1
+  establecimiento: "",
+  categorias: Object.entries(productosPorDefecto).map(([nombre, prods]) => ({
+    nombre,
+    productos: prods.map(crearProducto),
+    abierta: true
+  })),
+  anotaciones: "",
+  ubicacion: { lat: null, lon: null, direccion: "" },
+  fotoParking: null,
+  version: 2
 };
 
 function save(){ localStorage.setItem('listaPro', JSON.stringify(data)); updateTotal(); }
 function load(){ 
   const saved = localStorage.getItem('listaPro');
-  if(saved) data = JSON.parse(saved);
+  if(saved) {
+    const parsed = JSON.parse(saved);
+    // migrar si es versión antigua sin productos
+    if(parsed.version < 2 || !parsed.categorias[0].productos.length){
+      data = {...data, ...parsed, categorias: data.categorias};
+    } else {
+      data = parsed;
+    }
+  }
   if(location.hash.includes('lista=')){
     try{
       const encoded = location.hash.split('lista=')[1];
@@ -42,11 +70,11 @@ function render(){
     div.innerHTML = `
       <div class="cat-header" onclick="toggleCat(${ci})">
         <span class="cat-title">${cat.nombre}</span>
-        <span class="small">${cat.productos.filter(p=>!p.comprado).length} pendientes</span>
+        <span class="small">${cat.productos.filter(p=>!p.comprado).length}/${cat.productos.length}</span>
       </div>
       <div id="cat-${ci}" style="display:${cat.abierta?'block':'none'}">
         <div id="prods-${ci}"></div>
-        <button class="ghost" style="margin-top:6px" onclick="addProduct(${ci})">+ Producto</button>
+        <button class="ghost" style="margin-top:6px" onclick="addProduct(${ci})">+ Añadir producto</button>
       </div>
     `;
     cont.appendChild(div);
@@ -59,7 +87,7 @@ function render(){
         <input class="p-name" value="${p.nombre}" placeholder="Producto" oninput="updateProd(${ci},${pi},'nombre',this.value)">
         <input class="p-qty" type="number" min="1" value="${p.cantidad||1}" oninput="updateProd(${ci},${pi},'cantidad',this.value)">
         <input class="p-price" type="number" step="0.01" placeholder="€" value="${p.precio||''}" oninput="updateProd(${ci},${pi},'precio',this.value)">
-        <button class="icon-btn" onclick="delProd(${ci},${pi})">✕</button>
+        <button class="icon-btn" onclick="delProd(${ci},${pi})" title="Eliminar">✕</button>
       `;
       prods.appendChild(row);
     });
@@ -67,11 +95,27 @@ function render(){
 }
 
 function toggleCat(i){ data.categorias[i].abierta = !data.categorias[i].abierta; save(); render(); }
-function addCategory(){ const n = prompt('Nombre categoría'); if(n){ data.categorias.push({nombre:n, productos:[], abierta:true}); save(); render(); } }
-function addProduct(ci){ data.categorias[ci].productos.push({id:Date.now(), nombre:'', cantidad:1, precio:'', comprado:false}); save(); render(); }
+function addCategory(){ 
+  const n = prompt('Nombre categoría'); 
+  if(n){ 
+    data.categorias.push({nombre:n, productos:[], abierta:true}); 
+    save(); render(); 
+  } 
+}
+function addProduct(ci){ 
+  const nombre = prompt('Nombre del producto:');
+  if(nombre){ 
+    data.categorias[ci].productos.push(crearProducto(nombre)); 
+    save(); render(); 
+  } else {
+    // si cancela, añade vacío como antes
+    data.categorias[ci].productos.push(crearProducto(''));
+    save(); render();
+  }
+}
 function updateProd(ci,pi,k,v){ data.categorias[ci].productos[pi][k]=v; save(); }
 function toggleComprado(ci,pi,val){ data.categorias[ci].productos[pi].comprado=val; save(); render(); }
-function delProd(ci,pi){ data.categorias[ci].productos.splice(pi,1); save(); render(); }
+function delProd(ci,pi){ if(confirm('¿Eliminar producto?')){ data.categorias[ci].productos.splice(pi,1); save(); render(); } }
 
 function updateTotal(){
   let t=0;
@@ -142,9 +186,13 @@ function shareWhatsApp(){ const url=generarEnlace(); window.open(`https://wa.me/
 function shareTelegram(){ const url=generarEnlace(); window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent('Mi lista de la compra')}`); }
 function copyLink(){ generarEnlace(); navigator.clipboard.writeText(document.getElementById('shareUrl').value).then(()=>alert('Enlace copiado')); }
 
-function nuevaLista(){ if(confirm('¿Borrar todo y empezar de nuevo?')){ localStorage.removeItem('listaPro'); location.reload(); } }
+function nuevaLista(){ 
+  if(confirm('¿Borrar todo y volver a los productos por defecto?')){ 
+    localStorage.removeItem('listaPro'); 
+    location.reload(); 
+  } 
+}
 function exportar(){
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='lista-compra.json'; a.click();
-}
-
+      }
