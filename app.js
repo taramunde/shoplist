@@ -33,8 +33,7 @@ function loadLista(){
   document.getElementById('direccion').value=d.ubicacion.direccion||'';
   document.getElementById('coords').textContent=d.ubicacion.lat?`${d.ubicacion.lat.toFixed(4)},${d.ubicacion.lon.toFixed(4)}`:'Sin coordenadas';
   if(d.foto){document.getElementById('fotoPreview').src=d.foto;document.getElementById('fotoPreview').style.display='block';document.getElementById('fotoPlaceholder').style.display='none'}
-  render();
-  updateTotal();
+  render(); updateTotal();
 }
 function render(){
   const d=getData();const cont=document.getElementById('categorias');cont.innerHTML='';
@@ -65,29 +64,60 @@ function del(ci,pi){if(confirm('¿Eliminar?')){getData().categorias[ci].producto
 function toggleModo(){modoCompra=!modoCompra;render()}
 function updateTotal(){let t=0;getData().categorias.forEach(c=>c.productos.forEach(p=>{if(p.precio)t+=parseFloat(p.precio)*(p.cantidad||1)}));document.getElementById('total').textContent=t.toLocaleString('es-ES',{minimumFractionDigits:2})+' €'}
 
-document.getElementById('establecimiento').oninput=e=>{getData().establecimiento=e.target.value;save()};
-document.getElementById('colorPicker').oninput=e=>{getData().color=e.target.value;document.documentElement.style.setProperty('--accent',e.target.value);save()};
-document.getElementById('direccion').oninput=e=>{getData().ubicacion.direccion=e.target.value;save()};
-document.getElementById('fotoInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{getData().foto=ev.target.result;save();loadLista()};r.readAsDataURL(f)};
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('establecimiento').oninput=e=>{getData().establecimiento=e.target.value;save()};
+  document.getElementById('colorPicker').oninput=e=>{getData().color=e.target.value;document.documentElement.style.setProperty('--accent',e.target.value);save()};
+  document.getElementById('direccion').oninput=e=>{getData().ubicacion.direccion=e.target.value;save()};
+  document.getElementById('fotoInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{getData().foto=ev.target.result;save();loadLista()};r.readAsDataURL(f)};
+});
 
 function getLocation(){navigator.geolocation.getCurrentPosition(async p=>{const d=getData();d.ubicacion.lat=p.coords.latitude;d.ubicacion.lon=p.coords.longitude;document.getElementById('coords').textContent=`${d.ubicacion.lat.toFixed(4)},${d.ubicacion.lon.toFixed(4)}`;try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${d.ubicacion.lat}&lon=${d.ubicacion.lon}&accept-language=es`);const j=await r.json();d.ubicacion.direccion=j.display_name;document.getElementById('direccion').value=d.ubicacion.direccion}catch{};save()})}
 
 function nuevaLista(){const n=prompt('Nombre nueva lista:');if(n&&!listas[n]){listas[n]={establecimiento:'',color:'#22c55e',categorias:Object.entries(defaultProducts).map(([k,v])=>({nombre:k,productos:v.map(crearProd),abierta:true})),ubicacion:{},foto:null};listaActual=n;save();renderSelector();loadLista()}}
 
-function generarEnlace(){const data=btoa(unescape(encodeURIComponent(JSON.stringify({lista:listaActual,data:getData()}))));const url=location.origin+location.pathname+'#go2='+data;document.getElementById('shareUrl').value=url;return url}
-function shareWhatsApp(){window.open('https://wa.me/?text='+encodeURIComponent('🛒 Lista '+listaActual+': '+generarEnlace()))}
-function shareTelegram(){window.open('https://t.me/share/url?url='+encodeURIComponent(generarEnlace()))}
-function copyLink(){generarEnlace();navigator.clipboard.writeText(document.getElementById('shareUrl').value).then(()=>alert('Copiado'))}
+function generarEnlace(){
+  const payload = {lista:listaActual,data:getData()};
+  const json = JSON.stringify(payload);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const url = location.origin+location.pathname+'#go2='+encoded;
+  document.getElementById('shareUrl').value = url;
+  return url;
+}
+async function acortar(url){
+  try{
+    const r = await fetch('https://is.gd/create.php?format=simple&url='+encodeURIComponent(url));
+    if(r.ok) return (await r.text()).trim();
+  }catch(e){}
+  return url;
+}
+async function shareWhatsApp(){
+  const long = generarEnlace();
+  document.getElementById('shareUrl').value = 'Acortando...';
+  const short = await acortar(long);
+  document.getElementById('shareUrl').value = short;
+  window.open('https://wa.me/?text='+encodeURIComponent('🛒 Lista '+listaActual+': '+short));
+}
+async function shareTelegram(){
+  const long = generarEnlace();
+  document.getElementById('shareUrl').value = 'Acortando...';
+  const short = await acortar(long);
+  document.getElementById('shareUrl').value = short;
+  window.open('https://t.me/share/url?url='+encodeURIComponent(short)+'&text='+encodeURIComponent('Mi lista'));
+}
+async function copyLink(){
+  const long = generarEnlace();
+  const short = await acortar(long);
+  document.getElementById('shareUrl').value = short;
+  await navigator.clipboard.writeText(short);
+  alert('Enlace corto copiado');
+}
 
-// voz
 function startVoice(){
-  const status=document.getElementById('voiceStatus');status.style.display='block';status.textContent='Escuchando... di "pan y leche y huevos"';
+  const status=document.getElementById('voiceStatus');status.style.display='block';status.textContent='Escuchando...';
   const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!Rec){alert('Voz no soportada');return}
   const rec=new Rec();rec.lang='es-ES';rec.onresult=e=>{const txt=e.results[0][0].transcript;status.textContent='Añadido: '+txt;txt.split(/ y |, /).forEach(p=>{const prod=p.trim();if(prod){getData().categorias[0].productos.push(crearProd(prod.charAt(0).toUpperCase()+prod.slice(1)))}});save();render();setTimeout(()=>status.style.display='none',2000)};rec.start();
 }
 
-// cargar compartida
 if(location.hash.includes('go2=')){try{const imp=JSON.parse(decodeURIComponent(escape(atob(location.hash.split('go2=')[1]))));listas[imp.lista]=imp.data;listaActual=imp.lista;modoCompra=true;save();history.replaceState(null,'',location.pathname)}catch{}}
 renderSelector();loadLista();
-  
