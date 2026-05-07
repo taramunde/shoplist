@@ -1,1621 +1,272 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sazón Digital - Recetario Interactivo</title>
-    <meta name="description" content="Recetario departamentado con escalado inteligente y compartición de recetas">
-    
-    <style>
-        :root {
-            --primary: #e67e22;
-            --primary-dark: #d35400;
-            --secondary: #2ecc71;
-            --danger: #e74c3c;
-            --bg: #f8f9fa;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text: #2c3e50;
-            --text-light: #7f8c8d;
-            --shadow: 0 8px 32px rgba(0,0,0,0.1);
-            --glass: rgba(255, 255, 255, 0.25);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="dark"] {
-            --bg: #1a1a2e;
-            --card-bg: rgba(30, 30, 46, 0.95);
-            --text: #eaeaea;
-            --text-light: #a0a0a0;
-            --glass: rgba(255, 255, 255, 0.05);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: var(--transition);
-        }
-
-        [data-theme="dark"] body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        }
-
-        /* Pantalla de PIN */
-        #pin-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            transition: opacity 0.5s;
-        }
-
-        .pin-container {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            padding: 3rem;
-            border-radius: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            border: 1px solid rgba(255,255,255,0.3);
-            animation: slideUp 0.6s ease;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .pin-title {
-            font-size: 2rem;
-            color: white;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-
-        .pin-subtitle {
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 2rem;
-        }
-
-        .pin-display {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin: 2rem 0;
-        }
-
-        .pin-dot {
-            width: 20px;
-            height: 20px;
-            border: 3px solid white;
-            border-radius: 50%;
-            transition: var(--transition);
-        }
-
-        .pin-dot.filled {
-            background: white;
-            transform: scale(1.2);
-        }
-
-        .pin-error {
-            color: #ffe0e0;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .pin-error.show {
-            opacity: 1;
-        }
-
-        /* Layout Principal */
-        .app-container {
-            display: none;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Navegación */
-        .nav-bar {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 1rem 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1rem;
-            list-style: none;
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            color: var(--text);
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-btn:hover, .nav-btn.active {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .user-badge {
-            background: var(--glass);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border: 2px solid var(--primary);
-        }
-
-        /* Grid de Categorías (Departamentos) */
-        .dept-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .dept-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 2rem;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .dept-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
-            z-index: 1;
-        }
-
-        .dept-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        .dept-icon {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            z-index: 2;
-        }
-
-        .dept-title {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-            z-index: 2;
-            position: relative;
-        }
-
-        .dept-count {
-            color: rgba(255,255,255,0.8);
-            font-size: 0.9rem;
-            z-index: 2;
-            position: relative;
-        }
-
-        /* Lista de Recetas */
-        .section {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section-header {
-            margin-bottom: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .search-box {
-            background: var(--card-bg);
-            border: 2px solid transparent;
-            padding: 1rem 1.5rem;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 400px;
-            font-size: 1rem;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-        }
-
-        .search-box:focus {
-            outline: none;
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .recipes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .recipe-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .recipe-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-
-        .recipe-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: linear-gradient(45deg, #ddd, #eee);
-        }
-
-        .recipe-content {
-            padding: 1.5rem;
-        }
-
-        .recipe-tags {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            background: var(--primary);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .tag.user {
-            background: var(--secondary);
-        }
-
-        .recipe-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-        }
-
-        .recipe-meta {
-            display: flex;
-            gap: 1rem;
-            color: var(--text-light);
-            font-size: 0.9rem;
-            align-items: center;
-        }
-
-        /* Vista Detalle de Receta */
-        .recipe-detail {
-            background: var(--card-bg);
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .detail-header {
-            position: relative;
-            height: 400px;
-            overflow: hidden;
-        }
-
-        .detail-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .detail-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            padding: 3rem 2rem 2rem;
-            color: white;
-        }
-
-        .detail-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-        }
-
-        .detail-actions {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .action-btn {
-            background: rgba(255,255,255,0.9);
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-        }
-
-        .action-btn:hover {
-            transform: scale(1.1);
-            background: white;
-        }
-
-        .detail-content {
-            padding: 2rem;
-        }
-
-        /* Escalador Inteligente */
-        .portion-scaler {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .scaler-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .scaler-controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem;
-            border-radius: 16px;
-        }
-
-        .scaler-btn {
-            background: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--primary);
-            transition: var(--transition);
-        }
-
-        .scaler-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .portion-display {
-            font-size: 1.5rem;
-            font-weight: 800;
-            min-width: 60px;
-            text-align: center;
-        }
-
-        .ingredients-section {
-            background: var(--glass);
-            padding: 2rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .ingredient-list {
-            list-style: none;
-            display: grid;
-            gap: 1rem;
-        }
-
-        .ingredient-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: var(--card-bg);
-            border-radius: 12px;
-            transition: var(--transition);
-            border-left: 4px solid var(--primary);
-        }
-
-        .ingredient-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .ingredient-name {
-            font-weight: 600;
-        }
-
-        .ingredient-amount {
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .steps-section {
-            padding: 0 1rem;
-        }
-
-        .step {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .step-number {
-            background: var(--primary);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(230, 126, 34, 0.4);
-        }
-
-        .step-content {
-            flex: 1;
-            padding-top: 0.5rem;
-            line-height: 1.8;
-        }
-
-        /* Formulario de Receta */
-        .form-container {
-            background: var(--card-bg);
-            padding: 3rem;
-            border-radius: 30px;
-            box-shadow: var(--shadow);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: var(--transition);
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .ingredients-input-group {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3);
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-        }
-
-        .btn-secondary:hover {
-            background: #7f8c8d;
-        }
-
-        .btn-success {
-            background: var(--secondary);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-        }
-
-        /* Modal de Compartir */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 24px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            animation: modalSlide 0.3s;
-        }
-
-        @keyframes modalSlide {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .share-code {
-            background: var(--bg);
-            padding: 1.5rem;
-            border-radius: 12px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            word-break: break-all;
-            margin: 1rem 0;
-            border: 2px dashed var(--primary);
-            user-select: all;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-light);
-        }
-
-        .empty-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .dept-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .detail-header {
-                height: 300px;
-            }
-            
-            .detail-title {
-                font-size: 1.75rem;
-            }
-            
-            .form-container {
-                padding: 1.5rem;
-            }
-            
-            .ingredients-input-group {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Utilidades */
-        .hidden { display: none !important; }
-        .text-center { text-align: center; }
-        .mb-2 { margin-bottom: 2rem; }
-
-        /* Animaciones adicionales */
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .floating-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            font-size: 2rem;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.4);
-            transition: var(--transition);
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .floating-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-        }
-    </style>
+<!-- Playables SDK -->
+<script>// Playables SDK v1.0.0
+// Game lifecycle bridge: rAF-based game-ready detection + event communication
+(function() {
+  'use strict';
+
+  // Idempotency: skip if already initialized (e.g., server-side injection
+  // followed by client-side inject-javascript via the Bloks webview component).
+  if (window.playablesSDK) return;
+
+  var HANDLER_NAME = 'playablesGameEventHandler';
+  var ANDROID_BRIDGE_NAME = '_MetaPlayablesBridge';
+  var RAF_FRAME_THRESHOLD = 3;
+
+  var gameReadySent = false;
+  var firstInteractionSent = false;
+  var errorSent = false;
+  var frameCount = 0;
+  var originalRAF = window.requestAnimationFrame;
+
+  // --- Transport Layer ---
+
+  function hasIOSBridge() {
+    return !!(window.webkit &&
+              window.webkit.messageHandlers &&
+              window.webkit.messageHandlers[HANDLER_NAME]);
+  }
+
+  function hasAndroidBridge() {
+    return !!(window[ANDROID_BRIDGE_NAME] &&
+              typeof window[ANDROID_BRIDGE_NAME].postEvent === 'function');
+  }
+
+  function isInIframe() {
+    return !!(window.parent && window.parent !== window);
+  }
+
+  function sendEvent(eventName, payload) {
+    var message = {
+      type: eventName,
+      payload: payload || {},
+      timestamp: Date.now()
+    };
+
+    if (hasIOSBridge()) {
+      try {
+        window.webkit.messageHandlers[HANDLER_NAME].postMessage(message);
+      } catch (e) { /* ignore */ }
+      return;
+    }
+
+    if (hasAndroidBridge()) {
+    try {
+      var p = payload || {};
+      p.__secureToken = window.__fbAndroidBridgeAuthToken || '';
+      p.timestamp = message.timestamp;
+      window[ANDROID_BRIDGE_NAME].postEvent(
+        eventName,
+        JSON.stringify(p)
+      );
+    } catch (e) { /* ignore */ }
+    return;
+  }
+
+    if (isInIframe()) {
+      try {
+        window.parent.postMessage(message, '*');
+      } catch (e) { /* ignore */ }
+      return;
+    }
+  }
+
+  // --- rAF Game-Ready Detection ---
+
+  function onFrame() {
+    if (gameReadySent) return;
+
+    frameCount++;
+    if (frameCount >= RAF_FRAME_THRESHOLD) {
+      gameReadySent = true;
+      sendEvent('game_ready', {
+        frame_count: frameCount,
+        detected_at: Date.now()
+      });
+      return;
+    }
+
+    originalRAF.call(window, onFrame);
+  }
+
+  if (originalRAF) {
+    window.requestAnimationFrame = function(callback) {
+      if (!gameReadySent) {
+        return originalRAF.call(window, function(timestamp) {
+          frameCount++;
+          if (frameCount >= RAF_FRAME_THRESHOLD && !gameReadySent) {
+            gameReadySent = true;
+            sendEvent('game_ready', {
+              frame_count: frameCount,
+              detected_at: Date.now()
+            });
+          }
+          callback(timestamp);
+        });
+      }
+      return originalRAF.call(window, callback);
+    };
+  }
+
+  // --- First User Interaction Detection ---
+
+  function setupFirstInteractionDetection() {
+    var events = ['touchstart', 'mousedown', 'keydown'];
+
+    function onFirstInteraction() {
+      if (firstInteractionSent) return;
+      firstInteractionSent = true;
+      sendEvent('user_interaction_start', null);
+
+      for (var i = 0; i < events.length; i++) {
+        document.removeEventListener(events[i], onFirstInteraction, true);
+      }
+    }
+
+    for (var i = 0; i < events.length; i++) {
+      document.addEventListener(events[i], onFirstInteraction, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupFirstInteractionDetection);
+  } else {
+    setupFirstInteractionDetection();
+  }
+
+  // --- Auto Error Capture ---
+
+  window.addEventListener('error', function(event) {
+    if (errorSent) return;
+    errorSent = true;
+    sendEvent('error', {
+      message: event.message || 'Unknown error',
+      source: event.filename || '',
+      lineno: event.lineno || 0,
+      colno: event.colno || 0,
+      auto_captured: true
+    });
+  });
+
+  window.addEventListener('unhandledrejection', function(event) {
+    if (errorSent) return;
+    errorSent = true;
+    var reason = event.reason;
+    sendEvent('error', {
+      message: (reason instanceof Error) ? reason.message : String(reason),
+      type: 'unhandled_promise_rejection',
+      auto_captured: true
+    });
+  });
+
+  // --- Public API ---
+
+  window.playablesSDK = {
+    complete: function(score) {
+      sendEvent('game_ended', {
+        score: score,
+        completed: true
+      });
+    },
+
+    error: function(message) {
+      if (errorSent) return;
+      errorSent = true;
+      sendEvent('error', {
+        message: message || 'Unknown error',
+        auto_captured: false
+      });
+    },
+
+    sendEvent: function(eventName, payload) {
+      if (!eventName || typeof eventName !== 'string') return;
+      sendEvent(eventName, payload);
+    }
+  };
+
+  // Kick off rAF detection in case no game code calls rAF immediately
+  if (originalRAF) {
+    originalRAF.call(window, onFrame);
+  }
+})();</script>
+<script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lista Compartida Pro</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<header>
+  <h1>🛒 Lista Compartida Pro</h1>
+  <div class="row" style="margin-top:8px">
+    <input id="establecimiento" type="text" placeholder="Establecimiento (ej. Mercadona, Carrefour)">
+    <div class="total" id="total">0,00 €</div>
+  </div>
+</header>
 
-    <!-- Pantalla de PIN -->
-    <div id="pin-screen">
-        <div class="pin-container">
-            <div class="pin-title">🔐 Sazón Digital</div>
-            <div class="pin-subtitle" id="pin-message">Introduce tu PIN de 4 dígitos para acceder a tu recetario</div>
-            
-            <div class="pin-display" id="pin-display">
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-            </div>
-            
-            <div class="pin-error" id="pin-error">PIN incorrecto. Inténtalo de nuevo.</div>
-            
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 250px; margin: 0 auto;">
-                <button class="btn" onclick="app.enterDigit(1)" style="padding: 1.5rem; font-size: 1.2rem;">1</button>
-                <button class="btn" onclick="app.enterDigit(2)" style="padding: 1.5rem; font-size: 1.2rem;">2</button>
-                <button class="btn" onclick="app.enterDigit(3)" style="padding: 1.5rem; font-size: 1.2rem;">3</button>
-                <button class="btn" onclick="app.enterDigit(4)" style="padding: 1.5rem; font-size: 1.2rem;">4</button>
-                <button class="btn" onclick="app.enterDigit(5)" style="padding: 1.5rem; font-size: 1.2rem;">5</button>
-                <button class="btn" onclick="app.enterDigit(6)" style="padding: 1.5rem; font-size: 1.2rem;">6</button>
-                <button class="btn" onclick="app.enterDigit(7)" style="padding: 1.5rem; font-size: 1.2rem;">7</button>
-                <button class="btn" onclick="app.enterDigit(8)" style="padding: 1.5rem; font-size: 1.2rem;">8</button>
-                <button class="btn" onclick="app.enterDigit(9)" style="padding: 1.5rem; font-size: 1.2rem;">9</button>
-                <button class="btn btn-secondary" onclick="app.clearPin()" style="padding: 1.5rem;">⌫</button>
-                <button class="btn" onclick="app.enterDigit(0)" style="padding: 1.5rem; font-size: 1.2rem;">0</button>
-                <button class="btn btn-success" onclick="app.verifyPin()" style="padding: 1.5rem;">✓</button>
-            </div>
-        </div>
+<div class="container">
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <strong>Categorías y productos</strong>
+      <button class="ghost" onclick="addCategory()">+ Categoría</button>
     </div>
+    <div id="categorias" style="margin-top:10px"></div>
+  </div>
 
-    <!-- App Principal -->
-    <div class="app-container" id="app">
-        <!-- Navegación -->
-        <nav class="nav-bar">
-            <div class="logo">
-                <span>🍳</span>
-                <span>Sazón Digital</span>
-            </div>
-            
-            <ul class="nav-links">
-                <li><button class="nav-btn active" onclick="app.showSection('home')">🏠 Inicio</button></li>
-                <li><button class="nav-btn" onclick="app.showSection('explore')">🔍 Explorar</button></li>
-                <li><button class="nav-btn" onclick="app.showSection('my-recipes')">📖 Mis Recetas</button></li>
-                <li><button class="nav-btn" onclick="app.showSection('import')">📥 Importar</button></li>
-            </ul>
-            
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <button class="nav-btn" onclick="app.toggleTheme()" style="font-size: 1.2rem;">🌓</button>
-                <div class="user-badge" id="user-badge">PIN: ----</div>
-            </div>
-        </nav>
-
-        <!-- Sección: Home / Departamentos -->
-        <section id="home" class="section active">
-            <div class="section-header">
-                <div>
-                    <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">¿Qué cocinamos hoy?</h1>
-                    <p style="color: var(--text-light);">Selecciona un departamento para explorar recetas</p>
-                </div>
-            </div>
-
-            <div class="dept-grid" id="dept-grid">
-                <!-- Generado dinámicamente -->
-            </div>
-        </section>
-
-        <!-- Sección: Explorar -->
-        <section id="explore" class="section">
-            <div class="section-header">
-                <h2>🔍 Explorar Recetas</h2>
-                <input type="text" class="search-box" id="search-input" placeholder="Buscar recetas..." onkeyup="app.searchRecipes()">
-            </div>
-            <div class="recipes-grid" id="explore-grid"></div>
-        </section>
-
-        <!-- Sección: Detalle de Receta -->
-        <section id="recipe-detail" class="section">
-            <div id="detail-container"></div>
-        </section>
-
-        <!-- Sección: Mis Recetas -->
-        <section id="my-recipes" class="section">
-            <div class="section-header">
-                <h2>📖 Mis Recetas</h2>
-                <button class="btn" onclick="app.showSection('create')">➕ Nueva Receta</button>
-            </div>
-            <div class="recipes-grid" id="my-recipes-grid"></div>
-        </section>
-
-        <!-- Sección: Crear Receta -->
-        <section id="create" class="section">
-            <div class="form-container">
-                <h2 class="mb-2">📝 Nueva Receta</h2>
-                <form id="recipe-form" onsubmit="app.saveRecipe(event)">
-                    <div class="form-group">
-                        <label class="form-label">Nombre de la receta</label>
-                        <input type="text" class="form-input" name="title" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Categoría (Departamento)</label>
-                        <select class="form-select" name="category" required>
-                            <option value="Entrantes">🥗 Entrantes y Aperitivos</option>
-                            <option value="Sopas">🍲 Sopas y Cremas</option>
-                            <option value="Ensaladas">🥬 Ensaladas</option>
-                            <option value="Arroces">🍚 Arroces y Pastas</option>
-                            <option value="Carnes">🥩 Carnes y Aves</option>
-                            <option value="Pescados">🐟 Pescados y Mariscos</option>
-                            <option value="Vegetariano">🥕 Vegetariano/Vegano</option>
-                            <option value="Postres">🍰 Postres y Repostería</option>
-                            <option value="Bebidas">🍹 Bebidas y Cócteles</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">URL de imagen (opcional)</label>
-                        <input type="url" class="form-input" name="image" placeholder="https://...">
-                        <small style="color: var(--text-light);">Deja en blanco para usar imagen por defecto</small>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label class="form-label">Tiempo (minutos)</label>
-                            <input type="number" class="form-input" name="time" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Dificultad</label>
-                            <select class="form-select" name="difficulty">
-                                <option value="Fácil">Fácil</option>
-                                <option value="Media">Media</option>
-                                <option value="Difícil">Difícil</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Porciones base (para cuántas personas está calculada la receta)</label>
-                        <input type="number" class="form-input" name="baseServings" value="4" min="1" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Ingredientes</label>
-                        <div id="ingredients-list">
-                            <div class="ingredients-input-group">
-                                <input type="text" class="form-input" placeholder="Ingrediente" required>
-                                <input type="number" class="form-input" placeholder="Cantidad" step="0.1" required>
-                                <input type="text" class="form-input" placeholder="Unidad (g, ml, pza)" required>
-                                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">×</button>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-secondary" onclick="app.addIngredientInput()" style="margin-top: 0.5rem;">➕ Añadir ingrediente</button>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Elaboración (un paso por línea)</label>
-                        <textarea class="form-textarea" name="steps" rows="6" placeholder="1. Precalentar el horno..." required></textarea>
-                    </div>
-
-                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                        <button type="button" class="btn btn-secondary" onclick="app.showSection('my-recipes')">Cancelar</button>
-                        <button type="submit" class="btn">Guardar Receta</button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <!-- Sección: Importar -->
-        <section id="import" class="section">
-            <div class="form-container">
-                <h2 class="mb-2">📥 Importar Receta</h2>
-                <p style="margin-bottom: 2rem; color: var(--text-light);">Pega aquí el código de receta que has recibido para añadirla a tu colección.</p>
-                
-                <div class="form-group">
-                    <textarea class="form-textarea" id="import-code" rows="8" placeholder="Pega el código aquí..."></textarea>
-                </div>
-                
-                <button class="btn" onclick="app.importRecipe()" style="width: 100%;">Importar Receta</button>
-                
-                <div id="import-result" style="margin-top: 2rem;"></div>
-            </div>
-        </section>
+  <div class="card">
+    <strong>📍 Ubicación de compra</strong>
+    <div class="row" style="margin-top:8px">
+      <button onclick="getLocation()">Obtener ubicación</button>
+      <span class="small" id="coords">Sin coordenadas</span>
     </div>
+    <input id="direccion" type="text" placeholder="Calle, número, ciudad" style="margin-top:8px">
+  </div>
 
-    <!-- Botón Flotante Nueva Receta (visible en mis recetas) -->
-    <button class="floating-btn hidden" id="fab" onclick="app.showSection('create')">+</button>
-
-    <!-- Modal de Compartir -->
-    <div class="modal" id="share-modal">
-        <div class="modal-content">
-            <h3>🔗 Compartir Receta</h3>
-            <p>Copia este código y compártelo con otros usuarios de Sazón Digital:</p>
-            <div class="share-code" id="share-code"></div>
-            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                <button class="btn" onclick="app.copyShareCode()" style="flex: 1;">📋 Copiar</button>
-                <button class="btn btn-secondary" onclick="app.closeModal()" style="flex: 1;">Cerrar</button>
-            </div>
-        </div>
+  <div class="card">
+    <strong>🅿️ Foto del aparcamiento</strong>
+    <div class="small" style="margin:6px 0">Haz foto para recordar dónde aparcaste. Toca para zoom.</div>
+    <input type="file" accept="image/*" capture="environment" id="fotoInput" style="display:none">
+    <div class="photo-box" onclick="document.getElementById('fotoInput').click()">
+      <span id="fotoPlaceholder">Toca para hacer foto</span>
+      <img id="fotoPreview" style="display:none">
     </div>
+    <div class="row" style="margin-top:8px">
+      <button class="ghost" onclick="clearPhoto()">Borrar foto</button>
+    </div>
+  </div>
 
-    <script>
-        // Base de datos inicial de recetas extensa
-        const defaultRecipes = [
-            {
-                id: 'paella-valenciana',
-                title: 'Paella Valenciana Tradicional',
-                category: 'Arroces',
-                image: 'https://images.unsplash.com/photo-1534080564583-6be75777b70a?w=800',
-                time: '90',
-                difficulty: 'Media',
-                baseServings: 4,
-                ingredients: [
-                    {name: 'Arroz bomba', amount: 400, unit: 'g'},
-                    {name: 'Pollo', amount: 500, unit: 'g'},
-                    {name: 'Conejo', amount: 300, unit: 'g'},
-                    {name: 'Judías verdes', amount: 200, unit: 'g'},
-                    {name: 'Garrofón', amount: 150, unit: 'g'},
-                    {name: 'Tomate triturado', amount: 200, unit: 'g'},
-                    {name: 'Azafrán', amount: 0.5, unit: 'g'},
-                    {name: 'Aceite de oliva', amount: 100, unit: 'ml'},
-                    {name: 'Agua', amount: 1.2, unit: 'L'}
-                ],
-                steps: [
-                    'Sofríe el pollo y conejo troceados en aceite caliente hasta dorar.',
-                    'Añade las judías y el garrofón, sofríe 5 minutos más.',
-                    'Incorpora el tomate y sofríe hasta que se evapore el agua.',
-                    'Añade el agua caliente y el azafrán. Cocina 30 minutos.',
-                    'Incorpora el arroz y distribuye uniformemente. Cocina 20 minutos a fuego medio.',
-                    'Deja reposar 5 minutos antes de servir.'
-                ],
-                author: 'Sistema',
-                isDefault: true
-            },
-            {
-                id: 'gazpacho-andaluz',
-                title: 'Gazpacho Andaluz',
-                category: 'Sopas',
-                image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800',
-                time: '15',
-                difficulty: 'Fácil',
-                baseServings: 6,
-                ingredients: [
-                    {name: 'Tomates maduros', amount: 1000, unit: 'g'},
-                    {name: 'Pepino', amount: 1, unit: 'pza'},
-                    {name: 'Pimiento verde', amount: 1, unit: 'pza'},
-                    {name: 'Diente de ajo', amount: 1, unit: 'pza'},
-                    {name: 'Pan del día anterior', amount: 100, unit: 'g'},
-                    {name: 'Aceite de oliva', amount: 150, unit: 'ml'},
-                    {name: 'Vinagre de Jerez', amount: 30, unit: 'ml'},
-                    {name: 'Agua fría', amount: 200, unit: 'ml'},
-                    {name: 'Sal', amount: 10, unit: 'g'}
-                ],
-                steps: [
-                    'Lava y trocea los tomates, pepino y pimiento.',
-                    'Tritura todos los vegetales con el pan remojado.',
-                    'Añade el aceite poco a poco mientras bates.',
-                    'Incorpora el vinagre, sal y agua fría al gusto.',
-                    'Pasa por colador fino si prefieres textura suave.',
-                    'Refrigera al menos 2 horas antes de servir.'
-                ],
-                author: 'Sistema',
-                isDefault: true
-            },
-            {
-                id: 'tarta-santiago',
-                title: 'Tarta de Santiago',
-                category: 'Postres',
-                image: 'https://images.unsplash.com/photo-1519340333755-56e9c1d04579?w=800',
-                time: '45',
-                difficulty: 'Fácil',
-                baseServings: 8,
-                ingredients: [
-                    {name: 'Almendra molida', amount: 250, unit: 'g'},
-                    {name: 'Azúcar', amount: 250, unit: 'g'},
-                    {name: 'Huevos', amount: 4, unit: 'pza'},
-                    {name: 'Mantequilla', amount: 50, unit: 'g'},
-                    {name: 'Ralladura de limón', amount: 1, unit: 'pza'},
-                    {name: 'Azúcar glas', amount: 30, unit: 'g'}
-                ],
-                steps: [
-                    'Precalienta el horno a 180°C.',
-                    'Bate los huevos con el azúcar hasta blanquear.',
-                    'Añade la almendra, mantequilla derretida y ralladura.',
-                    'Vierte en molde engrasado y hornea 30 minutos.',
-                    'Deja enfriar y espolvorea con azúcar glas tamizado.',
-                    'Decora con la Cruz de Santiago si deseas.'
-                ],
-                author: 'Sistema',
-                isDefault: true
-            },
-            {
-                id: 'pulpo-gallega',
-                title: 'Pulpo a la Gallega',
-                category: 'Pescados',
-                image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800',
-                time: '60',
-                difficulty: 'Media',
-                baseServings: 4,
-                ingredients: [
-                    {name: 'Pulpo fresco', amount: 1500, unit: 'g'},
-                    {name: 'Patatas pequeñas', amount: 800, unit: 'g'},
-                    {name: 'Pimentón dulce', amount: 15, unit: 'g'},
-                    {name: 'Pimentón picante', amount: 5, unit: 'g'},
-                    {name: 'Sal gruesa', amount: 20, unit: 'g'},
-                    {name: 'Aceite de oliva virgen', amount: 100, unit: 'ml'}
-                ],
-                steps: [
-                    'Congela el pulpo 48h antes para ablandar (si es fresco).',
-                    'Cocine las patatas con piel en agua salada hasta tiernas.',
-                    'Escalda el pulpo 3 veces antes de cocerlo 25-40 min.',
-                    'Corta el pulpo en rodajas y las patas en trozos.',
-                    'Coloca sobre patatas, espolvorea pimentones y sal.',
-                    'Reg generosamente con aceite de oliva antes de servir.'
-                ],
-                author: 'Sistema',
-                isDefault: true
-            },
-            {
-                id: 'tortilla-espanola',
-                title: 'Tortilla Española Perfecta',
-                category: 'Entrantes',
-                image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800',
-                time: '30',
-                difficulty: 'Fácil',
-                baseServings: 4,
-                ingredients: [
-                    {name: 'Patatas', amount: 600, unit: 'g'},
-                    {name: 'Huevos', amount: 6, unit: 'pza'},
-                    {name: 'Cebolla', amount: 1, unit: 'pza'},
-                    {name: 'Aceite de oliva', amount: 300, unit: 'ml'},
-                    {name: 'Sal', amount: 8, unit: 'g'}
-                ],
-                steps: [
-                    'Pela y corta las patatas en láminas finas.',
-                    'Fríe las patatas y la cebolla a fuego suave 20 min.',
-                    'Escurre bien el aceite y sala ligeramente.',
-                    'Bate los huevos e incorpora la mezcla de patatas.',
-                    'Deja reposar 10 minutos para que absorba el huevo.',
-                    'Cocina la tortilla vuelta y vuelta a tu gusto de cuajado.'
-                ],
-                author: 'Sistema',
-                isDefault: true
-            },
-            {
-                id: 'fabada-asturiana',
-                title: 'Fabada Asturiana',
-                category: 'Carnes',
-                image: 'https://images.unsplash.com/photo-1547592166-23acbe3a624b?w=800',
-                time: '180',
-                difficulty: 'Media',
-                baseServings: 6,
-                ingredients: [
-                    {name: 'Fabes de la granja', amount: 500, unit: 'g'},
-                    {name: 'Compango (chorizo, morcilla, panceta)', amount: 600, unit: 'g'},
-                    {name: 'Azafrán', amount: 0.2, unit: 'g'},
-                    {name: 'Pimentón dulce', amount: 5, unit: 'g'},
-                    {name: 'Cebolla', amount: 1, unit: 'pza'},
-                    {name: 'Aceite', amount: 30, unit: 'ml'}
-                ],
-                steps: [
-                    'Remoja los fabes 12 horas en agua fría.',
-                    'Cocina a fuego lento con el compango 2-3 horas.',
-                    'Retira espuma que salga durante la cocción.',
-                    'Añade el azafrán y pimentón disueltos en caldo.',
-                    'Rectifica de sal y deja reposar 10 minutos.',
-                    'Sirve en cazuela de barro bien caliente.'
-                ],
-                author: 'Sistema',
-                isDefault: true
-            }
-        ];
+  <div class="card">
+    <strong>📝 Anotaciones</strong>
+    <textarea id="anotaciones" rows="3" placeholder="Ej: Llevar bolsas reutilizables, cupón descuento..."></textarea>
+  </div>
 
-        // Clase principal de la aplicación
-        class SazonDigital {
-            constructor() {
-                this.currentPin = '';
-                this.enteredPin = '';
-                this.userPin = localStorage.getItem('sazon_pin');
-                this.recipes = [];
-                this.currentServings = 4;
-                this.currentRecipe = null;
-                this.currentSection = 'home';
-                
-                this.init();
-            }
+  <div class="card">
+    <strong>🔗 Compartir lista</strong>
+    <div class="small">La persona que reciba el enlace verá la misma lista y podrá tachar productos. Es gratuito y sin cuenta.</div>
+    <div class="share-grid" style="margin-top:10px">
+      <button onclick="shareWhatsApp()">WhatsApp</button>
+      <button onclick="shareTelegram()">Telegram</button>
+      <button class="ghost" onclick="copyLink()">Copiar URL</button>
+      <button class="ghost" onclick="generarEnlace()">Actualizar enlace</button>
+    </div>
+    <input id="shareUrl" type="text" readonly style="margin-top:8px; font-size:12px" placeholder="Se generará aquí">
+  </div>
+</div>
 
-            init() {
-                this.loadRecipes();
-                this.renderDepartments();
-                
-                if (!this.userPin) {
-                    document.getElementById('pin-message').textContent = 'Crea un PIN de 4 dígitos para proteger tus recetas';
-                }
-                
-                // Verificar si hay receta compartida en URL
-                this.checkSharedRecipe();
-            }
+<footer>
+  <span class="small">Guardado automático</span>
+  <div class="flex">
+    <button class="ghost" onclick="exportar()">Exportar</button>
+    <button class="danger" onclick="nuevaLista()">Nueva</button>
+  </div>
+</footer>
 
-            // Sistema de PIN
-            enterDigit(digit) {
-                if (this.enteredPin.length < 4) {
-                    this.enteredPin += digit;
-                    this.updatePinDisplay();
-                }
-            }
+<div class="modal" id="modal" onclick="closeModal()">
+  <img id="modalImg" src="">
+</div>
 
-            clearPin() {
-                this.enteredPin = this.enteredPin.slice(0, -1);
-                this.updatePinDisplay();
-            }
-
-            updatePinDisplay() {
-                const dots = document.querySelectorAll('.pin-dot');
-                dots.forEach((dot, index) => {
-                    if (index < this.enteredPin.length) {
-                        dot.classList.add('filled');
-                    } else {
-                        dot.classList.remove('filled');
-                    }
-                });
-            }
-
-            verifyPin() {
-                if (this.enteredPin.length !== 4) {
-                    this.showPinError('El PIN debe tener 4 dígitos');
-                    return;
-                }
-
-                if (!this.userPin) {
-                    // Crear nuevo PIN
-                    this.userPin = this.enteredPin;
-                    localStorage.setItem('sazon_pin', this.userPin);
-                    this.showApp();
-                } else if (this.enteredPin === this.userPin) {
-                    this.showApp();
-                } else {
-                    this.showPinError('PIN incorrecto');
-                    this.enteredPin = '';
-                    this.updatePinDisplay();
-                }
-            }
-
-            showPinError(msg) {
-                const error = document.getElementById('pin-error');
-                error.textContent = msg;
-                error.classList.add('show');
-                setTimeout(() => error.classList.remove('show'), 3000);
-            }
-
-            showApp() {
-                document.getElementById('pin-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('pin-screen').style.display = 'none';
-                    document.getElementById('app').style.display = 'block';
-                    document.getElementById('user-badge').textContent = `PIN: ${this.userPin}`;
-                    this.renderRecipes();
-                }, 500);
-            }
-
-            // Gestión de Recetas
-            loadRecipes() {
-                const stored = localStorage.getItem('sazon_recipes');
-                const userRecipes = stored ? JSON.parse(stored) : [];
-                
-                // Combinar recetas por defecto con las del usuario (evitando duplicados)
-                const defaultIds = defaultRecipes.map(r => r.id);
-                const filteredUser = userRecipes.filter(r => !defaultIds.includes(r.id));
-                
-                this.recipes = [...defaultRecipes, ...filteredUser];
-            }
-
-            saveRecipes() {
-                const userRecipes = this.recipes.filter(r => !r.isDefault);
-                localStorage.setItem('sazon_recipes', JSON.stringify(userRecipes));
-            }
-
-            renderDepartments() {
-                const depts = [
-                    {name: 'Entrantes', icon: '🥗', color: '#27ae60', count: this.countByCategory('Entrantes')},
-                    {name: 'Sopas', icon: '🍲', color: '#e74c3c', count: this.countByCategory('Sopas')},
-                    {name: 'Ensaladas', icon: '🥬', color: '#2ecc71', count: this.countByCategory('Ensaladas')},
-                    {name: 'Arroces', icon: '🍚', color: '#f39c12', count: this.countByCategory('Arroces')},
-                    {name: 'Carnes', icon: '🥩', color: '#c0392b', count: this.countByCategory('Carnes')},
-                    {name: 'Pescados', icon: '🐟', color: '#3498db', count: this.countByCategory('Pescados')},
-                    {name: 'Vegetariano', icon: '🥕', color: '#e67e22', count: this.countByCategory('Vegetariano')},
-                    {name: 'Postres', icon: '🍰', color: '#9b59b6', count: this.countByCategory('Postres')},
-                    {name: 'Bebidas', icon: '🍹', color: '#1abc9c', count: this.countByCategory('Bebidas')}
-                ];
-
-                const grid = document.getElementById('dept-grid');
-                grid.innerHTML = depts.map(dept => `
-                    <div class="dept-card" onclick="app.filterByCategory('${dept.name}')" 
-                         style="background: linear-gradient(135deg, ${dept.color}22 0%, ${dept.color}44 100%); border: 2px solid ${dept.color}33;">
-                        <div class="dept-icon">${dept.icon}</div>
-                        <div class="dept-title">${dept.name}</div>
-                        <div class="dept-count">${dept.count} recetas</div>
-                    </div>
-                `).join('');
-            }
-
-            countByCategory(cat) {
-                return this.recipes.filter(r => r.category === cat).length;
-            }
-
-            renderRecipes(filtered = this.recipes, containerId = 'explore-grid') {
-                const container = document.getElementById(containerId);
-                
-                if (filtered.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state" style="grid-column: 1/-1;">
-                            <div class="empty-icon">📭</div>
-                            <h3>No hay recetas</h3>
-                            <p>Prueba a crear una nueva o importar del catálogo</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                container.innerHTML = filtered.map(recipe => `
-                    <div class="recipe-card" onclick="app.showRecipeDetail('${recipe.id}')">
-                        <img src="${recipe.image || 'https://via.placeholder.com/400x300?text=Sin+Imagen'}" 
-                             class="recipe-image" alt="${recipe.title}">
-                        <div class="recipe-content">
-                            <div class="recipe-tags">
-                                <span class="tag">${recipe.category}</span>
-                                ${recipe.author !== 'Sistema' ? '<span class="tag user">👤 Mía</span>' : ''}
-                            </div>
-                            <h3 class="recipe-title">${recipe.title}</h3>
-                            <div class="recipe-meta">
-                                <span>⏱️ ${recipe.time} min</span>
-                                <span>📊 ${recipe.difficulty}</span>
-                                <span>🍽️ ${recipe.baseServings} pers</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            filterByCategory(category) {
-                document.getElementById('search-input').value = '';
-                const filtered = this.recipes.filter(r => r.category === category);
-                this.showSection('explore');
-                this.renderRecipes(filtered);
-                document.querySelector('#explore h2').textContent = `📁 ${category}`;
-            }
-
-            searchRecipes() {
-                const query = document.getElementById('search-input').value.toLowerCase();
-                const filtered = this.recipes.filter(r => 
-                    r.title.toLowerCase().includes(query) || 
-                    r.category.toLowerCase().includes(query) ||
-                    r.ingredients.some(i => i.name.toLowerCase().includes(query))
-                );
-                this.renderRecipes(filtered);
-            }
-
-            showRecipeDetail(id) {
-                const recipe = this.recipes.find(r => r.id === id);
-                if (!recipe) return;
-
-                this.currentRecipe = recipe;
-                this.currentServings = recipe.baseServings;
-                
-                this.renderDetail();
-                this.showSection('recipe-detail');
-            }
-
-            renderDetail() {
-                const r = this.currentRecipe;
-                const container = document.getElementById('detail-container');
-                
-                container.innerHTML = `
-                    <div class="recipe-detail">
-                        <div class="detail-header">
-                            <img src="${r.image || 'https://via.placeholder.com/800x400'}" class="detail-image">
-                            <div class="detail-overlay">
-                                <h1 class="detail-title">${r.title}</h1>
-                                <div class="recipe-meta" style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">
-                                    <span>⏱️ ${r.time} minutos</span>
-                                    <span>📊 ${r.difficulty}</span>
-                                    <span>👤 Por ${r.author}</span>
-                                </div>
-                            </div>
-                            <div class="detail-actions">
-                                <button class="action-btn" onclick="app.shareRecipe('${r.id}')" title="Compartir">🔗</button>
-                                <button class="action-btn" onclick="app.showSection('explore')" title="Cerrar">✕</button>
-                            </div>
-                        </div>
-                        
-                        <div class="detail-content">
-                            <div class="portion-scaler">
-                                <div>
-                                    <div class="scaler-title">🍽️ Escalador Inteligente</div>
-                                    <small>Calcula ingredientes automáticamente</small>
-                                </div>
-                                <div class="scaler-controls">
-                                    <button class="scaler-btn" onclick="app.changeServings(-1)">−</button>
-                                    <div class="portion-display">${this.currentServings}</div>
-                                    <button class="scaler-btn" onclick="app.changeServings(1)">+</button>
-                                </div>
-                            </div>
-
-                            <div class="ingredients-section">
-                                <h3 class="section-title">📝 Ingredientes para ${this.currentServings} personas</h3>
-                                <ul class="ingredient-list" id="ingredient-list">
-                                    ${this.renderIngredients()}
-                                </ul>
-                            </div>
-
-                            <div class="steps-section">
-                                <h3 class="section-title">👨‍🍳 Elaboración</h3>
-                                ${r.steps.map((step, i) => `
-                                    <div class="step">
-                                        <div class="step-number">${i + 1}</div>
-                                        <div class="step-content">${step}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            renderIngredients() {
-                if (!this.currentRecipe) return '';
-                
-                const factor = this.currentServings / this.currentRecipe.baseServings;
-                
-                return this.currentRecipe.ingredients.map(ing => {
-                    const newAmount = (ing.amount * factor).toFixed(1).replace('.0', '');
-                    return `
-                        <li class="ingredient-item">
-                            <span class="ingredient-name">${ing.name}</span>
-                            <span class="ingredient-amount">${newAmount} ${ing.unit}</span>
-                        </li>
-                    `;
-                }).join('');
-            }
-
-            changeServings(delta) {
-                const newServings = this.currentServings + delta;
-                if (newServings < 1 || newServings > 50) return;
-                
-                this.currentServings = newServings;
-                document.querySelector('.portion-display').textContent = newServings;
-                document.getElementById('ingredient-list').innerHTML = this.renderIngredients();
-            }
-
-            // Crear Recetas
-            addIngredientInput() {
-                const container = document.getElementById('ingredients-list');
-                const div = document.createElement('div');
-                div.className = 'ingredients-input-group';
-                div.innerHTML = `
-                    <input type="text" class="form-input" placeholder="Ingrediente" required>
-                    <input type="number" class="form-input" placeholder="Cantidad" step="0.1" required>
-                    <input type="text" class="form-input" placeholder="Unidad" required>
-                    <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">×</button>
-                `;
-                container.appendChild(div);
-            }
-
-            saveRecipe(e) {
-                e.preventDefault();
-                const form = e.target;
-                const formData = new FormData(form);
-                
-                // Recoger ingredientes
-                const ingredientGroups = document.querySelectorAll('.ingredients-input-group');
-                const ingredients = [];
-                ingredientGroups.forEach(group => {
-                    const inputs = group.querySelectorAll('input');
-                    if (inputs[0].value) {
-                        ingredients.push({
-                            name: inputs[0].value,
-                            amount: parseFloat(inputs[1].value),
-                            unit: inputs[2].value
-                        });
-                    }
-                });
-
-                const newRecipe = {
-                    id: 'user-' + Date.now(),
-                    title: formData.get('title'),
-                    category: formData.get('category'),
-                    image: formData.get('image') || 'https://via.placeholder.com/400x300?text=' + encodeURIComponent(formData.get('title')),
-                    time: formData.get('time'),
-                    difficulty: formData.get('difficulty'),
-                    baseServings: parseInt(formData.get('baseServings')),
-                    ingredients: ingredients,
-                    steps: formData.get('steps').split('\n').filter(s => s.trim()),
-                    author: this.userPin,
-                    isDefault: false
-                };
-
-                this.recipes.push(newRecipe);
-                this.saveRecipes();
-                this.renderDepartments();
-                
-                form.reset();
-                this.showSection('my-recipes');
-                this.renderMyRecipes();
-                
-                // Mostrar confirmación
-                alert('✅ Receta guardada correctamente');
-            }
-
-            renderMyRecipes() {
-                const myRecipes = this.recipes.filter(r => r.author === this.userPin || !r.isDefault);
-                this.renderRecipes(myRecipes, 'my-recipes-grid');
-            }
-
-            // Compartir e Importar
-            shareRecipe(id) {
-                const recipe = this.recipes.find(r => r.id === id);
-                if (!recipe) return;
-
-                const shareData = btoa(JSON.stringify(recipe));
-                document.getElementById('share-code').textContent = shareData;
-                document.getElementById('share-modal').classList.add('active');
-            }
-
-            copyShareCode() {
-                const code = document.getElementById('share-code').textContent;
-                navigator.clipboard.writeText(code).then(() => {
-                    alert('✅ Código copiado al portapapeles');
-                    this.closeModal();
-                });
-            }
-
-            closeModal() {
-                document.getElementById('share-modal').classList.remove('active');
-            }
-
-            importRecipe() {
-                const code = document.getElementById('import-code').value.trim();
-                const resultDiv = document.getElementById('import-result');
-                
-                if (!code) {
-                    resultDiv.innerHTML = '<p style="color: var(--danger);">⚠️ Introduce un código válido</p>';
-                    return;
-                }
-
-                try {
-                    const recipe = JSON.parse(atob(code));
-                    
-                    // Validar estructura básica
-                    if (!recipe.title || !recipe.ingredients) {
-                        throw new Error('Formato inválido');
-                    }
-
-                    // Asignar nuevo ID y autor
-                    recipe.id = 'import-' + Date.now();
-                    recipe.author = this.userPin + ' (importado)';
-                    recipe.isDefault = false;
-
-                    this.recipes.push(recipe);
-                    this.saveRecipes();
-                    this.renderDepartments();
-                    
-                    resultDiv.innerHTML = `
-                        <div style="background: #d4edda; padding: 1rem; border-radius: 12px; color: #155724;">
-                            <strong>✅ Receta importada:</strong> ${recipe.title}<br>
-                            <button class="btn" onclick="app.showRecipeDetail('${recipe.id}')" style="margin-top: 1rem;">Ver Receta</button>
-                        </div>
-                    `;
-                    
-                    document.getElementById('import-code').value = '';
-                } catch (e) {
-                    resultDiv.innerHTML = '<p style="color: var(--danger);">⚠️ Código inválido o corrupto</p>';
-                }
-            }
-
-            checkSharedRecipe() {
-                const hash = window.location.hash;
-                if (hash.startsWith('#share=')) {
-                    const code = hash.replace('#share=', '');
-                    document.getElementById('import-code').value = code;
-                    setTimeout(() => this.importRecipe(), 1000);
-                }
-            }
-
-            // Navegación y UI
-            showSection(sectionId) {
-                // Ocultar todas las secciones
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(sectionId).classList.add('active');
-                
-                // Actualizar nav
-                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-                
-                // Mostrar/ocultar FAB
-                const fab = document.getElementById('fab');
-                if (sectionId === 'my-recipes') {
-                    fab.classList.remove('hidden');
-                    this.renderMyRecipes();
-                } else {
-                    fab.classList.add('hidden');
-                }
-
-                // Resetear título de explore si volvemos a home
-                if (sectionId === 'explore') {
-                    document.querySelector('#explore h2').textContent = '🔍 Explorar Recetas';
-                    document.getElementById('search-input').value = '';
-                    this.renderRecipes();
-                }
-
-                this.currentSection = sectionId;
-                window.scrollTo(0, 0);
-            }
-
-            toggleTheme() {
-                const current = document.documentElement.getAttribute('data-theme');
-                const next = current === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('sazon_theme', next);
-            }
-        }
-
-        // Inicializar aplicación
-        const app = new SazonDigital();
-
-        // Restaurar tema
-        const savedTheme = localStorage.getItem('sazon_theme');
-        if (savedTheme) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        }
-
-        // Cerrar modal al hacer clic fuera
-        document.getElementById('share-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'share-modal') app.closeModal();
-        });
-    </script>
+<script src="app.js"></script>
 </body>
 </html>
