@@ -1,272 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- Playables SDK -->
-<script>// Playables SDK v1.0.0
-// Game lifecycle bridge: rAF-based game-ready detection + event communication
-(function() {
-  'use strict';
-
-  // Idempotency: skip if already initialized (e.g., server-side injection
-  // followed by client-side inject-javascript via the Bloks webview component).
-  if (window.playablesSDK) return;
-
-  var HANDLER_NAME = 'playablesGameEventHandler';
-  var ANDROID_BRIDGE_NAME = '_MetaPlayablesBridge';
-  var RAF_FRAME_THRESHOLD = 3;
-
-  var gameReadySent = false;
-  var firstInteractionSent = false;
-  var errorSent = false;
-  var frameCount = 0;
-  var originalRAF = window.requestAnimationFrame;
-
-  // --- Transport Layer ---
-
-  function hasIOSBridge() {
-    return !!(window.webkit &&
-              window.webkit.messageHandlers &&
-              window.webkit.messageHandlers[HANDLER_NAME]);
-  }
-
-  function hasAndroidBridge() {
-    return !!(window[ANDROID_BRIDGE_NAME] &&
-              typeof window[ANDROID_BRIDGE_NAME].postEvent === 'function');
-  }
-
-  function isInIframe() {
-    return !!(window.parent && window.parent !== window);
-  }
-
-  function sendEvent(eventName, payload) {
-    var message = {
-      type: eventName,
-      payload: payload || {},
-      timestamp: Date.now()
-    };
-
-    if (hasIOSBridge()) {
-      try {
-        window.webkit.messageHandlers[HANDLER_NAME].postMessage(message);
-      } catch (e) { /* ignore */ }
-      return;
-    }
-
-    if (hasAndroidBridge()) {
-    try {
-      var p = payload || {};
-      p.__secureToken = window.__fbAndroidBridgeAuthToken || '';
-      p.timestamp = message.timestamp;
-      window[ANDROID_BRIDGE_NAME].postEvent(
-        eventName,
-        JSON.stringify(p)
-      );
-    } catch (e) { /* ignore */ }
-    return;
-  }
-
-    if (isInIframe()) {
-      try {
-        window.parent.postMessage(message, '*');
-      } catch (e) { /* ignore */ }
-      return;
-    }
-  }
-
-  // --- rAF Game-Ready Detection ---
-
-  function onFrame() {
-    if (gameReadySent) return;
-
-    frameCount++;
-    if (frameCount >= RAF_FRAME_THRESHOLD) {
-      gameReadySent = true;
-      sendEvent('game_ready', {
-        frame_count: frameCount,
-        detected_at: Date.now()
-      });
-      return;
-    }
-
-    originalRAF.call(window, onFrame);
-  }
-
-  if (originalRAF) {
-    window.requestAnimationFrame = function(callback) {
-      if (!gameReadySent) {
-        return originalRAF.call(window, function(timestamp) {
-          frameCount++;
-          if (frameCount >= RAF_FRAME_THRESHOLD && !gameReadySent) {
-            gameReadySent = true;
-            sendEvent('game_ready', {
-              frame_count: frameCount,
-              detected_at: Date.now()
-            });
-          }
-          callback(timestamp);
-        });
-      }
-      return originalRAF.call(window, callback);
-    };
-  }
-
-  // --- First User Interaction Detection ---
-
-  function setupFirstInteractionDetection() {
-    var events = ['touchstart', 'mousedown', 'keydown'];
-
-    function onFirstInteraction() {
-      if (firstInteractionSent) return;
-      firstInteractionSent = true;
-      sendEvent('user_interaction_start', null);
-
-      for (var i = 0; i < events.length; i++) {
-        document.removeEventListener(events[i], onFirstInteraction, true);
-      }
-    }
-
-    for (var i = 0; i < events.length; i++) {
-      document.addEventListener(events[i], onFirstInteraction, true);
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupFirstInteractionDetection);
-  } else {
-    setupFirstInteractionDetection();
-  }
-
-  // --- Auto Error Capture ---
-
-  window.addEventListener('error', function(event) {
-    if (errorSent) return;
-    errorSent = true;
-    sendEvent('error', {
-      message: event.message || 'Unknown error',
-      source: event.filename || '',
-      lineno: event.lineno || 0,
-      colno: event.colno || 0,
-      auto_captured: true
-    });
-  });
-
-  window.addEventListener('unhandledrejection', function(event) {
-    if (errorSent) return;
-    errorSent = true;
-    var reason = event.reason;
-    sendEvent('error', {
-      message: (reason instanceof Error) ? reason.message : String(reason),
-      type: 'unhandled_promise_rejection',
-      auto_captured: true
-    });
-  });
-
-  // --- Public API ---
-
-  window.playablesSDK = {
-    complete: function(score) {
-      sendEvent('game_ended', {
-        score: score,
-        completed: true
-      });
-    },
-
-    error: function(message) {
-      if (errorSent) return;
-      errorSent = true;
-      sendEvent('error', {
-        message: message || 'Unknown error',
-        auto_captured: false
-      });
-    },
-
-    sendEvent: function(eventName, payload) {
-      if (!eventName || typeof eventName !== 'string') return;
-      sendEvent(eventName, payload);
-    }
-  };
-
-  // Kick off rAF detection in case no game code calls rAF immediately
-  if (originalRAF) {
-    originalRAF.call(window, onFrame);
-  }
-})();</script>
-<script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#22c55e">
+<link rel="apple-touch-icon" href="icon-192.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Lista Compartida Pro</title>
+<title>Go2Market Web</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <h1>🛒 Lista Compartida Pro</h1>
-  <div class="row" style="margin-top:8px">
-    <input id="establecimiento" type="text" placeholder="Establecimiento (ej. Mercadona, Carrefour)">
+  <div class="row" style="justify-content:space-between">
+    <h1>🛒 <span id="appTitle">Go2Market</span></h1>
+    <select id="listaSelector" onchange="cambiarLista()"></select>
+  </div>
+  <div class="row" style="margin-top:8px; gap:6px">
+    <input id="establecimiento" type="text" placeholder="Supermercado">
+    <input id="colorPicker" type="color" value="#22c55e" title="Color lista" style="width:44px; height:40px; padding:0; border:none; background:none">
     <div class="total" id="total">0,00 €</div>
+  </div>
+  <div class="row" style="margin-top:8px; justify-content:space-between">
+    <span class="small">Modo: <strong id="modoLabel">Edición</strong></span>
+    <div class="flex">
+      <button class="ghost" onclick="toggleModo()" id="toggleModo">Compra</button>
+      <button class="ghost" onclick="nuevaLista()">+ Lista</button>
+    </div>
   </div>
 </header>
 
 <div class="container">
   <div class="card">
     <div class="row" style="justify-content:space-between">
-      <strong>Categorías y productos</strong>
-      <button class="ghost" onclick="addCategory()">+ Categoría</button>
+      <strong>Productos por tipo</strong>
+      <div class="flex">
+        <button class="ghost" onclick="startVoice()" title="Añadir por voz">🎙️</button>
+        <button class="ghost" onclick="addCategory()">+ Tipo</button>
+      </div>
     </div>
     <div id="categorias" style="margin-top:10px"></div>
+    <div id="voiceStatus" class="small" style="margin-top:6px; display:none"></div>
   </div>
 
   <div class="card">
-    <strong>📍 Ubicación de compra</strong>
+    <strong>📍 Ubicación</strong>
     <div class="row" style="margin-top:8px">
-      <button onclick="getLocation()">Obtener ubicación</button>
+      <button onclick="getLocation()">Obtener</button>
       <span class="small" id="coords">Sin coordenadas</span>
     </div>
-    <input id="direccion" type="text" placeholder="Calle, número, ciudad" style="margin-top:8px">
+    <input id="direccion" type="text" placeholder="Calle, número" style="margin-top:8px">
   </div>
 
   <div class="card">
-    <strong>🅿️ Foto del aparcamiento</strong>
-    <div class="small" style="margin:6px 0">Haz foto para recordar dónde aparcaste. Toca para zoom.</div>
+    <strong>🅿️ Foto parking</strong>
     <input type="file" accept="image/*" capture="environment" id="fotoInput" style="display:none">
     <div class="photo-box" onclick="document.getElementById('fotoInput').click()">
-      <span id="fotoPlaceholder">Toca para hacer foto</span>
+      <span id="fotoPlaceholder">Toca para foto</span>
       <img id="fotoPreview" style="display:none">
     </div>
-    <div class="row" style="margin-top:8px">
-      <button class="ghost" onclick="clearPhoto()">Borrar foto</button>
-    </div>
   </div>
 
   <div class="card">
-    <strong>📝 Anotaciones</strong>
-    <textarea id="anotaciones" rows="3" placeholder="Ej: Llevar bolsas reutilizables, cupón descuento..."></textarea>
-  </div>
-
-  <div class="card">
-    <strong>🔗 Compartir lista</strong>
-    <div class="small">La persona que reciba el enlace verá la misma lista y podrá tachar productos. Es gratuito y sin cuenta.</div>
+    <strong>🔗 Compartir</strong>
+    <div class="small">Tiempo real vía enlace. Quien abre entra en modo Compra.</div>
     <div class="share-grid" style="margin-top:10px">
       <button onclick="shareWhatsApp()">WhatsApp</button>
       <button onclick="shareTelegram()">Telegram</button>
-      <button class="ghost" onclick="copyLink()">Copiar URL</button>
-      <button class="ghost" onclick="generarEnlace()">Actualizar enlace</button>
+      <button class="ghost" onclick="copyLink()">Copiar</button>
+      <button class="ghost" onclick="generarEnlace()">Actualizar</button>
     </div>
-    <input id="shareUrl" type="text" readonly style="margin-top:8px; font-size:12px" placeholder="Se generará aquí">
+    <input id="shareUrl" type="text" readonly style="margin-top:8px; font-size:12px">
   </div>
-</div>
-
-<footer>
-  <span class="small">Guardado automático</span>
-  <div class="flex">
-    <button class="ghost" onclick="exportar()">Exportar</button>
-    <button class="danger" onclick="nuevaLista()">Nueva</button>
-  </div>
-</footer>
-
-<div class="modal" id="modal" onclick="closeModal()">
-  <img id="modalImg" src="">
 </div>
 
 <script src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js")}</script>
 </body>
 </html>
