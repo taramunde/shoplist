@@ -53,11 +53,22 @@ const levelData = [
 
 // Generar los niveles con metadatos
 levelData.forEach((data, index) => {
+    let image, playerName;
+    
+    if (index === 0) {
+        // Personalizamos el nivel 1
+        image = 'assets/JuanCruz.png';   // ← Pon el nombre que le hayas dado
+        playerName = 'Juan Cruz';        // ← El nombre que se mostrará
+    } else {
+        // Para el resto, usamos el ciclo automático (1.jpg, 2.jpg, ...)
+        image = `assets/${(index % 5) + 1}.jpg`;
+        playerName = `Jugador ${index + 1}`;
+    }
+
     LEVELS.push({
         id: index + 1,
         board: data,
-        // Asigna una imagen de jugador (cambia los nombres según tus archivos)
-        image: `assets/${(index % 5) + 1}.jpg`,
-        playerName: `Jugador ${index + 1}`
+        image: image,
+        playerName: playerName
     });
 });
