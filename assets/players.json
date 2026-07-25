@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "name": "Santi Cazorla",
+    "number": 8,
+    "pos": "Mediocentro",
+    "desc": "La magia de Lugo de Llanera. Leyenda Carbayona.",
+    "color": "#00A3FF"
+  },
+  {
+    "id": 2,
+    "name": "Aarón Escandell",
+    "number": 13,
+    "pos": "Portero",
+    "desc": "Candado de la portería del Tartiere.",
+    "color": "#FF7A2F"
+  },
+  {
+    "id": 3,
+    "name": "Dani Calvo",
+    "number": 12,
+    "pos": "Defensa",
+    "desc": "Contundencia y corazón azul.",
+    "color": "#2D9CFF"
+  },
+  {
+    "id": 4,
+    "name": "David Costas",
+    "number": 4,
+    "pos": "Defensa",
+    "desc": "Muro gallego en la zaga.",
+    "color": "#C6FF00"
+  },
+  {
+    "id": 5,
+    "name": "Oier Luengo",
+    "number": 15,
+    "pos": "Defensa",
+    "desc": "Seguridad atrás.",
+    "color": "#FF6EC7"
+  },
+  {
+    "id": 6,
+    "name": "Santiago Colombatto",
+    "number": 11,
+    "pos": "Centrocampista",
+    "desc": "El pulmón argentino.",
+    "color": "#00E676"
+  },
+  {
+    "id": 7,
+    "name": "Kwasi Sibo",
+    "number": 6,
+    "pos": "Centrocampista",
+    "desc": "Fuerza y recuperación.",
+    "color": "#FFEA00"
+  },
+  {
+    "id": 8,
+    "name": "Alemão",
+    "number": 9,
+    "pos": "Delantero",
+    "desc": "Gol y garra brasileña.",
+    "color": "#FF7A2F"
+  },
+  {
+    "id": 9,
+    "name": "Ilyas Chaira",
+    "number": 16,
+    "pos": "Extremo",
+    "desc": "Desequilibrio puro por banda.",
+    "color": "#2D9CFF"
+  },
+  {
+    "id": 10,
+    "name": "Haissem Hassan",
+    "number": 23,
+    "pos": "Extremo",
+    "desc": "Velocidad eléctrica.",
+    "color": "#C6FF00"
+  },
+  {
+    "id": 11,
+    "name": "Nacho Vidal",
+    "number": 22,
+    "pos": "Lateral",
+    "desc": "Experiencia en la banda derecha.",
+    "color": "#FF6EC7"
+  },
+  {
+    "id": 12,
+    "name": "Sebas Moyano",
+    "number": 7,
+    "pos": "Extremo",
+    "desc": "Calidad en el último pase.",
+    "color": "#00E676"
+  },
+  {
+    "id": 13,
+    "name": "Lucas Ahijado",
+    "number": 24,
+    "pos": "Lateral",
+    "desc": "Canterano, sangre azul de verdad.",
+    "color": "#FFEA00"
+  },
+  {
+    "id": 14,
+    "name": "Rahim Alhassane",
+    "number": 3,
+    "pos": "Lateral",
+    "desc": "Proyección y potencia.",
+    "color": "#FF7A2F"
+  },
+  {
+    "id": 15,
+    "name": "Jaime Seoane",
+    "number": 20,
+    "pos": "Centrocampista",
+    "desc": "Visión de juego.",
+    "color": "#2D9CFF"
+  },
+  {
+    "id": 16,
+    "name": "Francisco Portillo",
+    "number": 10,
+    "pos": "Mediapunta",
+    "desc": "Clase y último pase.",
+    "color": "#C6FF00"
+  },
+  {
+    "id": 17,
+    "name": "Álex Cardero",
+    "number": 27,
+    "pos": "Mediocentro",
+    "desc": "Futuro del Tartiere.",
+    "color": "#FF6EC7"
+  },
+  {
+    "id": 18,
+    "name": "Paulino de la Fuente",
+    "number": 18,
+    "pos": "Extremo",
+    "desc": "Trabajo y gol.",
+    "color": "#00E676"
+  },
+  {
+    "id": 19,
+    "name": "Federico Viñas",
+    "number": 19,
+    "pos": "Delantero",
+    "desc": "Charrua goleador.",
+    "color": "#FFEA00"
+  },
+  {
+    "id": 20,
+    "name": "Eric Bailly",
+    "number": 2,
+    "pos": "Defensa",
+    "desc": "Jerarquía internacional.",
+    "color": "#FF7A2F"
+  },
+  {
+    "id": 21,
+    "name": "Álvaro Lemos",
+    "number": 2,
+    "pos": "Lateral",
+    "desc": "Veteranía y entrega.",
+    "color": "#2D9CFF"
+  },
+  {
+    "id": 22,
+    "name": "Carlos Pomares",
+    "number": 21,
+    "pos": "Lateral",
+    "desc": "Solidez defensiva.",
+    "color": "#C6FF00"
+  },
+  {
+    "id": 23,
+    "name": "Daniel Paraschiv",
+    "number": 14,
+    "pos": "Delantero",
+    "desc": "Remate y potencia.",
+    "color": "#FF6EC7"
+  },
+  {
+    "id": 24,
+    "name": "Quentin Braat",
+    "number": 1,
+    "pos": "Portero",
+    "desc": "Seguridad bajo palos.",
+    "color": "#00E676"
+  },
+  {
+    "id": 25,
+    "name": "Borja Sánchez",
+    "number": 10,
+    "pos": "Mediapunta",
+    "desc": "Talento de El Cristo.",
+    "color": "#FFEA00"
+  }
+]
