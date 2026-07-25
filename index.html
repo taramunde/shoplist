@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Sangre Carbayona - Laberinto de Flechas</title>
@@ -17,6 +36,7 @@
   <div class="hud">
     <div class="hud-item">🏆 <strong id="levelLabel">Nivel 1</strong></div>
     <div class="hud-item" id="lives">❤❤❤</div>
+    <button class="sound-toggle" id="soundBtn" title="Sonido">🔊</button>
     <button class="btn btn-ghost" id="hintBtn">💡 Pista</button>
     <button class="btn btn-ghost" id="restartBtn">↻</button>
   </div>
