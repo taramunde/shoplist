@@ -1,4 +1,3 @@
-
 export const COLORS = [
   {name:'naranja', hex:'#FF7A2F'},
   {name:'azul', hex:'#2D9CFF'},
